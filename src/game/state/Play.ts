@@ -1,21 +1,26 @@
 import {MovedSprite} from "../sprite/MovedSprite";
-import {GoaledSprite} from "../sprite/GoaledSprite";
 import {StupidSprite} from "../sprite/StupidSprite";
 import {BlockedSprite} from "../sprite/BlockedSprite";
 import {Explosion} from "../sprite/Explosion";
+import {Selector} from "../Selector";
+import {GoaledSprite} from "../sprite/GoaledSprite";
 
 
-export const SCALE = 2.5;
+export const SCALE = 2;
 export const CIRCLE_RADIUS: number = 19 * SCALE;
 
 export default class Play extends Phaser.State
 {
     private sprites: MovedSprite[];
+    private selector: Selector;
 
     public create()
     {
         this.sprites = [];
-        for (let i = 0; i < 3; i++) {
+        this.selector = new Selector(this);
+        this.game.add.existing(this.selector);
+
+        for (let i = 0; i < 20; i++) {
             this.sprites.push(new GoaledSprite(this, Math.random() * this.game.width, Math.random() * this.game.height));
         }
         for (let i = 0; i < 20; i++) {

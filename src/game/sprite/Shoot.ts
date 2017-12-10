@@ -14,7 +14,6 @@ export class Shoot extends Phaser.Sprite
         explode.setFrame(this.firstFrame);
         explode.enableUpdate = true;
         explode.onUpdate.add(() => {
-            console.log(explode.currentFrame.index);
             if (explode.currentFrame.index >= this.firstFrame + 3) {
                 explode.stop();
                 explode.destroy();

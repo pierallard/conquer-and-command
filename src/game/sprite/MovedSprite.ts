@@ -1,4 +1,4 @@
-import Play, {SCALE} from "../state/Play";
+import Play, {CIRCLE_RADIUS, SCALE} from "../state/Play";
 import {Shoot} from "./Shoot";
 
 export enum Rotation {
@@ -16,7 +16,7 @@ const MIN_SHOOT_DISTANCE = 200;
 
 export class MovedSprite extends Phaser.Sprite
 {
-    private displayLife: boolean = false;
+    private displayLife: boolean = true;
     protected vector: Phaser.Point = null;
     protected debugText: Phaser.Text;
     protected spriteKey: string;
@@ -26,6 +26,7 @@ export class MovedSprite extends Phaser.Sprite
     private weight: number;
     protected play_: Play;
     private shootEnabled: boolean = true;
+    private selectedRectable: Phaser.Graphics = null;
 
     constructor(play: Play, x: number, y: number, spriteKey: string, weight: number) {
         super(play.game, x, y, spriteKey);
@@ -39,7 +40,7 @@ export class MovedSprite extends Phaser.Sprite
 
         this.lifeRectangle = this.game.add.graphics(0, 0);
         this.lifeRectangle.beginFill(0x00ff00);
-        this.lifeRectangle.drawRect(-10, 10, 20, 2);
+        this.lifeRectangle.drawRect(-CIRCLE_RADIUS/SCALE/2, CIRCLE_RADIUS/SCALE/2, CIRCLE_RADIUS/SCALE, 2);
         if (this.displayLife) {
             this.addChild(this.lifeRectangle);
         }
@@ -80,7 +81,7 @@ export class MovedSprite extends Phaser.Sprite
     {
         this.lifeRectangle.clear();
         this.lifeRectangle.beginFill(0x00ff00);
-        this.lifeRectangle.drawRect(-10, 10, this.life / this.maxLife * 20, 2);
+        this.lifeRectangle.drawRect(-CIRCLE_RADIUS/SCALE/2, CIRCLE_RADIUS/SCALE/2, this.life / this.maxLife * CIRCLE_RADIUS/SCALE/2, 2);
     }
 
     private setKey(): void
@@ -186,5 +187,23 @@ export class MovedSprite extends Phaser.Sprite
 
     protected isEnnemy(sprite: MovedSprite) {
         return false;
+    }
+
+    setSelected(value: boolean) {
+        if (value) {
+            if (null === this.selectedRectable) {
+                this.selectedRectable = this.game.add.graphics(0, 0);
+                this.selectedRectable.lineStyle(1, 0x00ff00, 0.8);
+                this.selectedRectable.drawRect(-CIRCLE_RADIUS / SCALE / 2, -CIRCLE_RADIUS / SCALE / 2, CIRCLE_RADIUS / SCALE, CIRCLE_RADIUS / SCALE);
+                this.addChild(this.selectedRectable);
+            }
+        } else if (this.selectedRectable !== null) {
+            this.selectedRectable.destroy();
+            this.selectedRectable = null;
+        }
+    }
+
+    isSelected() {
+        return this.selectedRectable !== null;
     }
 }

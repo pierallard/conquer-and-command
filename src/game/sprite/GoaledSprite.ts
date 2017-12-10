@@ -19,7 +19,7 @@ export class GoaledSprite extends MovedSprite
 
     update()
     {
-        if (this.game.input.activePointer.leftButton.isDown) {
+        if (this.isSelected() && this.game.input.activePointer.rightButton.isDown) {
             this.spriteGoal = new Phaser.Point(this.game.input.mousePointer.x, this.game.input.mousePointer.y);
         }
 
