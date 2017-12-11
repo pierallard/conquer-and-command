@@ -10,7 +10,7 @@ export default class Play extends Phaser.State
 {
     private unitRepository: UnitRepository;
     private selector: Selector;
-    private ground: Ground;
+    public ground: Ground;
 
     public create()
     {

@@ -3,6 +3,7 @@ import {GoaledSprite} from "../sprite/GoaledSprite";
 import {StupidSprite} from "../sprite/StupidSprite";
 import {BlockedSprite} from "../sprite/BlockedSprite";
 import Play, {CIRCLE_RADIUS} from "../state/Play";
+import {AStarSprite} from "../sprite/AStarSprite";
 
 const ACCELERATION = 10;
 
@@ -19,26 +20,32 @@ export class UnitRepository
 
     public generateRandomUnits()
     {
-        for (let i = 0; i < 3; i++) {
-            this.units.push(new GoaledSprite(
-                this,
-                Math.random() * this.play_.game.width,
-                Math.random() * this.play_.game.height
-            ));
-        }
-        for (let i = 0; i < 20; i++) {
-            this.units.push(new StupidSprite(
-                this,
-                Math.random() * this.play_.game.width,
-                Math.random() * this.play_.game.height
-            ));
-        }
-        for (let i = 0; i < 30; i++) {
-            this.units.push(new BlockedSprite(this,
-                Math.random() * this.play_.game.width,
-                Math.random() * this.play_.game.height
-            ));
-        }
+        // for (let i = 0; i < 3; i++) {
+        //     this.units.push(new GoaledSprite(
+        //         this,
+        //         Math.random() * this.play_.game.width,
+        //         Math.random() * this.play_.game.height
+        //     ));
+        // }
+        // for (let i = 0; i < 20; i++) {
+        //     this.units.push(new StupidSprite(
+        //         this,
+        //         Math.random() * this.play_.game.width,
+        //         Math.random() * this.play_.game.height
+        //     ));
+        // }
+        // for (let i = 0; i < 30; i++) {
+        //     this.units.push(new BlockedSprite(this,
+        //         Math.random() * this.play_.game.width,
+        //         Math.random() * this.play_.game.height
+        //     ));
+        // }
+        this.units.push(new AStarSprite(
+            this,
+            Math.random() * this.play_.game.width,
+            Math.random() * this.play_.game.height,
+            this.play_.ground
+        ));
     }
 
     getUnits(): MovedSprite[] {

@@ -1,6 +1,7 @@
 import {MovedSprite} from "./sprite/MovedSprite";
 import {GoaledSprite} from "./sprite/GoaledSprite";
 import {UnitRepository} from "./repository/UnitRepository";
+import {AStarSprite} from "./sprite/AStarSprite";
 export class Selector extends Phaser.Graphics
 {
     private corner: Phaser.Point = null;
@@ -48,7 +49,7 @@ export class Selector extends Phaser.Graphics
     }
 
     private isInside(sprite: MovedSprite) {
-        if (!(sprite instanceof GoaledSprite)) {
+        if (!(sprite instanceof GoaledSprite || sprite instanceof AStarSprite)) {
             return false;
         }
         const left = Math.min(this.corner.x, this.game.input.mousePointer.x);
