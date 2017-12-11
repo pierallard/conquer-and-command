@@ -1,7 +1,7 @@
 import {MovedSprite, Rotation} from "./MovedSprite";
-import Play from "../state/Play";
 import {BlockedSprite} from "./BlockedSprite";
 import {StupidSprite} from "./StupidSprite";
+import {UnitRepository} from "../repository/UnitRepository";
 
 const SPEED = 1;
 
@@ -9,8 +9,8 @@ export class GoaledSprite extends MovedSprite
 {
     private spriteGoal: Phaser.Point = null;
 
-    constructor(play: Play, x: number, y: number) {
-        super(play, x, y, 'Tank5c', 10);
+    constructor(unitRepository: UnitRepository, x: number, y: number) {
+        super(unitRepository, x, y, 'Tank5c', 10);
 
         this.life = 10000;
         this.maxLife = 10000;

@@ -1,5 +1,7 @@
 import Play, {CIRCLE_RADIUS, SCALE} from "../state/Play";
 import {Shoot} from "./Shoot";
+import {UnitRepository} from "../repository/UnitRepository";
+import {Explosion} from "./Explosion";
 
 export enum Rotation {
     TOP = 1,
@@ -24,14 +26,14 @@ export class MovedSprite extends Phaser.Sprite
     protected maxLife: number = 100;
     protected life: number = 100;
     private weight: number;
-    protected play_: Play;
+    protected unitRepository: UnitRepository;
     private shootEnabled: boolean = true;
     private selectedRectable: Phaser.Graphics = null;
 
-    constructor(play: Play, x: number, y: number, spriteKey: string, weight: number) {
-        super(play.game, x, y, spriteKey);
+    constructor(unitRepository: UnitRepository, x: number, y: number, spriteKey: string, weight: number) {
+        super(unitRepository.play_.game, x, y, spriteKey);
 
-        this.play_ = play;
+        this.unitRepository = unitRepository;
         this.spriteKey = spriteKey;
         this.weight = weight;
         const style = { font: "8px Arial", fill: "#ff0000" };
@@ -51,7 +53,7 @@ export class MovedSprite extends Phaser.Sprite
 
         // To be more realistic
         this.shootEnabled = false;
-        this.play_.game.time.events.add(Math.random() * 4 * Phaser.Timer.SECOND, () => {
+        this.unitRepository.play_.game.time.events.add(Math.random() * 4 * Phaser.Timer.SECOND, () => {
             this.shootEnabled = true;
         }, this);
     }
@@ -147,8 +149,9 @@ export class MovedSprite extends Phaser.Sprite
         this.life -= number;
 
         if (this.life <= 0) {
+            this.unitRepository.play_.game.add.existing(new Explosion(this.unitRepository.play_.game, this.x, this.y));
             this.destroy();
-            this.play_.removeSprite(this);
+            this.unitRepository.removeSprite(this);
         }
 
         this.updateLife();
@@ -158,7 +161,7 @@ export class MovedSprite extends Phaser.Sprite
         let closest = null;
         let closestDist = null;
 
-        this.play_.getMovedSprites().forEach((sprite) => {
+        this.unitRepository.getUnits().forEach((sprite) => {
             if (this.isEnnemy(sprite)) {
                 const dist = Math.sqrt((sprite.x - this.x) * (sprite.x - this.x) + (sprite.y - this.y) * (sprite.y - this.y));
                 if (dist < MIN_SHOOT_DISTANCE) {
@@ -180,7 +183,7 @@ export class MovedSprite extends Phaser.Sprite
         ennemy.lostLife(20);
         this.shootEnabled = false;
 
-        this.play_.game.time.events.add(Phaser.Timer.SECOND, () => {
+        this.unitRepository.play_.game.time.events.add(Phaser.Timer.SECOND, () => {
             this.shootEnabled = true;
         }, this);
     }

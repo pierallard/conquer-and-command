@@ -15,7 +15,8 @@ class SimpleGame extends Phaser.Game {
             'content',
             null,
             false,
-            false
+            false,
+            false,
         );
 
         this.antialias = false;

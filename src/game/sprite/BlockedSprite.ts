@@ -1,11 +1,11 @@
 import {MovedSprite} from "./MovedSprite";
-import Play from "../state/Play";
 import {GoaledSprite} from "./GoaledSprite";
+import {UnitRepository} from "../repository/UnitRepository";
 
 export class BlockedSprite extends MovedSprite
 {
-    constructor(play: Play, x: number, y: number) {
-        super(play, x, y, 'Tank12', 0);
+    constructor(unitRepository: UnitRepository, x: number, y: number) {
+        super(unitRepository, x, y, 'Tank12', 0);
     }
 
     protected isEnnemy(sprite: MovedSprite) {

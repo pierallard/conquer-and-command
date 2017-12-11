@@ -1,6 +1,7 @@
 import {MovedSprite} from "./MovedSprite";
-import Play, {CIRCLE_RADIUS} from "../state/Play";
+import {CIRCLE_RADIUS} from "../state/Play";
 import {GoaledSprite} from "./GoaledSprite";
+import {UnitRepository} from "../repository/UnitRepository";
 
 const SPEED = 1;
 
@@ -9,10 +10,10 @@ export class StupidSprite extends MovedSprite
     private gameWidth: number;
     private gameHeight: number;
 
-    constructor(play: Play, x: number, y: number) {
-        super(play, x, y, 'Tank11', 5);
-        this.gameWidth = play.game.width;
-        this.gameHeight = play.game.height;
+    constructor(unitRepository: UnitRepository, x: number, y: number) {
+        super(unitRepository, x, y, 'Tank11', 5);
+        this.gameWidth = unitRepository.play_.game.width;
+        this.gameHeight = unitRepository.play_.game.height;
         this.vector = new Phaser.Point(Math.random() > 0.5 ? SPEED : -SPEED, Math.random() > 0.5 ? SPEED : -SPEED);
     }
 
