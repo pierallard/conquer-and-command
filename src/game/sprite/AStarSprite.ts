@@ -3,34 +3,77 @@ import {Ground, GROUND_SIZE} from "../Ground";
 import {UnitRepository} from "../repository/UnitRepository";
 import {SCALE} from "../state/Play";
 
+const MOVE_TIME = Phaser.Timer.SECOND / 4;
+const MAKE_ANIM = true;
+
 export class AStarSprite extends MovedSprite
 {
     private spriteGoal: Phaser.Point = null;
     private ground: Ground;
     private canMove: boolean = true;
+    public positionWithoutAnim: Phaser.Point;
 
     constructor(unitRepository: UnitRepository, x: number, y: number, ground: Ground) {
-
         super(unitRepository, AStarSprite.getClosest(x), AStarSprite.getClosest(y), 'Tank11', 1000);
+
+        this.positionWithoutAnim = new Phaser.Point(AStarSprite.getClosest(x), AStarSprite.getClosest(y));
         this.ground = ground;
+    }
+
+    isPositionAccessible(position) {
+        return this.ground.isAccessible(position) && this.unitRepository.isNotOccupied(new Phaser.Point(
+            AStarSprite.apply(position.x),
+            AStarSprite.apply(position.y)
+        ));
+    };
+
+    isArrived()
+    {
+        return (
+            this.spriteGoal &&
+            this.spriteGoal.x === this.positionWithoutAnim.x &&
+            this.spriteGoal.y === this.positionWithoutAnim.y
+        );
     }
 
     update()
     {
         if (this.isSelected() && this.game.input.activePointer.rightButton.isDown) {
             this.spriteGoal = new Phaser.Point(AStarSprite.getClosest(this.game.input.mousePointer.x), AStarSprite.getClosest(this.game.input.mousePointer.y));
+            if (this.isArrived()) {
+                this.spriteGoal = null;
+            }
         }
 
         if (this.spriteGoal && this.canMove) {
             const path = this.getPath();
 
             if (path) {
-                this.x = AStarSprite.apply(path.firstStep().x);
-                this.y = AStarSprite.apply(path.firstStep().y);
+                this.loadRotation(this.getRotation(new Phaser.Point(
+                    AStarSprite.apply(path.firstStep().x) - this.x,
+                    AStarSprite.apply(path.firstStep().y) - this.y
+                )));
+
+                this.positionWithoutAnim.x = AStarSprite.apply(path.firstStep().x);
+                this.positionWithoutAnim.y = AStarSprite.apply(path.firstStep().y);
+
+                if (MAKE_ANIM) {
+                    this.unitRepository.play_.game.add.tween(this).to({
+                        x: this.positionWithoutAnim.x,
+                        y: this.positionWithoutAnim.y
+                    }, MOVE_TIME, Phaser.Easing.Default, true);
+                } else {
+                    this.x = this.positionWithoutAnim.x;
+                    this.y = this.positionWithoutAnim.y;
+                }
+
+                if (this.isArrived()) {
+                    console.log('arrive');
+                    this.spriteGoal = null;
+                }
 
                 this.canMove = false;
-
-                this.unitRepository.play_.game.time.events.add(Phaser.Timer.SECOND / 8, () => {
+                this.unitRepository.play_.game.time.events.add(MOVE_TIME, () => {
                     this.canMove = true;
                 }, this);
             }
@@ -53,9 +96,18 @@ export class AStarSprite extends MovedSprite
     }
 
     private getPath() {
-        let firstPath = new Path(new Phaser.Point(
+        let goal = this.spriteGoal;
+        if (!this.isPositionAccessible(new Phaser.Point(
             AStarSprite.getGroundPos(this.spriteGoal.x),
-            AStarSprite.getGroundPos(this.spriteGoal.y)
+            AStarSprite.getGroundPos(this.spriteGoal.y))
+        )) {
+            console.log('get new goal');
+            goal = this.getClosestGoal();
+        }
+
+        let firstPath = new Path(new Phaser.Point(
+            AStarSprite.getGroundPos(goal.x),
+            AStarSprite.getGroundPos(goal.y)
         ));
         firstPath.add(AStarSprite.getGroundPos(this.x), AStarSprite.getGroundPos(this.y));
 
@@ -65,9 +117,10 @@ export class AStarSprite extends MovedSprite
         let tries = 100;
         while (tries > 0) {
             let path = paths.getBetterConfidence();
-            const nextPositions = path.getNextPositions().filter((position) => {
-                return this.ground.isAccessible(position);
-            });
+            if (!path) {
+                return null;
+            }
+            const nextPositions = path.getNextPositions().filter(this.isPositionAccessible.bind(this));
             path.setDone();
 
             for (let i = 0; i < nextPositions.length; i++) {
@@ -77,20 +130,42 @@ export class AStarSprite extends MovedSprite
                 let existingPath = paths.getExistingThrough(nextPosition.x, nextPosition.y);
                 if (!existingPath) {
                     if (
-                        nextPosition.x === AStarSprite.getGroundPos(this.spriteGoal.x) &&
-                        nextPosition.y === AStarSprite.getGroundPos(this.spriteGoal.y)
+                        nextPosition.x === AStarSprite.getGroundPos(goal.x) &&
+                        nextPosition.y === AStarSprite.getGroundPos(goal.y)
                     ) {
-                        console.log('found! ' + newPath.toString());
+                        console.log('found after ' + paths.length() + ' tries! ' + newPath.toString());
                         return newPath;
                     }
                     paths.add(newPath);
+                } else {
+                    const newWeight = newPath.weight();
+                    const oldWeight = existingPath.weightUntil(nextPosition.x, nextPosition.y);
+                    if (newWeight < oldWeight) {
+                        existingPath.replaceBeginWith(newPath);
+                    }
                 }
             }
 
             tries--;
         }
 
+        console.log('No paths found.');
         return null;
+    }
+
+    private getClosestGoal() {
+        if (this.isPositionAccessible(new Phaser.Point(this.spriteGoal.x + (GROUND_SIZE * SCALE), this.spriteGoal.y))) {
+            return new Phaser.Point(this.spriteGoal.x + (GROUND_SIZE * SCALE), this.spriteGoal.y);
+        }
+        if (this.isPositionAccessible(new Phaser.Point(this.spriteGoal.x - (GROUND_SIZE * SCALE), this.spriteGoal.y))) {
+            return new Phaser.Point(this.spriteGoal.x - (GROUND_SIZE * SCALE), this.spriteGoal.y);
+        }
+        if (this.isPositionAccessible(new Phaser.Point(this.spriteGoal.x, this.spriteGoal.y + (GROUND_SIZE * SCALE)))) {
+            return new Phaser.Point(this.spriteGoal.x, this.spriteGoal.y + (GROUND_SIZE * SCALE));
+        }
+        if (this.isPositionAccessible(new Phaser.Point(this.spriteGoal.x, this.spriteGoal.y - (GROUND_SIZE * SCALE)))) {
+            return new Phaser.Point(this.spriteGoal.x, this.spriteGoal.y - (GROUND_SIZE * SCALE));
+        }
     }
 }
 
@@ -155,14 +230,14 @@ class Path
     getNextPositions(): Phaser.Point[] {
         const lastStep = this.steps[this.steps.length - 1];
         return [
-            new Phaser.Point(lastStep.x - 1, lastStep.y - 1),
             new Phaser.Point(lastStep.x, lastStep.y - 1),
-            new Phaser.Point(lastStep.x + 1, lastStep.y - 1),
             new Phaser.Point(lastStep.x + 1, lastStep.y),
-            new Phaser.Point(lastStep.x + 1, lastStep.y + 1),
             new Phaser.Point(lastStep.x, lastStep.y + 1),
-            new Phaser.Point(lastStep.x - 1, lastStep.y + 1),
             new Phaser.Point(lastStep.x - 1, lastStep.y),
+            new Phaser.Point(lastStep.x - 1, lastStep.y - 1),
+            new Phaser.Point(lastStep.x + 1, lastStep.y - 1),
+            new Phaser.Point(lastStep.x + 1, lastStep.y + 1),
+            new Phaser.Point(lastStep.x - 1, lastStep.y + 1),
         ];
     }
 
@@ -202,5 +277,50 @@ class Path
 
     isNotDone() {
         return this.done === false;
+    }
+
+    weight() {
+        let weight = 0;
+        for (let i = 0; i < this.steps.length - 1; i++) {
+            weight += Math.sqrt(
+                (this.steps[i].x - this.steps[i + 1].x) * (this.steps[i].x - this.steps[i + 1].x) +
+                (this.steps[i].y - this.steps[i + 1].y) * (this.steps[i].y - this.steps[i + 1].y)
+            );
+        }
+
+        return weight;
+    }
+
+    weightUntil(x: number, y: number): number {
+        let weight = 0;
+        for (let i = 0; i < this.steps.length - 1; i++) {
+            weight += Math.sqrt(
+                (this.steps[i].x - this.steps[i + 1].x) * (this.steps[i].x - this.steps[i + 1].x) +
+                (this.steps[i].y - this.steps[i + 1].y) * (this.steps[i].y - this.steps[i + 1].y)
+            );
+            if (this.steps[i].x === x && this.steps[i].y === y) {
+                return weight;
+            }
+        }
+
+        return weight;
+    }
+
+    replaceBeginWith(newPath: Path) {
+        let newSteps = [];
+        for (let i = 0; i < newPath.steps.length; i++) {
+            newSteps.push(newPath.steps[i]);
+        }
+        let add = false;
+        const x = newPath.steps[newPath.steps.length - 1].x;
+        const y = newPath.steps[newPath.steps.length - 1].y;
+        for (let i = 0; i < this.steps.length; i++) {
+            if (add) {
+                newSteps.push(this.steps[i])
+            } else if (this.steps[i].x === x && this.steps[i].y === y) {
+                add = true;
+            }
+        }
+        this.steps = newSteps;
     }
 }

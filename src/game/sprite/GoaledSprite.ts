@@ -43,7 +43,7 @@ export class GoaledSprite extends MovedSprite
         super.update();
     }
 
-    protected loadRotation(rotation: Rotation): void
+    public loadRotation(rotation: Rotation): void
     {
         switch(rotation) {
             case Rotation.TOP: this.loadTexture(this.spriteKey, 2); break;

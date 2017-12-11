@@ -91,7 +91,7 @@ export class MovedSprite extends Phaser.Sprite
         this.loadRotation(this.getRotation(this.vector));
     }
 
-    private getRotation(vector: Phaser.Point): Rotation
+    public getRotation(vector: Phaser.Point): Rotation
     {
         if (null === vector) {
             return Rotation.TOP_LEFT;
@@ -126,7 +126,7 @@ export class MovedSprite extends Phaser.Sprite
         return Rotation.LEFT;
     }
 
-    protected loadRotation(rotation: Rotation)
+    public loadRotation(rotation: Rotation)
     {
         switch(rotation) {
             case Rotation.TOP: this.loadTexture(this.spriteKey, 1); break;

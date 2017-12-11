@@ -32,6 +32,13 @@ export class Ground {
         if (position.x === 13 && position.y > 3 && position.y < 10) {
             return false;
         }
+        if (position.y === 4 && position.x > 3 && position.x <= 13) {
+            return false;
+        }
+        if (position.y === 9 && position.x > 3 && position.x <= 13) {
+            return false;
+        }
+
 
         for (let i = 0; i < this.obstacles.length; i++) {
             if (this.obstacles[i].x === position.x && this.obstacles[i].y === position.y) {

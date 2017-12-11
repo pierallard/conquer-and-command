@@ -40,12 +40,14 @@ export class UnitRepository
         //         Math.random() * this.play_.game.height
         //     ));
         // }
-        this.units.push(new AStarSprite(
-            this,
-            Math.random() * this.play_.game.width,
-            Math.random() * this.play_.game.height,
-            this.play_.ground
-        ));
+        for (let i = 0; i < 10; i++) {
+            this.units.push(new AStarSprite(
+                this,
+                Math.random() * this.play_.game.width,
+                Math.random() * this.play_.game.height,
+                this.play_.ground
+            ));
+        }
     }
 
     getUnits(): MovedSprite[] {
@@ -61,6 +63,7 @@ export class UnitRepository
 
     update(): void
     {
+        /*
         let moves = [];
         for (let i = 0; i < this.units.length; i++) {
             moves[i] = new Phaser.Point(0, 0);
@@ -99,6 +102,21 @@ export class UnitRepository
         for (let i = 0; i < this.units.length; i++) {
             this.units[i].x += moves[i].x;
             this.units[i].y += moves[i].y;
+        }*/
+    }
+
+    isNotOccupied(position: Phaser.Point) {
+        for (let i = 0; i < this.units.length; i++) {
+            if (this.units[i] instanceof AStarSprite) {
+                if (
+                    (<AStarSprite> this.units[i]).positionWithoutAnim.x === position.x &&
+                    (<AStarSprite> this.units[i]).positionWithoutAnim.y === position.y
+                ) {
+                    return false;
+                }
+            }
         }
+
+        return true;
     }
 }
