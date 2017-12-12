@@ -8,33 +8,41 @@ const MAKE_ANIM = true;
 
 export class AStarSprite extends MovedSprite
 {
-    private spriteGoal: Phaser.Point = null;
+    private cellGoal: PIXI.Point = null;
     private ground: Ground;
     private canMove: boolean = true;
-    public positionWithoutAnim: Phaser.Point;
+    private cellPosition: PIXI.Point;
 
     constructor(unitRepository: UnitRepository, x: number, y: number, ground: Ground) {
-        super(unitRepository, AStarSprite.getClosest(x), AStarSprite.getClosest(y), 'Tank11', 1000);
+        super(
+            unitRepository,
+            AStarSprite.cellToReal(AStarSprite.realToCell(x)),
+            AStarSprite.cellToReal(AStarSprite.realToCell(y)),
+            'Tank11',
+            1000
+        );
 
-        this.positionWithoutAnim = new Phaser.Point(AStarSprite.getClosest(x), AStarSprite.getClosest(y));
+        this.cellPosition = new PIXI.Point(AStarSprite.realToCell(x), AStarSprite.realToCell(y));
         this.ground = ground;
     }
 
-    isPositionAccessible(position): boolean {
-        return this.ground.isAccessible(position) && this.unitRepository.isNotOccupied(new Phaser.Point(
-            AStarSprite.apply(position.x),
-            AStarSprite.apply(position.y)
-        ));
+    getCellPosition(): PIXI.Point {
+        return this.cellPosition;
+    }
+
+    isPositionAccessible(position: PIXI.Point): boolean {
+        return this.ground.isCellAccessible(position) && this.unitRepository.isCellNotOccupied(position);
     };
 
-    getFirstEmptyPlace(x: number, y: number)
+    getFirstEmptyPlace(position: PIXI.Point): PIXI.Point
     {
         let radius = 0;
         while (true) {
             for (let i = -radius; i <= radius; i++) {
                 for (let j = -radius; j <= radius; j++) {
-                    if (this.isPositionAccessible(new Phaser.Point(x + i, y + j))) {
-                        return new Phaser.Point(x + i, y + j);
+                    let test = new PIXI.Point(position.x + i, position.y + j);
+                    if (this.isPositionAccessible(test)) {
+                        return test;
                     }
                 }
             }
@@ -44,14 +52,14 @@ export class AStarSprite extends MovedSprite
 
     isArrived()
     {
-        if (!this.spriteGoal) {
+        if (!this.cellGoal) {
             return true;
         }
 
-        const goalX = AStarSprite.getGroundPos(this.spriteGoal.x);
-        const goalY = AStarSprite.getGroundPos(this.spriteGoal.y);
-        const thisX = AStarSprite.getGroundPos(this.positionWithoutAnim.x);
-        const thisY = AStarSprite.getGroundPos(this.positionWithoutAnim.y);
+        const goalX = this.cellGoal.x;
+        const goalY = this.cellGoal.y;
+        const thisX = this.cellPosition.x;
+        const thisY = this.cellPosition.y;
         let radius = 0;
 
         while(radius < 20) {
@@ -82,37 +90,40 @@ export class AStarSprite extends MovedSprite
     update()
     {
         if (this.isSelected() && this.game.input.activePointer.rightButton.isDown) {
-            this.spriteGoal = new Phaser.Point(AStarSprite.getClosest(this.game.input.mousePointer.x), AStarSprite.getClosest(this.game.input.mousePointer.y));
+            this.cellGoal = new PIXI.Point(
+                AStarSprite.realToCell(this.game.input.mousePointer.x),
+                AStarSprite.realToCell(this.game.input.mousePointer.y)
+            );
             if (this.isArrived()) {
-                this.spriteGoal = null;
+                console.log('is arrived!');
+                this.cellGoal = null;
             }
         }
 
-        if (this.spriteGoal && this.canMove) {
+        if (this.cellGoal && this.canMove) {
             const path = this.getPath();
 
             if (path) {
                 this.loadRotation(this.getRotation(new Phaser.Point(
-                    AStarSprite.apply(path.firstStep().x) - this.x,
-                    AStarSprite.apply(path.firstStep().y) - this.y
+                    AStarSprite.cellToReal(path.firstStep().x) - this.x,
+                    AStarSprite.cellToReal(path.firstStep().y) - this.y
                 )));
 
-                this.positionWithoutAnim.x = AStarSprite.apply(path.firstStep().x);
-                this.positionWithoutAnim.y = AStarSprite.apply(path.firstStep().y);
+                this.cellPosition = path.firstStep();
 
                 if (MAKE_ANIM) {
                     this.unitRepository.play_.game.add.tween(this).to({
-                        x: this.positionWithoutAnim.x,
-                        y: this.positionWithoutAnim.y
+                        x: AStarSprite.cellToReal(this.cellPosition.x),
+                        y: AStarSprite.cellToReal(this.cellPosition.y)
                     }, MOVE_TIME, Phaser.Easing.Default, true);
                 } else {
-                    this.x = this.positionWithoutAnim.x;
-                    this.y = this.positionWithoutAnim.y;
+                    this.x = AStarSprite.cellToReal(this.cellPosition.x);
+                    this.y = AStarSprite.cellToReal(this.cellPosition.y);
                 }
 
                 if (this.isArrived()) {
                     console.log('arrive');
-                    this.spriteGoal = null;
+                    this.cellGoal = null;
                 }
 
                 this.canMove = false;
@@ -127,33 +138,26 @@ export class AStarSprite extends MovedSprite
 
     static getClosest(position)
     {
-        return (GROUND_SIZE * SCALE) * this.getGroundPos(position) + (GROUND_SIZE * SCALE)/2;
+        return (GROUND_SIZE * SCALE) * this.realToCell(position) + (GROUND_SIZE * SCALE)/2;
     }
 
-    static apply(position) {
+    static cellToReal(position) {
         return GROUND_SIZE * SCALE * position + (GROUND_SIZE * SCALE)/2
     }
 
-    static getGroundPos(position) {
+    static realToCell(position) {
         return Math.round((position - (GROUND_SIZE * SCALE)/2) / (GROUND_SIZE * SCALE));
     }
 
     private getPath() {
-        let goal = this.spriteGoal;
-        if (!this.isPositionAccessible(new Phaser.Point(
-            AStarSprite.getGroundPos(this.spriteGoal.x),
-            AStarSprite.getGroundPos(this.spriteGoal.y))
-        )) {
+        let goal = this.cellGoal;
+        if (!this.isPositionAccessible(this.cellGoal)) {
             console.log('get new goal');
             goal = this.getClosestGoal();
         }
 
-        let firstPath = new Path(new Phaser.Point(
-            AStarSprite.getGroundPos(goal.x),
-            AStarSprite.getGroundPos(goal.y)
-        ));
-        firstPath.add(AStarSprite.getGroundPos(this.x), AStarSprite.getGroundPos(this.y));
-
+        let firstPath = new Path(goal);
+        firstPath.add(this.cellPosition.x, this.cellPosition.y);
         let paths = new Paths();
         paths.add(firstPath);
 
@@ -173,8 +177,8 @@ export class AStarSprite extends MovedSprite
                 let existingPath = paths.getExistingThrough(nextPosition.x, nextPosition.y);
                 if (!existingPath) {
                     if (
-                        nextPosition.x === AStarSprite.getGroundPos(goal.x) &&
-                        nextPosition.y === AStarSprite.getGroundPos(goal.y)
+                        nextPosition.x === goal.x &&
+                        nextPosition.y === goal.y
                     ) {
                         console.log('found after ' + paths.length() + ' tries! ' + newPath.toString());
                         return newPath;
@@ -197,11 +201,7 @@ export class AStarSprite extends MovedSprite
     }
 
     private getClosestGoal() {
-        const result = this.getFirstEmptyPlace(
-            AStarSprite.getGroundPos(this.spriteGoal.x),
-            AStarSprite.getGroundPos(this.spriteGoal.y)
-        );
-        return new Phaser.Point(AStarSprite.apply(result.x), AStarSprite.apply(result.y));
+        return this.getFirstEmptyPlace(this.cellGoal);
     }
 }
 
@@ -245,19 +245,19 @@ class Paths
 
 class Path
 {
-    private steps: Phaser.Point[];
+    private steps: PIXI.Point[];
     private confidence: number;
-    private goal: Phaser.Point;
+    private goal: PIXI.Point;
     private done: boolean = false;
 
-    constructor(goal: Phaser.Point)
+    constructor(goal: PIXI.Point)
     {
         this.goal = goal;
         this.steps = [];
     }
 
     add(x: number, y: number) {
-        this.steps.push(new Phaser.Point(x, y));
+        this.steps.push(new PIXI.Point(x, y));
         this.confidence = Math.sqrt((x - this.goal.x) * (x - this.goal.x) + (y - this.goal.y) * (y - this.goal.y));
 
         return this;

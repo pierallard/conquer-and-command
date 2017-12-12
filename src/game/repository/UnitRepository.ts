@@ -105,12 +105,12 @@ export class UnitRepository
         }*/
     }
 
-    isNotOccupied(position: Phaser.Point) {
+    isCellNotOccupied(position: PIXI.Point) {
         for (let i = 0; i < this.units.length; i++) {
             if (this.units[i] instanceof AStarSprite) {
                 if (
-                    (<AStarSprite> this.units[i]).positionWithoutAnim.x === position.x &&
-                    (<AStarSprite> this.units[i]).positionWithoutAnim.y === position.y
+                    (<AStarSprite> this.units[i]).getCellPosition().x === position.x &&
+                    (<AStarSprite> this.units[i]).getCellPosition().y === position.y
                 ) {
                     return false;
                 }
