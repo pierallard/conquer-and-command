@@ -10,6 +10,7 @@ const MAKE_ANIM = true;
 export class AStarSprite extends MovedSprite
 {
     private cellGoal: PIXI.Point = null;
+    private unitGoal: AStarSprite = null;
     private cellPosition: PIXI.Point;
     private ground: Ground;
     private canMove: boolean = true;
@@ -33,7 +34,14 @@ export class AStarSprite extends MovedSprite
 
     isArrived(): boolean
     {
-        if (!this.cellGoal) {
+        let goal = null;
+        if (this.cellGoal) {
+            goal = this.cellGoal;
+        } else if (this.unitGoal) {
+            goal = this.unitGoal.getCellPosition();
+        }
+
+        if (null === goal) {
             return true;
         }
 
@@ -43,10 +51,10 @@ export class AStarSprite extends MovedSprite
             let foundThis = false;
             for (let i = -radius; i <= radius; i++) {
                 for (let j = -radius; j <= radius; j++) {
-                    if (this.isPositionAccessible(new PIXI.Point(this.cellGoal.x + i, this.cellGoal.y + j))) {
+                    if (this.isPositionAccessible(new PIXI.Point(goal.x + i, goal.y + j))) {
                         foundEmptyPlace = true;
                     }
-                    if (this.cellGoal.x + i === this.cellPosition.x && this.cellGoal.y + j === this.cellPosition.y) {
+                    if (goal.x + i === this.cellPosition.x && goal.y + j === this.cellPosition.y) {
                         foundThis = true;
                     }
                 }
@@ -73,50 +81,62 @@ export class AStarSprite extends MovedSprite
     update()
     {
         if (this.isSelected() && this.game.input.activePointer.rightButton.isDown) {
-            this.cellGoal = new PIXI.Point(
+            const cell = new PIXI.Point(
                 Cell.realToCell(this.game.input.mousePointer.x),
                 Cell.realToCell(this.game.input.mousePointer.y)
             );
+            const unit = this.unitRepository.unitAt(cell);
+            if (null !== unit) {
+                this.unitGoal = unit;
+                this.cellGoal = null;
+            } else {
+                this.cellGoal = cell;
+                this.unitGoal = null;
+            }
             if (this.isArrived()) {
                 this.cellGoal = null;
             }
         }
 
-        if (this.cellGoal && this.canMove) {
-            const nextStep = AStar.nextStep(this.cellPosition, this.cellGoal, this.isPositionAccessible.bind(this));
-
-            if (nextStep) {
-                this.loadRotation(this.getRotation(new PIXI.Point(
-                    Cell.cellToReal(nextStep.x) - this.x,
-                    Cell.cellToReal(nextStep.y) - this.y
-                )));
-
-                this.cellPosition = nextStep;
-
-                if (MAKE_ANIM) {
-                    this.unitRepository.play_.game.add.tween(this).to({
-                        x: Cell.cellToReal(this.cellPosition.x),
-                        y: Cell.cellToReal(this.cellPosition.y)
-                    }, MOVE_TIME, Phaser.Easing.Default, true);
-                } else {
-                    this.x = Cell.cellToReal(this.cellPosition.x);
-                    this.y = Cell.cellToReal(this.cellPosition.y);
+        let nextStep = null;
+        if (this.canMove) {
+            if (this.cellGoal) {
+                nextStep = AStar.nextStep(this.cellPosition, this.cellGoal, this.isPositionAccessible.bind(this));
+            } else if (this.unitGoal) {
+                if (!this.isArrived()) {
+                    nextStep = AStar.nextStep(this.cellPosition, this.unitGoal.getCellPosition(), this.isPositionAccessible.bind(this));
                 }
-
-                if (this.isArrived()) {
-                    this.cellGoal = null;
-                }
-
-                this.canMove = false;
-                this.unitRepository.play_.game.time.events.add(MOVE_TIME, () => {
-                    this.canMove = true;
-                }, this);
             }
+        }
+
+        if (nextStep) {
+            this.loadRotation(this.getRotation(new PIXI.Point(
+                Cell.cellToReal(nextStep.x) - this.x,
+                Cell.cellToReal(nextStep.y) - this.y
+            )));
+
+            this.cellPosition = nextStep;
+
+            if (MAKE_ANIM) {
+                this.unitRepository.play_.game.add.tween(this).to({
+                    x: Cell.cellToReal(this.cellPosition.x),
+                    y: Cell.cellToReal(this.cellPosition.y)
+                }, MOVE_TIME, Phaser.Easing.Default, true);
+            } else {
+                this.x = Cell.cellToReal(this.cellPosition.x);
+                this.y = Cell.cellToReal(this.cellPosition.y);
+            }
+
+            if (this.isArrived()) {
+                this.cellGoal = null;
+            }
+
+            this.canMove = false;
+            this.unitRepository.play_.game.time.events.add(MOVE_TIME, () => {
+                this.canMove = true;
+            }, this);
         }
 
         super.update();
     }
-
-
-
 }

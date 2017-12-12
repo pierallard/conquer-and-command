@@ -9,8 +9,8 @@ class SimpleGame extends Phaser.Game {
     constructor()
     {
         super(
-            1024,
-            576,
+            1600,
+            900,
             Phaser.AUTO, // Open GL for effect / shader ?
             'content',
             null,

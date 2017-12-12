@@ -1,7 +1,7 @@
 import Play, {SCALE} from "./state/Play";
 
 export const GROUND_SIZE = 20;
-const PROBA_NON_OBSTACLE = 0.6;
+const PROBA_NON_OBSTACLE = 0.99;
 
 export class Ground {
     private obstacles: PIXI.Point[];

@@ -43,7 +43,7 @@ export class AStar
         let paths = new Paths();
         paths.add(firstPath);
 
-        let tries = 200;
+        let tries = 500;
         while (tries > 0) {
             let path = paths.getBetterConfidence();
             if (!path) {

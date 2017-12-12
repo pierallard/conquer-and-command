@@ -40,7 +40,7 @@ export class UnitRepository
         //         Math.random() * this.play_.game.height
         //     ));
         // }
-        for (let i = 0; i < 30; i++) {
+        for (let i = 0; i < 50; i++) {
             this.units.push(new AStarSprite(
                 this,
                 Math.random() * this.play_.game.width,
@@ -105,18 +105,22 @@ export class UnitRepository
         }*/
     }
 
-    isCellNotOccupied(position: PIXI.Point) {
+    isCellNotOccupied(position: PIXI.Point): boolean {
+        return null === this.unitAt(position)
+    }
+
+    unitAt(position: PIXI.Point): AStarSprite {
         for (let i = 0; i < this.units.length; i++) {
             if (this.units[i] instanceof AStarSprite) {
                 if (
                     (<AStarSprite> this.units[i]).getCellPosition().x === position.x &&
                     (<AStarSprite> this.units[i]).getCellPosition().y === position.y
                 ) {
-                    return false;
+                    return (<AStarSprite> this.units[i]);
                 }
             }
         }
 
-        return true;
+        return null;
     }
 }
