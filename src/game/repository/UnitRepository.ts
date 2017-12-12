@@ -40,7 +40,7 @@ export class UnitRepository
         //         Math.random() * this.play_.game.height
         //     ));
         // }
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 30; i++) {
             this.units.push(new AStarSprite(
                 this,
                 Math.random() * this.play_.game.width,

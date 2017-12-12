@@ -20,20 +20,63 @@ export class AStarSprite extends MovedSprite
         this.ground = ground;
     }
 
-    isPositionAccessible(position) {
+    isPositionAccessible(position): boolean {
         return this.ground.isAccessible(position) && this.unitRepository.isNotOccupied(new Phaser.Point(
             AStarSprite.apply(position.x),
             AStarSprite.apply(position.y)
         ));
     };
 
+    getFirstEmptyPlace(x: number, y: number)
+    {
+        let radius = 0;
+        while (true) {
+            for (let i = -radius; i <= radius; i++) {
+                for (let j = -radius; j <= radius; j++) {
+                    if (this.isPositionAccessible(new Phaser.Point(x + i, y + j))) {
+                        return new Phaser.Point(x + i, y + j);
+                    }
+                }
+            }
+            radius += 1;
+        }
+    }
+
     isArrived()
     {
-        return (
-            this.spriteGoal &&
-            this.spriteGoal.x === this.positionWithoutAnim.x &&
-            this.spriteGoal.y === this.positionWithoutAnim.y
-        );
+        if (!this.spriteGoal) {
+            return true;
+        }
+
+        const goalX = AStarSprite.getGroundPos(this.spriteGoal.x);
+        const goalY = AStarSprite.getGroundPos(this.spriteGoal.y);
+        const thisX = AStarSprite.getGroundPos(this.positionWithoutAnim.x);
+        const thisY = AStarSprite.getGroundPos(this.positionWithoutAnim.y);
+        let radius = 0;
+
+        while(radius < 20) {
+            let foundEmptyPlace = false;
+            let foundThis = false;
+            for (let i = -radius; i <= radius; i++) {
+                for (let j = -radius; j <= radius; j++) {
+                    if (this.isPositionAccessible(new Phaser.Point(goalX + i, goalY + j))) {
+                        foundEmptyPlace = true;
+                    }
+                    if (goalX + i === thisX && goalY + j === thisY) {
+                        foundThis = true;
+                    }
+                }
+            }
+
+            if (foundThis) {
+                return true;
+            }
+            if (foundEmptyPlace && !foundThis) {
+                return false;
+            }
+
+            radius++;
+        }
     }
 
     update()
@@ -149,23 +192,16 @@ export class AStarSprite extends MovedSprite
             tries--;
         }
 
-        console.log('No paths found.');
+        // console.log('No paths found.');
         return null;
     }
 
     private getClosestGoal() {
-        if (this.isPositionAccessible(new Phaser.Point(this.spriteGoal.x + (GROUND_SIZE * SCALE), this.spriteGoal.y))) {
-            return new Phaser.Point(this.spriteGoal.x + (GROUND_SIZE * SCALE), this.spriteGoal.y);
-        }
-        if (this.isPositionAccessible(new Phaser.Point(this.spriteGoal.x - (GROUND_SIZE * SCALE), this.spriteGoal.y))) {
-            return new Phaser.Point(this.spriteGoal.x - (GROUND_SIZE * SCALE), this.spriteGoal.y);
-        }
-        if (this.isPositionAccessible(new Phaser.Point(this.spriteGoal.x, this.spriteGoal.y + (GROUND_SIZE * SCALE)))) {
-            return new Phaser.Point(this.spriteGoal.x, this.spriteGoal.y + (GROUND_SIZE * SCALE));
-        }
-        if (this.isPositionAccessible(new Phaser.Point(this.spriteGoal.x, this.spriteGoal.y - (GROUND_SIZE * SCALE)))) {
-            return new Phaser.Point(this.spriteGoal.x, this.spriteGoal.y - (GROUND_SIZE * SCALE));
-        }
+        const result = this.getFirstEmptyPlace(
+            AStarSprite.getGroundPos(this.spriteGoal.x),
+            AStarSprite.getGroundPos(this.spriteGoal.y)
+        );
+        return new Phaser.Point(AStarSprite.apply(result.x), AStarSprite.apply(result.y));
     }
 }
 
