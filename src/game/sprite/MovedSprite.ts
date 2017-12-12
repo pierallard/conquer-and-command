@@ -91,7 +91,7 @@ export class MovedSprite extends Phaser.Sprite
         this.loadRotation(this.getRotation(this.vector));
     }
 
-    public getRotation(vector: Phaser.Point): Rotation
+    public getRotation(vector: PIXI.Point): Rotation
     {
         if (null === vector) {
             return Rotation.TOP_LEFT;
