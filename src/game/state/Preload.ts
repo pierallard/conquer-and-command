@@ -5,6 +5,7 @@ export default class Preload extends Phaser.State {
     {
         this.loadAudio();
         this.loadLevels();
+        this.loadTileMaps();
         this.loadGameImages();
         this.loadFonts();
     }
@@ -20,6 +21,11 @@ export default class Preload extends Phaser.State {
 
     private loadLevels()
     {
+    }
+
+    private loadTileMaps()
+    {
+        this.load.tilemap('basicmap', 'assets/basicmap.json', null, Phaser.Tilemap.TILED_JSON);
     }
 
     private loadGameImages()

@@ -1,52 +1,30 @@
 import Play, {SCALE} from "./state/Play";
 
 export const GROUND_SIZE = 20;
-const PROBA_NON_OBSTACLE = 0.99;
 
 export class Ground {
-    private obstacles: PIXI.Point[];
-    private cellSize: PIXI.Point;
+    private obstacles: PIXI.Point[] = [];
+    private map: Phaser.Tilemap;
 
     constructor(play: Play)
     {
-        this.cellSize = new PIXI.Point(
-            Math.floor(play.game.width / (SCALE * GROUND_SIZE)),
-            Math.floor(play.game.height / (SCALE * GROUND_SIZE)),
-        );
-
-        this.obstacles = [];
-        const tileFrames = [18, 20, 32, 34, 36];
-        for (let i = 0; i < this.cellSize.x; i++) {
-            for (let j = 0; j < this.cellSize.y; j++) {
-                if (Math.random() < PROBA_NON_OBSTACLE) {
-                    play.game.add
-                        .tileSprite(
-                            i * SCALE * GROUND_SIZE,
-                            j * SCALE * GROUND_SIZE,
-                            GROUND_SIZE,
-                            GROUND_SIZE,
-                            'GrasClif',
-                            12
-                        ).scale.set(SCALE, SCALE);
-                } else {
-                    this.obstacles.push(new PIXI.Point(i, j));
-                    play.game.add
-                        .tileSprite(
-                            i * SCALE * GROUND_SIZE,
-                            j * SCALE * GROUND_SIZE,
-                            GROUND_SIZE,
-                            GROUND_SIZE,
-                            'GrssMisc',
-                            tileFrames[Math.floor(Math.random() * tileFrames.length)]
-                        ).scale.set(SCALE, SCALE);
+        this.map = play.game.add.tilemap('basicmap');
+        this.map.addTilesetImage('GrasClif', 'GrasClif');
+        this.map.addTilesetImage('GrssMisc', 'GrssMisc');
+        let layer = this.map.createLayer('layer');
+        layer.scale.setTo(SCALE, SCALE);
+        for (let x = 0; x < this.map.width; x++) {
+            for (let y = 0; y < this.map.height; y++) {
+                let index = this.map.getTile(x, y, layer).index;
+                if (index !== 13) {
+                    this.obstacles.push(new PIXI.Point(x, y));
                 }
             }
         }
-
     }
 
     isCellAccessible(position: PIXI.Point): boolean {
-        if (position.x < 0 || position.x >= this.cellSize.x || position.y < 0 || position.y >= this.cellSize.y) {
+        if (position.x < 0 || position.x >= this.map.width || position.y < 0 || position.y >= this.map.height) {
             return false;
         }
         for (let i = 0; i < this.obstacles.length; i++) {
