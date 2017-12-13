@@ -17,13 +17,10 @@ export class AlternativePosition
     ): boolean {
         for (let radius = 0; radius < MAX_SEARCH_RADIUS; radius++) {
             const points = this.getPointsFromRadius(goalPosition, radius);
-            console.log(points, currentPosition);
-
             let foundAccessible = false;
             for (let i = 0; i < points.length; i++) {
                 let test = points[i];
                 if (currentPosition.x === test.x && currentPosition.y === test.y) {
-                    console.log('is arrived');
                     return true;
                 }
                 if (isAccessible(test)) {
@@ -68,7 +65,6 @@ export class AlternativePosition
                         );
                 });
 
-                console.log('Get closest of ' + goalPosition + ' : ' + possiblePositions[0] + ' (radius: ' + radius + ')');
                 return possiblePositions[0];
             }
         }
