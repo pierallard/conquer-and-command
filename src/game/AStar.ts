@@ -1,3 +1,4 @@
+import {AlternativePosition} from "./AlternativePosition";
 export class AStar
 {
     static nextStep(
@@ -13,31 +14,12 @@ export class AStar
         return path.firstStep();
     }
 
-    private static getFirstEmptyPlace(position: PIXI.Point, isPositionAccessible: (position: PIXI.Point) => boolean): PIXI.Point {
-        let radius = 0;
-        while (true) {
-            for (let i = -radius; i <= radius; i++) {
-                for (let j = -radius; j <= radius; j++) {
-                    let test = new PIXI.Point(position.x + i, position.y + j);
-                    if (isPositionAccessible(test)) {
-                        return test;
-                    }
-                }
-            }
-            radius += 1;
-        }
-    }
-
     private static getPath(
         cellPosition: PIXI.Point,
         cellGoal: PIXI.Point,
         isPositionAccessible: (position: PIXI.Point) => boolean
     ): Path {
-        let goal = cellGoal;
-        if (!isPositionAccessible(cellGoal)) {
-            goal = this.getFirstEmptyPlace(goal, isPositionAccessible);
-        }
-
+        let goal = AlternativePosition.getClosestAvailable(cellGoal, cellPosition, isPositionAccessible);
         let firstPath = new Path(goal);
         firstPath.add(cellPosition);
         let paths = new Paths();

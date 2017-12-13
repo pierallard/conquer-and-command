@@ -18,7 +18,7 @@ const MIN_SHOOT_DISTANCE = 200;
 
 export class MovedSprite extends Phaser.Sprite
 {
-    private displayLife: boolean = true;
+    private displayLife: boolean = false;
     protected vector: Phaser.Point = null;
     protected debugText: Phaser.Text;
     protected spriteKey: string;
@@ -196,7 +196,7 @@ export class MovedSprite extends Phaser.Sprite
         if (value) {
             if (null === this.selectedRectable) {
                 this.selectedRectable = this.game.add.graphics(0, 0);
-                this.selectedRectable.lineStyle(1, 0x00ff00, 0.8);
+                this.selectedRectable.lineStyle(1, 0x00ff00, 0.5);
                 this.selectedRectable.drawRect(-CIRCLE_RADIUS / SCALE / 2, -CIRCLE_RADIUS / SCALE / 2, CIRCLE_RADIUS / SCALE, CIRCLE_RADIUS / SCALE);
                 this.addChild(this.selectedRectable);
             }

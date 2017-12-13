@@ -15,17 +15,19 @@ export class AlternativePosition
         currentPosition: PIXI.Point,
         isAccessible: (point: PIXI.Point) => boolean
     ): boolean {
-        for (let radius = 1; radius < MAX_SEARCH_RADIUS; radius++) {
+        for (let radius = 0; radius < MAX_SEARCH_RADIUS; radius++) {
+            const points = this.getPointsFromRadius(goalPosition, radius);
+            console.log(points, currentPosition);
+
             let foundAccessible = false;
-            for (let x = -radius + 1; x <= radius - 1; x++) {
-                for (let y = -radius + 1; y <= radius - 1; y++) {
-                    let test = new PIXI.Point(goalPosition.x + x, goalPosition.y + y);
-                    if (currentPosition.x === test.x && currentPosition.y === test.y) {
-                        return true;
-                    }
-                    if (isAccessible(test)) {
-                        foundAccessible = true;
-                    }
+            for (let i = 0; i < points.length; i++) {
+                let test = points[i];
+                if (currentPosition.x === test.x && currentPosition.y === test.y) {
+                    console.log('is arrived');
+                    return true;
+                }
+                if (isAccessible(test)) {
+                    foundAccessible = true;
                 }
             }
             if (foundAccessible) {
@@ -49,16 +51,12 @@ export class AlternativePosition
         currentPosition: PIXI.Point,
         isAccessible: (point: PIXI.Point) => boolean
     ): PIXI.Point {
-        for (let radius = 1; radius < MAX_SEARCH_RADIUS; radius++) {
-            let possiblePositions = [];
-            for (let x = -radius + 1; x <= radius - 1; x++) {
-                for (let y = -radius + 1; y <= radius - 1; y++) {
-                    let test = new PIXI.Point(goalPosition.x + x, goalPosition.y + y);
-                    if (isAccessible(test)) {
-                        possiblePositions.push(test);
-                    }
-                }
-            }
+        for (let radius = 0; radius < MAX_SEARCH_RADIUS; radius++) {
+            let possiblePositions = this.getPointsFromRadius(goalPosition, radius);
+            possiblePositions = possiblePositions.filter((pos) => {
+                return isAccessible(pos)
+            });
+
             if (possiblePositions.length) {
                 possiblePositions.sort((pos1: PIXI.Point, pos2: PIXI.Point) => {
                     return (
@@ -70,10 +68,31 @@ export class AlternativePosition
                         );
                 });
 
+                console.log('Get closest of ' + goalPosition + ' : ' + possiblePositions[0] + ' (radius: ' + radius + ')');
                 return possiblePositions[0];
             }
         }
 
         return null;
+    }
+
+    private static getPointsFromRadius(position: PIXI.Point, radius: number): PIXI.Point[] {
+        let possiblePositions = [];
+
+        if (radius === 0) {
+            possiblePositions.push(new PIXI.Point(position.x, position.y))
+        } else {
+            for (let x = -radius; x <= radius; x++) {
+                possiblePositions.push(new PIXI.Point(position.x + x, position.y - radius));
+                possiblePositions.push(new PIXI.Point(position.x + x, position.y + radius));
+            }
+
+            for (let y = -radius; y <= radius; y++) {
+                possiblePositions.push(new PIXI.Point(position.x - radius, position.y + y));
+                possiblePositions.push(new PIXI.Point(position.x + radius, position.y + y));
+            }
+        }
+
+        return possiblePositions;
     }
 }

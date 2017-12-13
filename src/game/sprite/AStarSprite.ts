@@ -3,6 +3,7 @@ import {Ground} from "../Ground";
 import {UnitRepository} from "../repository/UnitRepository";
 import {Cell} from "../Cell";
 import {AStar} from "../AStar";
+import {AlternativePosition} from "../AlternativePosition";
 
 const MOVE_TIME = Phaser.Timer.SECOND / 4;
 const MAKE_ANIM = true;
@@ -45,32 +46,7 @@ export class AStarSprite extends MovedSprite
             return true;
         }
 
-        let radius = 0;
-        while(radius < 20) {
-            let foundEmptyPlace = false;
-            let foundThis = false;
-            for (let i = -radius; i <= radius; i++) {
-                for (let j = -radius; j <= radius; j++) {
-                    if (this.isPositionAccessible(new PIXI.Point(goal.x + i, goal.y + j))) {
-                        foundEmptyPlace = true;
-                    }
-                    if (goal.x + i === this.cellPosition.x && goal.y + j === this.cellPosition.y) {
-                        foundThis = true;
-                    }
-                }
-            }
-
-            if (foundThis) {
-                return true;
-            }
-            if (foundEmptyPlace && !foundThis) {
-                return false;
-            }
-
-            radius++;
-        }
-
-        return true;
+        return AlternativePosition.isArrived(goal, this.cellPosition, this.isPositionAccessible.bind(this));
     }
 
     isPositionAccessible(position: PIXI.Point): boolean {
@@ -105,6 +81,8 @@ export class AStarSprite extends MovedSprite
             } else if (this.unitGoal) {
                 if (!this.isArrived()) {
                     nextStep = AStar.nextStep(this.cellPosition, this.unitGoal.getCellPosition(), this.isPositionAccessible.bind(this));
+                } else {
+                    this.cellGoal = null;
                 }
             }
         }
