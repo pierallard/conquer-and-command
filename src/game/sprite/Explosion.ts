@@ -6,7 +6,7 @@ export class Explosion extends Phaser.Sprite
         super(game, x, y, 'exploBig');
 
         let explode = this.animations.add('explode');
-        explode.play(10, false, true);
+        explode.play(20, false, true);
         this.anchor.set(0.5, 0.5);
         this.scale.setTo(SCALE / 1.5, SCALE / 1.5);
     }

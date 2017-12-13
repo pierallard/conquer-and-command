@@ -18,7 +18,7 @@ const MIN_SHOOT_DISTANCE = 200;
 
 export class MovedSprite extends Phaser.Sprite
 {
-    private displayLife: boolean = false;
+    private displayLife: boolean = true;
     protected vector: Phaser.Point = null;
     protected debugText: Phaser.Text;
     protected spriteKey: string;
@@ -77,13 +77,6 @@ export class MovedSprite extends Phaser.Sprite
         else {
             this.debugText.setText('');
         }
-    }
-
-    private updateLife()
-    {
-        this.lifeRectangle.clear();
-        this.lifeRectangle.beginFill(0x00ff00);
-        this.lifeRectangle.drawRect(-CIRCLE_RADIUS/SCALE/2, CIRCLE_RADIUS/SCALE/2, this.life / this.maxLife * CIRCLE_RADIUS/SCALE/2, 2);
     }
 
     private setKey(): void
@@ -145,18 +138,6 @@ export class MovedSprite extends Phaser.Sprite
         return this.weight;
     }
 
-    public lostLife(number: number) {
-        this.life -= number;
-
-        if (this.life <= 0) {
-            this.unitRepository.play_.game.add.existing(new Explosion(this.unitRepository.play_.game, this.x, this.y));
-            this.destroy();
-            this.unitRepository.removeSprite(this);
-        }
-
-        this.updateLife();
-    }
-
     private getClosestEnnemy(): MovedSprite {
         let closest = null;
         let closestDist = null;
@@ -180,7 +161,7 @@ export class MovedSprite extends Phaser.Sprite
         let newRotation = this.getRotation(new Phaser.Point(ennemy.x - this.x, ennemy.y - this.y));
         this.loadRotation(newRotation);
         this.game.add.existing(new Shoot(this.game, this.x, this.y, newRotation));
-        ennemy.lostLife(20);
+        // ennemy.lostLife(20);
         this.shootEnabled = false;
 
         this.unitRepository.play_.game.time.events.add(Phaser.Timer.SECOND, () => {

@@ -4,8 +4,11 @@ import {UnitRepository} from "../repository/UnitRepository";
 import {Cell} from "../Cell";
 import {AStar} from "../AStar";
 import {AlternativePosition} from "../AlternativePosition";
+import {Explosion} from "./Explosion";
+import {CIRCLE_RADIUS, SCALE} from "../state/Play";
 
 const MOVE_TIME = Phaser.Timer.SECOND / 4;
+const SHOOT_TIME = Phaser.Timer.SECOND / 2;
 const MAKE_ANIM = true;
 
 enum Mode {
@@ -76,6 +79,12 @@ export class AStarSprite extends MovedSprite
             }
         }
 
+        if (this.state === Mode.ATTACK && this.canMove) {
+            if (this.isAbleToShoot()) {
+                this.shootz();
+            }
+        }
+
         let nextStep = null;
         if (this.canMove) {
             if (this.cellGoal) {
@@ -119,7 +128,7 @@ export class AStarSprite extends MovedSprite
         );
         const unit = this.unitRepository.unitAt(cell);
         if (null !== unit) {
-            this.state = Mode.FOLLOW;
+            this.state = Mode.ATTACK;
             this.unitGoal = unit;
             this.cellGoal = null;
         } else {
@@ -131,5 +140,42 @@ export class AStarSprite extends MovedSprite
             this.state = Mode.STAND;
             this.cellGoal = null;
         }
+    }
+
+    private isAbleToShoot() {
+        const distance = Math.sqrt(
+            (this.cellPosition.x - this.unitGoal.getCellPosition().x) * (this.cellPosition.x - this.unitGoal.getCellPosition().x) +
+            (this.cellPosition.y - this.unitGoal.getCellPosition().y) * (this.cellPosition.y - this.unitGoal.getCellPosition().y)
+        );
+
+        return distance <= 4;
+    }
+
+    private shootz() {
+        this.unitGoal.lostLife(10);
+
+        this.canMove = false;
+        this.unitRepository.play_.game.time.events.add(SHOOT_TIME, () => {
+            this.canMove = true;
+        }, this);
+    }
+
+    public lostLife(number: number) {
+        this.life -= number;
+
+        if (this.life <= 0) {
+            this.unitRepository.play_.game.add.existing(new Explosion(this.unitRepository.play_.game, this.x, this.y));
+            this.destroy();
+            this.unitRepository.removeSprite(this);
+        }
+
+        this.updateLife();
+    }
+
+    private updateLife()
+    {
+        this.lifeRectangle.clear();
+        this.lifeRectangle.beginFill(0x00ff00);
+        this.lifeRectangle.drawRect(-CIRCLE_RADIUS/SCALE/2, CIRCLE_RADIUS/SCALE/2, this.life / this.maxLife * CIRCLE_RADIUS/SCALE/2, 2);
     }
 }
