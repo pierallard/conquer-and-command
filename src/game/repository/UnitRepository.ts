@@ -21,13 +21,14 @@ export class UnitRepository
 
     public generateRandomUnits(players: Player[]): void
     {
-        for (let i = 0; i < 30; i++) {
+        for (let i = 0; i < 80; i++) {
+            let playerId = Math.floor(Math.random() * players.length);
             this.units.push(new AStarSprite(
                 this,
-                Math.random() * this.play_.game.width,
+                Math.random() * this.play_.game.width / 2 + (playerId === 1 ? this.play_.game.width / 2 : 0),
                 Math.random() * this.play_.game.height,
                 this.play_.ground,
-                players[Math.floor(Math.random() * players.length)]
+                players[playerId]
             ));
         }
     }
