@@ -2,6 +2,10 @@ import {MovedSprite} from "./sprite/MovedSprite";
 import {UnitRepository} from "./repository/UnitRepository";
 import {AStarSprite} from "./sprite/AStarSprite";
 import {Player} from "./player/Player";
+import {Cell} from "./Cell";
+import {Attack} from "./state/Attack";
+import {Follow} from "./state/Follow";
+import {MoveAttack} from "./state/MoveAttack";
 export class Selector extends Phaser.Graphics
 {
     private corner: Phaser.Point = null;
@@ -33,6 +37,25 @@ export class Selector extends Phaser.Graphics
             });
             this.corner = null;
             this.clear();
+        }
+
+        if (this.game.input.activePointer.rightButton.isDown) {
+            this.unitRepository.getSelectedUnits().forEach((source) => {
+                const cell = new PIXI.Point(
+                    Cell.realToCell(this.game.input.mousePointer.x),
+                    Cell.realToCell(this.game.input.mousePointer.y)
+                );
+                const unit = this.unitRepository.unitAt(cell);
+                if (null !== unit) {
+                    if (source.getPlayer() !== unit.getPlayer()) {
+                        source.attack(unit);
+                    } else {
+                        source.follow(unit);
+                    }
+                } else {
+                    source.move(cell);
+                }
+            });
         }
 
         if (null !== this.corner) {

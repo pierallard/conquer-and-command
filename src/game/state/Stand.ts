@@ -15,7 +15,7 @@ export class Stand implements State {
     run(): void {
         const shootable = this.unit.getClosestShootable();
         if (shootable) {
-            this.unit.shootz(shootable);
+            this.unit.shoot(shootable);
         }
     }
 }

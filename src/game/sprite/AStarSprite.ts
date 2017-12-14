@@ -14,7 +14,7 @@ import {MoveAttack} from "../state/MoveAttack";
 
 const MOVE_TIME = Phaser.Timer.SECOND / 4;
 const SHOOT_TIME = Phaser.Timer.SECOND / 2;
-const MAKE_ANIM = true;
+const SHOOT_DISTANCE = 4;
 
 export class AStarSprite extends MovedSprite {
     private cellPosition: PIXI.Point;
@@ -36,15 +36,7 @@ export class AStarSprite extends MovedSprite {
         this.state = new Stand(this);
     }
 
-    getCellPosition(): PIXI.Point {
-        return this.cellPosition;
-    }
-
     update() {
-        if (this.isSelected() && this.game.input.activePointer.rightButton.isDown) {
-            this.updateState();
-        }
-
         if (this.isNotFreezed) {
             this.state = this.state.getNextStep();
             this.state.run();
@@ -53,25 +45,91 @@ export class AStarSprite extends MovedSprite {
         super.update();
     }
 
-    private updateState() {
-        const cell = new PIXI.Point(
-            Cell.realToCell(this.game.input.mousePointer.x),
-            Cell.realToCell(this.game.input.mousePointer.y)
-        );
-        const unit = this.unitRepository.unitAt(cell);
-        if (null !== unit) {
-            if (this.isEnnemyOf(unit)) {
-                this.state = new Attack(this, unit);
-            } else {
-                this.state = new Follow(this, unit);
-            }
-        } else {
-            this.state = new MoveAttack(this, cell);
-        }
+    attack(unit: AStarSprite) {
+        this.state = new Attack(this, unit);
     }
 
-    isAbleToShoot(ennemy: AStarSprite): boolean {
-        return this.distanceTo(ennemy) <= 4;
+    follow(unit: AStarSprite) {
+        this.state = new Follow(this, unit);
+    }
+
+    move(cell: PIXI.Point) {
+        this.state = new MoveAttack(this, cell);
+    }
+
+    getCellPosition(): PIXI.Point {
+        return this.cellPosition;
+    }
+
+    getPlayer() {
+        return this.player;
+    }
+
+    getShootDistance() {
+        return SHOOT_DISTANCE;
+    }
+
+    isAlive() {
+        return this.life > 0;
+    }
+
+    shoot(ennemy: AStarSprite): void {
+        this.rotateTowards(ennemy.getCellPosition());
+        this.doShootEffect(ennemy.getCellPosition());
+        ennemy.lostLife(10);
+        this.freeze(SHOOT_TIME);
+    }
+
+    lostLife(number: number) {
+        this.life -= number;
+        if (!this.isAlive()) {
+            this.doExplodeEffect();
+            this.destroy(true);
+            this.unitRepository.removeSprite(this);
+        }
+
+        this.updateLife();
+    }
+
+    getClosestShootable(): AStarSprite {
+        const enemies = this.unitRepository.getEnnemyUnits(this.player);
+        let minDistance = null;
+        let closest = null;
+        for (let i = 0; i < enemies.length; i++) {
+            const enemy = (<AStarSprite> enemies[i]);
+            if (enemy !== this) {
+                const distance = this.distanceTo(enemy);
+                if (distance <= this.getShootDistance()) {
+                    if (null === closest || minDistance > distance) {
+                        minDistance = distance;
+                        closest = enemy;
+                    }
+                }
+            }
+        }
+
+        return closest;
+    }
+
+    moveTowards(goal: PIXI.Point) {
+        // TODO avoid recomputing of A* when path is accessible
+        const nextStep = AStar.nextStep(
+            this.cellPosition,
+            goal,
+            this.getPlayer().isPositionAccessible.bind(this.getPlayer())
+        );
+
+        if (nextStep) {
+            this.rotateTowards(nextStep);
+            this.cellPosition = nextStep;
+
+            this.unitRepository.play_.game.add.tween(this).to({
+                x: Cell.cellToReal(this.cellPosition.x),
+                y: Cell.cellToReal(this.cellPosition.y)
+            }, MOVE_TIME, Phaser.Easing.Default, true);
+
+            this.freeze(MOVE_TIME);
+        }
     }
 
     private distanceTo(unit: AStarSprite): number {
@@ -81,35 +139,7 @@ export class AStarSprite extends MovedSprite {
         );
     }
 
-    shootz(ennemy: AStarSprite): void {
-        const rotation = this.getRotation(new Phaser.Point(
-            ennemy.getCellPosition().x - this.cellPosition.x,
-            ennemy.getCellPosition().y - this.cellPosition.y
-        ));
-        this.loadRotation(rotation);
-        this.game.add.existing(new Shoot(this.game, this.x, this.y, rotation));
-        ennemy.lostLife(10);
-
-        this.isNotFreezed = false;
-        this.unitRepository.play_.game.time.events.add(SHOOT_TIME, () => {
-            this.isNotFreezed = true;
-        }, this);
-    }
-
-    public lostLife(number: number) {
-        this.life -= number;
-
-        if (this.life <= 0) {
-            this.unitRepository.play_.game.add.existing(new Explosion(this.unitRepository.play_.game, this.x, this.y));
-            this.destroy();
-            this.unitRepository.removeSprite(this);
-        }
-
-        this.updateLife();
-    }
-
-    private updateLife()
-    {
+    private updateLife() {
         this.lifeRectangle.clear();
         this.lifeRectangle.beginFill(0x00ff00);
         this.lifeRectangle.drawRect(
@@ -117,63 +147,30 @@ export class AStarSprite extends MovedSprite {
             CIRCLE_RADIUS/SCALE/2, this.life / this.maxLife * CIRCLE_RADIUS/SCALE, 2);
     }
 
-    isDestroyed() {
-        return this.life <= 0;
+    private rotateTowards(cellPosition: PIXI.Point): void {
+        const rotation = this.getRotation(new Phaser.Point(
+            cellPosition.x - this.cellPosition.x,
+            cellPosition.y - this.cellPosition.y
+        ));
+        this.loadRotation(rotation);
     }
 
-    getClosestShootable(): AStarSprite {
-        const ennemies = this.unitRepository.getEnnemyUnits(this.player);
-        let minDistance = null;
-        let closest = null;
-        for (let i = 0; i < ennemies.length; i++) {
-            const ennemy = (<AStarSprite> ennemies[i]);
-            if (ennemy !== this) {
-                const distance = this.distanceTo(ennemy);
-                if (distance <= 4) {
-                    if (null === closest || minDistance > distance) {
-                        minDistance = distance;
-                        closest = ennemy;
-                    }
-                }
-            }
-        }
-
-        return closest;
+    private doShootEffect(cellPosition: PIXI.Point) {
+        const rotation = this.getRotation(new Phaser.Point(
+            cellPosition.x - this.cellPosition.x,
+            cellPosition.y - this.cellPosition.y
+        ));
+        this.game.add.existing(new Shoot(this.game, this.x, this.y, rotation));
     }
 
-    private isEnnemyOf(unit: AStarSprite) {
-        return unit.getPlayer() !== this.player;
+    private freeze(time: number) {
+        this.isNotFreezed = false;
+        this.unitRepository.play_.game.time.events.add(time, () => {
+            this.isNotFreezed = true;
+        }, this);
     }
 
-    getPlayer() {
-        return this.player;
-    }
-
-    moveTowards(goal: PIXI.Point) {
-        const nextStep = AStar.nextStep(this.cellPosition, goal, this.getPlayer().isPositionAccessible.bind(this.getPlayer()));
-
-        if (nextStep) {
-            this.loadRotation(this.getRotation(new PIXI.Point(
-                nextStep.x - this.cellPosition.x,
-                nextStep.y - this.cellPosition.y
-            )));
-
-            this.cellPosition = nextStep;
-
-            if (MAKE_ANIM) {
-                this.unitRepository.play_.game.add.tween(this).to({
-                    x: Cell.cellToReal(this.cellPosition.x),
-                    y: Cell.cellToReal(this.cellPosition.y)
-                }, MOVE_TIME, Phaser.Easing.Default, true);
-            } else {
-                this.x = Cell.cellToReal(this.cellPosition.x);
-                this.y = Cell.cellToReal(this.cellPosition.y);
-            }
-
-            this.isNotFreezed = false;
-            this.unitRepository.play_.game.time.events.add(MOVE_TIME, () => {
-                this.isNotFreezed = true;
-            }, this);
-        }
+    private doExplodeEffect() {
+        this.unitRepository.play_.game.add.existing(new Explosion(this.unitRepository.play_.game, this.x, this.y));
     }
 }

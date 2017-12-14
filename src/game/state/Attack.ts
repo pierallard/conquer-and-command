@@ -13,7 +13,7 @@ export class Attack implements State {
     }
 
     getNextStep(): State {
-        if (this.isArrived()) {
+        if (this.isArrived() || !this.goal.isAlive()) {
             return new Stand(this.unit);
         }
 
@@ -21,11 +21,11 @@ export class Attack implements State {
     }
 
     run(): void {
-        if (this.goal.isDestroyed()) {
+        if (!this.goal.isAlive()) {
             return;
         }
-        if (this.unit.isAbleToShoot(this.goal)) {
-            this.unit.shootz(this.goal);
+        if (this.isAbleToShoot()) {
+            this.unit.shoot(this.goal);
         } else {
             this.unit.moveTowards(this.goal.getCellPosition());
         }
@@ -37,6 +37,17 @@ export class Attack implements State {
             this.goal.getCellPosition(),
             this.unit.getCellPosition(),
             this.unit.getPlayer().isPositionAccessible.bind(this.unit.getPlayer())
+        );
+    }
+
+    private isAbleToShoot(): boolean {
+        return this.distanceTo() <= this.unit.getShootDistance();
+    }
+
+    private distanceTo(): number {
+        return Math.sqrt(
+            (this.unit.getCellPosition().x - this.goal.getCellPosition().x) * (this.unit.getCellPosition().x - this.goal.getCellPosition().x) +
+            (this.unit.getCellPosition().y - this.goal.getCellPosition().y) * (this.unit.getCellPosition().y - this.goal.getCellPosition().y)
         );
     }
 }

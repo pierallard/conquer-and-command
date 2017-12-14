@@ -5,7 +5,7 @@ import {Player} from "../player/Player";
 
 export class UnitRepository
 {
-    private units: MovedSprite[];
+    private units: AStarSprite[];
     public play_: Play;
 
     constructor(play_: Play)
@@ -27,11 +27,11 @@ export class UnitRepository
         }
     }
 
-    getUnits(): MovedSprite[] {
+    getUnits(): AStarSprite[] {
         return this.units;
     }
 
-    removeSprite(movedSprite: MovedSprite) {
+    removeSprite(movedSprite: AStarSprite) {
         const index = this.units.indexOf(movedSprite);
         if (index > -1) {
             this.units.splice(index, 1);
@@ -46,8 +46,8 @@ export class UnitRepository
         for (let i = 0; i < this.units.length; i++) {
             if (this.units[i] instanceof AStarSprite) {
                 if (
-                    (<AStarSprite> this.units[i]).getCellPosition().x === position.x &&
-                    (<AStarSprite> this.units[i]).getCellPosition().y === position.y
+                    this.units[i].getCellPosition().x === position.x &&
+                    this.units[i].getCellPosition().y === position.y
                 ) {
                     return (<AStarSprite> this.units[i]);
                 }
@@ -59,7 +59,13 @@ export class UnitRepository
 
     getEnnemyUnits(player: Player): MovedSprite[] {
         return this.units.filter((unit) => {
-            return (<AStarSprite> unit).getPlayer() !== player;
+            return unit.getPlayer() !== player;
+        });
+    }
+
+    getSelectedUnits() {
+        return this.units.filter((unit) => {
+            return unit.isSelected();
         });
     }
 }
