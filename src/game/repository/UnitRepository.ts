@@ -17,14 +17,14 @@ export class UnitRepository
 
     public generateRandomUnits(players: Player[]): void
     {
-        // for (let i = 0; i < 80; i++) {
-        //     let playerId = Math.floor(Math.random() * players.length);
-        //     this.units.push(new Tank(
-        //         players[playerId],
-        //         Math.random() * this.play_.game.width / 2 + (playerId === 1 ? this.play_.game.width / 2 : 0),
-        //         Math.random() * this.play_.game.height
-        //     ));
-        // }
+        for (let i = 0; i < 30; i++) {
+            let playerId = Math.floor(Math.random() * players.length);
+            this.units.push(new Tank(
+                players[playerId],
+                Math.random() * this.play_.game.width / 2 + (playerId === 1 ? this.play_.game.width / 2 : 0),
+                Math.random() * this.play_.game.height
+            ));
+        }
         for (let i = 0; i < 10; i++) {
             this.units.push(new Harvester(
                 players[0],

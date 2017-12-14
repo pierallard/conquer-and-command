@@ -11,6 +11,8 @@ const MAX_LOADING = 50;
 const UNLOAD_TIME = Phaser.Timer.SECOND;
 const LOAD_TIME = Phaser.Timer.SECOND;
 
+const SHOOT_DISTANCE = 1;
+
 export class Harvester extends Unit {
     private loading: number;
 
@@ -71,5 +73,9 @@ export class Harvester extends Unit {
         this.loading += cube.harvest();
 
         this.freeze(LOAD_TIME);
+    }
+
+    getShootDistance(): number {
+        return SHOOT_DISTANCE;
     }
 }

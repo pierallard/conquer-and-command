@@ -13,7 +13,6 @@ import {Building} from "../building/Building";
 
 const MOVE_TIME = Phaser.Timer.SECOND / 4;
 const SHOOT_TIME = Phaser.Timer.SECOND / 2;
-const SHOOT_DISTANCE = 4;
 
 export enum Rotation {
     TOP = 1,
@@ -75,9 +74,7 @@ export abstract class Unit extends Phaser.Sprite {
         return this.player;
     }
 
-    getShootDistance() {
-        return SHOOT_DISTANCE;
-    }
+    abstract getShootDistance(): number;
 
     isAlive() {
         return this.life > 0;
