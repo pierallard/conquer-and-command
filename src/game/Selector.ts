@@ -2,18 +2,20 @@ import {MovedSprite} from "./sprite/MovedSprite";
 import {GoaledSprite} from "./sprite/GoaledSprite";
 import {UnitRepository} from "./repository/UnitRepository";
 import {AStarSprite} from "./sprite/AStarSprite";
+import {Player} from "./Player";
 export class Selector extends Phaser.Graphics
 {
     private corner: Phaser.Point = null;
     private unitRepository: UnitRepository;
-    private selectedEntities: MovedSprite[] = [];
+    private player: Player;
 
-    constructor(game: Phaser.Game, unitRepository: UnitRepository) {
+    constructor(game: Phaser.Game, unitRepository: UnitRepository, player: Player) {
         super(game, 0, 0);
 
         this.unitRepository = unitRepository;
         this.game.input.mouse.capture = true;
         this.game.canvas.oncontextmenu = function (e) { e.preventDefault(); }
+        this.player = player;
     }
 
     update()
@@ -23,11 +25,10 @@ export class Selector extends Phaser.Graphics
         }
 
         if (this.corner !== null && this.game.input.activePointer.leftButton.isUp) {
-            this.selectedEntities = [];
             this.unitRepository.getUnits().forEach((unit) => {
-                const isInside = this.isInside(unit);
-                if (isInside) {
-                    this.selectedEntities.push(unit);
+                let isInside = false;
+                if ((<AStarSprite> unit).getPlayer() === this.player) {
+                    isInside = this.isInside(unit);
                 }
                 unit.setSelected(isInside);
             });

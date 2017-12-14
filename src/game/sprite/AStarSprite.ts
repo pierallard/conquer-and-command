@@ -7,6 +7,7 @@ import {AlternativePosition} from "../AlternativePosition";
 import {Explosion} from "./Explosion";
 import {CIRCLE_RADIUS, SCALE} from "../state/Play";
 import {Shoot} from "./Shoot";
+import {Player} from "../Player";
 
 const MOVE_TIME = Phaser.Timer.SECOND / 4;
 const SHOOT_TIME = Phaser.Timer.SECOND / 2;
@@ -28,16 +29,18 @@ export class AStarSprite extends MovedSprite
     private ground: Ground;
     private canMove: boolean = true;
     private state: Mode;
+    private player: Player;
 
-    constructor(unitRepository: UnitRepository, x: number, y: number, ground: Ground) {
+    constructor(unitRepository: UnitRepository, x: number, y: number, ground: Ground, player: Player) {
         super(
             unitRepository,
             Cell.cellToReal(Cell.realToCell(x)),
             Cell.cellToReal(Cell.realToCell(y)),
-            'Tank11',
+            player.getTankKey(),
             1000
         );
 
+        this.player = player;
         this.cellPosition = new PIXI.Point(Cell.realToCell(x), Cell.realToCell(y));
         this.ground = ground;
         this.state = Mode.STAND;
@@ -74,7 +77,7 @@ export class AStarSprite extends MovedSprite
         }
 
         if (this.isArrived()) {
-            if (this.state === Mode.MOVE_TO) {
+            if (this.state === Mode.MOVE_TO || Mode.MOVE_ATTACK) {
                 this.cellGoal = null;
                 this.state = Mode.STAND;
             }
@@ -141,7 +144,11 @@ export class AStarSprite extends MovedSprite
         );
         const unit = this.unitRepository.unitAt(cell);
         if (null !== unit) {
-            this.state = Mode.ATTACK;
+            if (this.isEnnemyOf(unit)) {
+                this.state = Mode.ATTACK;
+            } else {
+                this.state = Mode.FOLLOW;
+            }
             this.unitGoal = unit;
             this.cellGoal = null;
         } else {
@@ -207,7 +214,7 @@ export class AStarSprite extends MovedSprite
     }
 
     private getClosestShootable(): AStarSprite {
-        const ennemies = this.unitRepository.getUnits();
+        const ennemies = this.unitRepository.getEnnemyUnits(this.player);
         let minDistance = null;
         let closest = null;
         for (let i = 0; i < ennemies.length; i++) {
@@ -224,5 +231,13 @@ export class AStarSprite extends MovedSprite
         }
 
         return closest;
+    }
+
+    private isEnnemyOf(unit: AStarSprite) {
+        return unit.getPlayer() !== this.player;
+    }
+
+    getPlayer() {
+        return this.player;
     }
 }
