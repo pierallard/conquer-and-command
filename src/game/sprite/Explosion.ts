@@ -1,4 +1,4 @@
-import {SCALE} from "../state/Play";
+import {SCALE} from "../game_state/Play";
 
 export class Explosion extends Phaser.Sprite
 {

@@ -1,4 +1,4 @@
-import Play, {SCALE} from "./state/Play";
+import Play, {SCALE} from "./game_state/Play";
 
 export const GROUND_SIZE = 20;
 

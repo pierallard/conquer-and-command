@@ -5,30 +5,25 @@ import {Cell} from "../Cell";
 import {AStar} from "../AStar";
 import {AlternativePosition} from "../AlternativePosition";
 import {Explosion} from "./Explosion";
-import {CIRCLE_RADIUS, SCALE} from "../state/Play";
+import {CIRCLE_RADIUS, SCALE} from "../game_state/Play";
 import {Shoot} from "./Shoot";
 import {Player} from "../Player";
+import {State} from "../state/State";
+import {Stand} from "../state/Stand";
+import {Attack} from "../state/Attack";
+import {Follow} from "../state/Follow";
+import {MoveAttack} from "../state/MoveAttack";
 
 const MOVE_TIME = Phaser.Timer.SECOND / 4;
 const SHOOT_TIME = Phaser.Timer.SECOND / 2;
 const MAKE_ANIM = true;
 
-enum Mode {
-    STAND,
-    MOVE_TO,
-    ATTACK,
-    FOLLOW,
-    MOVE_ATTACK
-}
-
 export class AStarSprite extends MovedSprite
 {
-    private cellGoal: PIXI.Point = null;
-    private unitGoal: AStarSprite = null;
     private cellPosition: PIXI.Point;
     private ground: Ground;
     private isNotFreezed: boolean = true;
-    private state: Mode;
+    private state: State;
     private player: Player;
 
     constructor(unitRepository: UnitRepository, x: number, y: number, ground: Ground, player: Player) {
@@ -43,27 +38,11 @@ export class AStarSprite extends MovedSprite
         this.player = player;
         this.cellPosition = new PIXI.Point(Cell.realToCell(x), Cell.realToCell(y));
         this.ground = ground;
-        this.state = Mode.STAND;
+        this.state = new Stand(this);
     }
 
     getCellPosition(): PIXI.Point {
         return this.cellPosition;
-    }
-
-    isArrived(): boolean
-    {
-        let goal = null;
-        if (this.cellGoal) {
-            goal = this.cellGoal;
-        } else if (this.unitGoal) {
-            goal = this.unitGoal.getCellPosition();
-        }
-
-        if (null === goal) {
-            return true;
-        }
-
-        return AlternativePosition.isArrived(goal, this.cellPosition, this.isPositionAccessible.bind(this));
     }
 
     isPositionAccessible(position: PIXI.Point): boolean {
@@ -76,62 +55,9 @@ export class AStarSprite extends MovedSprite
             this.updateState();
         }
 
-        if (this.isArrived()) {
-            if (this.state === Mode.MOVE_TO || Mode.MOVE_ATTACK) {
-                this.cellGoal = null;
-                this.state = Mode.STAND;
-            }
-        }
-
-        if (this.state === Mode.ATTACK && this.isNotFreezed) {
-            if (this.unitGoal.isDestroyed()) {
-                this.unitGoal = null;
-                this.state = Mode.STAND;
-            } else {
-                if (this.isAbleToShoot(this.unitGoal)) {
-                    this.shootz(this.unitGoal);
-                }
-            }
-        }
-
-        if (([Mode.MOVE_ATTACK, Mode.STAND].indexOf(this.state) > -1) && this.isNotFreezed) {
-            const shootable = this.getClosestShootable();
-            if (shootable) {
-                this.shootz(shootable)
-            }
-        }
-
-        if (([Mode.MOVE_TO, Mode.FOLLOW, Mode.ATTACK, Mode.MOVE_ATTACK].indexOf(this.state) > -1) && this.isNotFreezed) {
-            let nextStep = null;
-            if (this.cellGoal) {
-                nextStep = AStar.nextStep(this.cellPosition, this.cellGoal, this.isPositionAccessible.bind(this));
-            } else if (this.unitGoal && !this.isArrived()) {
-                nextStep = AStar.nextStep(this.cellPosition, this.unitGoal.getCellPosition(), this.isPositionAccessible.bind(this));
-            }
-
-            if (nextStep) {
-                this.loadRotation(this.getRotation(new PIXI.Point(
-                    nextStep.x - this.cellPosition.x,
-                    nextStep.y - this.cellPosition.y
-                )));
-
-                this.cellPosition = nextStep;
-
-                if (MAKE_ANIM) {
-                    this.unitRepository.play_.game.add.tween(this).to({
-                        x: Cell.cellToReal(this.cellPosition.x),
-                        y: Cell.cellToReal(this.cellPosition.y)
-                    }, MOVE_TIME, Phaser.Easing.Default, true);
-                } else {
-                    this.x = Cell.cellToReal(this.cellPosition.x);
-                    this.y = Cell.cellToReal(this.cellPosition.y);
-                }
-
-                this.isNotFreezed = false;
-                this.unitRepository.play_.game.time.events.add(MOVE_TIME, () => {
-                    this.isNotFreezed = true;
-                }, this);
-            }
+        if (this.isNotFreezed) {
+            this.state = this.state.getNextStep();
+            this.state.run();
         }
 
         super.update();
@@ -145,24 +71,16 @@ export class AStarSprite extends MovedSprite
         const unit = this.unitRepository.unitAt(cell);
         if (null !== unit) {
             if (this.isEnnemyOf(unit)) {
-                this.state = Mode.ATTACK;
+                this.state = new Attack(this, unit);
             } else {
-                this.state = Mode.FOLLOW;
+                this.state = new Follow(this, unit);
             }
-            this.unitGoal = unit;
-            this.cellGoal = null;
         } else {
-            this.state = Mode.MOVE_ATTACK;
-            this.cellGoal = cell;
-            this.unitGoal = null;
-        }
-        if (this.isArrived()) {
-            this.state = Mode.STAND;
-            this.cellGoal = null;
+            this.state = new MoveAttack(this, cell);
         }
     }
 
-    private isAbleToShoot(ennemy: AStarSprite): boolean {
+    isAbleToShoot(ennemy: AStarSprite): boolean {
         return this.distanceTo(ennemy) <= 4;
     }
 
@@ -173,7 +91,7 @@ export class AStarSprite extends MovedSprite
         );
     }
 
-    private shootz(ennemy: AStarSprite): void {
+    shootz(ennemy: AStarSprite): void {
         const rotation = this.getRotation(new Phaser.Point(
             ennemy.getCellPosition().x - this.cellPosition.x,
             ennemy.getCellPosition().y - this.cellPosition.y
@@ -213,7 +131,7 @@ export class AStarSprite extends MovedSprite
         return this.life <= 0;
     }
 
-    private getClosestShootable(): AStarSprite {
+    getClosestShootable(): AStarSprite {
         const ennemies = this.unitRepository.getEnnemyUnits(this.player);
         let minDistance = null;
         let closest = null;
@@ -239,5 +157,33 @@ export class AStarSprite extends MovedSprite
 
     getPlayer() {
         return this.player;
+    }
+
+    moveTowards(goal: PIXI.Point) {
+        const nextStep = AStar.nextStep(this.cellPosition, goal, this.isPositionAccessible.bind(this));
+
+        if (nextStep) {
+            this.loadRotation(this.getRotation(new PIXI.Point(
+                nextStep.x - this.cellPosition.x,
+                nextStep.y - this.cellPosition.y
+            )));
+
+            this.cellPosition = nextStep;
+
+            if (MAKE_ANIM) {
+                this.unitRepository.play_.game.add.tween(this).to({
+                    x: Cell.cellToReal(this.cellPosition.x),
+                    y: Cell.cellToReal(this.cellPosition.y)
+                }, MOVE_TIME, Phaser.Easing.Default, true);
+            } else {
+                this.x = Cell.cellToReal(this.cellPosition.x);
+                this.y = Cell.cellToReal(this.cellPosition.y);
+            }
+
+            this.isNotFreezed = false;
+            this.unitRepository.play_.game.time.events.add(MOVE_TIME, () => {
+                this.isNotFreezed = true;
+            }, this);
+        }
     }
 }

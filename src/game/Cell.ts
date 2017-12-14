@@ -1,5 +1,5 @@
 import {GROUND_SIZE} from "./Ground";
-import {SCALE} from "./state/Play";
+import {SCALE} from "./game_state/Play";
 
 export class Cell {
     static cellToReal(position) {

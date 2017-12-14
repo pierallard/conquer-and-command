@@ -1,4 +1,4 @@
-import Play, {CIRCLE_RADIUS, SCALE} from "../state/Play";
+import Play, {CIRCLE_RADIUS, SCALE} from "../game_state/Play";
 import {UnitRepository} from "../repository/UnitRepository";
 
 export enum Rotation {

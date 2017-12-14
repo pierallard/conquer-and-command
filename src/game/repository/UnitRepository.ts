@@ -1,12 +1,7 @@
 import {MovedSprite} from "../sprite/MovedSprite";
-import {GoaledSprite} from "../sprite/GoaledSprite";
-import {StupidSprite} from "../sprite/StupidSprite";
-import {BlockedSprite} from "../sprite/BlockedSprite";
-import Play, {CIRCLE_RADIUS} from "../state/Play";
+import Play from "../game_state/Play";
 import {AStarSprite} from "../sprite/AStarSprite";
 import {Player} from "../Player";
-
-const ACCELERATION = 10;
 
 export class UnitRepository
 {
