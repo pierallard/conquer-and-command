@@ -1,7 +1,7 @@
 import {MovedSprite} from "./sprite/MovedSprite";
 import {UnitRepository} from "./repository/UnitRepository";
 import {AStarSprite} from "./sprite/AStarSprite";
-import {Player} from "./Player";
+import {Player} from "./player/Player";
 export class Selector extends Phaser.Graphics
 {
     private corner: Phaser.Point = null;

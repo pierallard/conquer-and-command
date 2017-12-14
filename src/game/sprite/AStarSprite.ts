@@ -1,13 +1,11 @@
 import {MovedSprite} from "./MovedSprite";
-import {Ground} from "../Ground";
 import {UnitRepository} from "../repository/UnitRepository";
 import {Cell} from "../Cell";
 import {AStar} from "../AStar";
-import {AlternativePosition} from "../AlternativePosition";
 import {Explosion} from "./Explosion";
 import {CIRCLE_RADIUS, SCALE} from "../game_state/Play";
 import {Shoot} from "./Shoot";
-import {Player} from "../Player";
+import {Player} from "../player/Player";
 import {State} from "../state/State";
 import {Stand} from "../state/Stand";
 import {Attack} from "../state/Attack";
@@ -18,15 +16,13 @@ const MOVE_TIME = Phaser.Timer.SECOND / 4;
 const SHOOT_TIME = Phaser.Timer.SECOND / 2;
 const MAKE_ANIM = true;
 
-export class AStarSprite extends MovedSprite
-{
+export class AStarSprite extends MovedSprite {
     private cellPosition: PIXI.Point;
-    private ground: Ground;
-    private isNotFreezed: boolean = true;
     private state: State;
     private player: Player;
+    private isNotFreezed: boolean = true;
 
-    constructor(unitRepository: UnitRepository, x: number, y: number, ground: Ground, player: Player) {
+    constructor(unitRepository: UnitRepository, x: number, y: number, player: Player) {
         super(
             unitRepository,
             Cell.cellToReal(Cell.realToCell(x)),
@@ -37,18 +33,12 @@ export class AStarSprite extends MovedSprite
 
         this.player = player;
         this.cellPosition = new PIXI.Point(Cell.realToCell(x), Cell.realToCell(y));
-        this.ground = ground;
         this.state = new Stand(this);
     }
 
     getCellPosition(): PIXI.Point {
         return this.cellPosition;
     }
-
-    isPositionAccessible(position: PIXI.Point): boolean {
-        return this.ground.isCellAccessible(position) &&
-            this.unitRepository.isCellNotOccupied(position);
-    };
 
     update() {
         if (this.isSelected() && this.game.input.activePointer.rightButton.isDown) {
@@ -160,7 +150,7 @@ export class AStarSprite extends MovedSprite
     }
 
     moveTowards(goal: PIXI.Point) {
-        const nextStep = AStar.nextStep(this.cellPosition, goal, this.isPositionAccessible.bind(this));
+        const nextStep = AStar.nextStep(this.cellPosition, goal, this.getPlayer().isPositionAccessible.bind(this.getPlayer()));
 
         if (nextStep) {
             this.loadRotation(this.getRotation(new PIXI.Point(

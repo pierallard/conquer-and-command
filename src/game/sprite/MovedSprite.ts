@@ -15,7 +15,6 @@ export enum Rotation {
 export class MovedSprite extends Phaser.Sprite
 {
     private displayLife: boolean = true;
-    protected vector: Phaser.Point = null;
     protected spriteKey: string;
     protected lifeRectangle: Phaser.Graphics;
     protected maxLife: number = 100;

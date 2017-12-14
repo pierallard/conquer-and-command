@@ -34,7 +34,7 @@ export class MoveAttack implements State {
         return AlternativePosition.isArrived(
             this.goal,
             this.unit.getCellPosition(),
-            this.unit.isPositionAccessible.bind(this.unit)
+            this.unit.getPlayer().isPositionAccessible.bind(this.unit)
         );
     }
 }

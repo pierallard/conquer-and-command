@@ -1,7 +1,7 @@
 import {MovedSprite} from "../sprite/MovedSprite";
 import Play from "../game_state/Play";
 import {AStarSprite} from "../sprite/AStarSprite";
-import {Player} from "../Player";
+import {Player} from "../player/Player";
 
 export class UnitRepository
 {
@@ -22,7 +22,6 @@ export class UnitRepository
                 this,
                 Math.random() * this.play_.game.width / 2 + (playerId === 1 ? this.play_.game.width / 2 : 0),
                 Math.random() * this.play_.game.height,
-                this.play_.ground,
                 players[playerId]
             ));
         }
