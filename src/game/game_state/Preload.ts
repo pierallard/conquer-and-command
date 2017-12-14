@@ -39,6 +39,7 @@ export default class Preload extends Phaser.State {
         this.load.spritesheet('GrssMisc', 'assets/GrssMisc.png', 20, 20, 40, 0, 0);
         this.load.spritesheet('GrasClif', 'assets/GrasClif.png', 20, 20, 45, 0, 0);
         this.load.spritesheet('Base', 'assets/Base.png', 60, 60, 8, 0, 0);
+        this.load.spritesheet('Cube', 'assets/Cube.png', 23, 27, 21, 1, 1);
     }
 
     private loadFonts()

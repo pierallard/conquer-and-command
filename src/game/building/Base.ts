@@ -1,8 +1,8 @@
 import {Cell} from "../Cell";
 import {SCALE} from "../game_state/Play";
-import {GROUND_SIZE} from "../Ground";
+import {Building} from "./Building";
 
-export class Base extends Phaser.Sprite {
+export class Base extends Phaser.Sprite implements Building {
     private animationPump: Phaser.Animation;
     private animationElec: Phaser.Animation;
     private cellPosition: PIXI.Point;
@@ -19,15 +19,15 @@ export class Base extends Phaser.Sprite {
         this.game.add.existing(this);
     }
 
-    getCellPosition() {
+    getCellPosition(): PIXI.Point {
         return this.cellPosition;
     }
 
-    getCellWidth() {
-        return Math.round(this.width / (GROUND_SIZE * SCALE));
+    getCellWidth(): number {
+        return 3;
     }
 
-    getCellHeight() {
-        return Math.round(this.height / (GROUND_SIZE * SCALE));
+    getCellHeight(): number {
+        return 3;
     }
 }

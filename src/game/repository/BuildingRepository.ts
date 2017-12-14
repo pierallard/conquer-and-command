@@ -1,10 +1,12 @@
 import {Base} from "../building/Base";
 import Play from "../game_state/Play";
 import {Player} from "../player/Player";
+import {Building} from "../building/Building";
+import {Cube} from "../building/Cube";
 
 export class BuildingRepository {
     private play_: Play;
-    private buildings: Base[];
+    private buildings: Building[];
 
     constructor(play: Play) {
         this.play_ = play;
@@ -13,7 +15,12 @@ export class BuildingRepository {
 
     generateRandomBuildings(players: Player[]) {
         this.buildings.push(
-            new Base(this.play_.game, 10, 5)
+            new Base(this.play_.game, 10, 5),
+            new Cube(this.play_.game, 9, 17),
+            new Cube(this.play_.game, 10, 18),
+            new Cube(this.play_.game, 11, 18),
+            new Cube(this.play_.game, 12, 18),
+            new Cube(this.play_.game, 13, 17),
         );
     }
 
