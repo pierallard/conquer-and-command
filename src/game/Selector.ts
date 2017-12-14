@@ -1,8 +1,8 @@
-import {MovedSprite} from "./sprite/MovedSprite";
 import {UnitRepository} from "./repository/UnitRepository";
 import {AStarSprite} from "./sprite/AStarSprite";
 import {Player} from "./player/Player";
 import {Cell} from "./Cell";
+
 export class Selector extends Phaser.Graphics
 {
     private corner: Phaser.Point = null;
@@ -27,7 +27,7 @@ export class Selector extends Phaser.Graphics
         if (this.corner !== null && this.game.input.activePointer.leftButton.isUp) {
             this.unitRepository.getUnits().forEach((unit) => {
                 let isInside = false;
-                if ((<AStarSprite> unit).getPlayer() === this.player) {
+                if (unit.getPlayer() === this.player) {
                     isInside = this.isInside(unit);
                 }
                 unit.setSelected(isInside);
@@ -68,7 +68,7 @@ export class Selector extends Phaser.Graphics
         }
     }
 
-    private isInside(sprite: MovedSprite) {
+    private isInside(sprite: AStarSprite) {
         if (!(sprite instanceof AStarSprite)) {
             return false;
         }

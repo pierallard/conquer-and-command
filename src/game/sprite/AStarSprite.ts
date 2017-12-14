@@ -1,4 +1,3 @@
-import {MovedSprite} from "./MovedSprite";
 import {Cell} from "../Cell";
 import {AStar} from "../AStar";
 import {Explosion} from "./Explosion";
@@ -15,11 +14,26 @@ const MOVE_TIME = Phaser.Timer.SECOND / 4;
 const SHOOT_TIME = Phaser.Timer.SECOND / 2;
 const SHOOT_DISTANCE = 4;
 
-export class AStarSprite extends MovedSprite {
+export enum Rotation {
+    TOP = 1,
+    TOP_RIGHT,
+    RIGHT,
+    BOTTOM_RIGHT,
+    BOTTOM,
+    BOTTOM_LEFT,
+    LEFT,
+    TOP_LEFT
+}
+
+export class AStarSprite extends Phaser.Sprite {
     private cellPosition: PIXI.Point;
     private state: State;
     private player: Player;
     private isFreezed: boolean = false;
+    private life: number = 100;
+    private maxLife: number = 100;
+    private lifeRectangle: Phaser.Graphics;
+    private selectedRectable: Phaser.Graphics = null;
 
     constructor(player: Player, x: number, y: number, ) {
         super(
@@ -27,12 +41,20 @@ export class AStarSprite extends MovedSprite {
             Cell.cellToReal(Cell.realToCell(x)),
             Cell.cellToReal(Cell.realToCell(y)),
             player.getTankKey(),
-            1000
         );
 
+        this.scale.setTo(SCALE, SCALE);
+        this.anchor.setTo(0.5, 0.5)
         this.player = player;
         this.cellPosition = new PIXI.Point(Cell.realToCell(x), Cell.realToCell(y));
         this.state = new Stand(this);
+
+        this.lifeRectangle = this.game.add.graphics(0, 0);
+        this.lifeRectangle.beginFill(0x00ff00);
+        this.lifeRectangle.drawRect(-CIRCLE_RADIUS/SCALE/2, CIRCLE_RADIUS/SCALE/2, CIRCLE_RADIUS/SCALE, 2);
+        this.addChild(this.lifeRectangle);
+
+        this.game.add.existing(this);
     }
 
     update() {
@@ -70,6 +92,10 @@ export class AStarSprite extends MovedSprite {
 
     isAlive() {
         return this.life > 0;
+    }
+
+    isSelected() {
+        return this.selectedRectable !== null;
     }
 
     shoot(ennemy: AStarSprite): void {
@@ -131,6 +157,20 @@ export class AStarSprite extends MovedSprite {
         }
     }
 
+    setSelected(value: boolean) {
+        if (value) {
+            if (null === this.selectedRectable) {
+                this.selectedRectable = this.game.add.graphics(0, 0);
+                this.selectedRectable.lineStyle(1, 0x00ff00, 0.5);
+                this.selectedRectable.drawRect(-CIRCLE_RADIUS / SCALE / 2, -CIRCLE_RADIUS / SCALE / 2, CIRCLE_RADIUS / SCALE, CIRCLE_RADIUS / SCALE);
+                this.addChild(this.selectedRectable);
+            }
+        } else if (this.selectedRectable !== null) {
+            this.selectedRectable.destroy();
+            this.selectedRectable = null;
+        }
+    }
+
     private distanceTo(unit: AStarSprite): number {
         return Math.sqrt(
             (this.cellPosition.x - unit.getCellPosition().x) * (this.cellPosition.x - unit.getCellPosition().x) +
@@ -172,4 +212,54 @@ export class AStarSprite extends MovedSprite {
     private doExplodeEffect() {
         this.game.add.existing(new Explosion(this.game, this.x, this.y));
     }
+
+    private getRotation(vector: PIXI.Point): Rotation
+    {
+        if (null === vector) {
+            return Rotation.TOP_LEFT;
+        }
+
+        const angle = Math.atan2(vector.y, vector.x);
+        if (angle > Math.PI/8 * 7) {
+            return Rotation.LEFT;
+        }
+        if (angle > Math.PI/8 * 5) {
+            return Rotation.BOTTOM_LEFT;
+        }
+        if (angle > Math.PI/8 * 3) {
+            return Rotation.BOTTOM;
+        }
+        if (angle > Math.PI/8) {
+            return Rotation.BOTTOM_RIGHT;
+        }
+        if (angle > Math.PI/8 * -1) {
+            return Rotation.RIGHT;
+        }
+        if (angle > Math.PI/8 * -3) {
+            return Rotation.TOP_RIGHT;
+        }
+        if (angle > Math.PI/8 * -5) {
+            return Rotation.TOP;
+        }
+        if (angle > Math.PI/8 * -7) {
+            return Rotation.TOP_LEFT;
+        }
+
+        return Rotation.LEFT;
+    }
+
+    private loadRotation(rotation: Rotation)
+    {
+        switch(rotation) {
+            case Rotation.TOP: this.loadTexture(this.player.getTankKey(), 1); break;
+            case Rotation.TOP_RIGHT: this.loadTexture(this.player.getTankKey(), 2); break;
+            case Rotation.RIGHT: this.loadTexture(this.player.getTankKey(), 5); break;
+            case Rotation.BOTTOM_RIGHT: this.loadTexture(this.player.getTankKey(), 8); break;
+            case Rotation.BOTTOM: this.loadTexture(this.player.getTankKey(), 7); break;
+            case Rotation.BOTTOM_LEFT: this.loadTexture(this.player.getTankKey(), 6); break;
+            case Rotation.LEFT: this.loadTexture(this.player.getTankKey(), 3); break;
+            case Rotation.TOP_LEFT: this.loadTexture(this.player.getTankKey(), 0); break;
+        }
+    }
+
 }
