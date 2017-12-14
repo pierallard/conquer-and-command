@@ -1,5 +1,6 @@
 import Play, {CIRCLE_RADIUS, SCALE} from "../game_state/Play";
 import {UnitRepository} from "../repository/UnitRepository";
+import Game = Phaser.Game;
 
 export enum Rotation {
     TOP = 1,
@@ -20,14 +21,11 @@ export class MovedSprite extends Phaser.Sprite
     protected maxLife: number = 100;
     protected life: number = 100;
     private weight: number;
-    protected unitRepository: UnitRepository;
-    private shootEnabled: boolean = true;
     private selectedRectable: Phaser.Graphics = null;
 
-    constructor(unitRepository: UnitRepository, x: number, y: number, spriteKey: string, weight: number) {
-        super(unitRepository.play_.game, x, y, spriteKey);
+    constructor(game: Game, x: number, y: number, spriteKey: string, weight: number) {
+        super(game, x, y, spriteKey);
 
-        this.unitRepository = unitRepository;
         this.spriteKey = spriteKey;
         this.weight = weight;
 
@@ -41,12 +39,6 @@ export class MovedSprite extends Phaser.Sprite
         this.scale.setTo(SCALE);
         this.anchor.setTo(0.5, 0.5);
         this.game.add.existing(this);
-
-        // To be more realistic
-        this.shootEnabled = false;
-        this.unitRepository.play_.game.time.events.add(Math.random() * 4 * Phaser.Timer.SECOND, () => {
-            this.shootEnabled = true;
-        }, this);
     }
 
     public getRotation(vector: PIXI.Point): Rotation

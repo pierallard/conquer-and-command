@@ -1,5 +1,4 @@
 import {MovedSprite} from "./MovedSprite";
-import {UnitRepository} from "../repository/UnitRepository";
 import {Cell} from "../Cell";
 import {AStar} from "../AStar";
 import {Explosion} from "./Explosion";
@@ -22,9 +21,9 @@ export class AStarSprite extends MovedSprite {
     private player: Player;
     private isFreezed: boolean = false;
 
-    constructor(unitRepository: UnitRepository, x: number, y: number, player: Player) {
+    constructor(player: Player, x: number, y: number, ) {
         super(
-            unitRepository,
+            player.getUnitRepository().play_.game,
             Cell.cellToReal(Cell.realToCell(x)),
             Cell.cellToReal(Cell.realToCell(y)),
             player.getTankKey(),
@@ -85,14 +84,14 @@ export class AStarSprite extends MovedSprite {
         if (!this.isAlive()) {
             this.doExplodeEffect();
             this.destroy(true);
-            this.unitRepository.removeSprite(this);
+            this.player.getUnitRepository().removeSprite(this);
         }
 
         this.updateLife();
     }
 
     getClosestShootable(): AStarSprite {
-        const enemies = this.unitRepository.getEnnemyUnits(this.player);
+        const enemies = this.player.getEnnemyUnits();
         let minDistance = null;
         let closest = null;
         for (let i = 0; i < enemies.length; i++) {
@@ -123,7 +122,7 @@ export class AStarSprite extends MovedSprite {
             this.rotateTowards(nextStep);
             this.cellPosition = nextStep;
 
-            this.unitRepository.play_.game.add.tween(this).to({
+            this.game.add.tween(this).to({
                 x: Cell.cellToReal(this.cellPosition.x),
                 y: Cell.cellToReal(this.cellPosition.y)
             }, MOVE_TIME, Phaser.Easing.Default, true);
@@ -165,12 +164,12 @@ export class AStarSprite extends MovedSprite {
 
     private freeze(time: number) {
         this.isFreezed = true;
-        this.unitRepository.play_.game.time.events.add(time, () => {
+        this.game.time.events.add(time, () => {
             this.isFreezed = false;
         }, this);
     }
 
     private doExplodeEffect() {
-        this.unitRepository.play_.game.add.existing(new Explosion(this.unitRepository.play_.game, this.x, this.y));
+        this.game.add.existing(new Explosion(this.game, this.x, this.y));
     }
 }

@@ -1,6 +1,6 @@
 import {AlternativePosition} from "./AlternativePosition";
-export class AStar
-{
+
+export class AStar {
     static nextStep(
         cellPosition: PIXI.Point,
         cellGoal: PIXI.Point,
@@ -98,8 +98,7 @@ class Paths {
     }
 }
 
-class Path
-{
+class Path {
     private steps: PIXI.Point[];
     private goal: PIXI.Point;
     private confidence: number;

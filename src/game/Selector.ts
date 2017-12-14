@@ -3,9 +3,6 @@ import {UnitRepository} from "./repository/UnitRepository";
 import {AStarSprite} from "./sprite/AStarSprite";
 import {Player} from "./player/Player";
 import {Cell} from "./Cell";
-import {Attack} from "./state/Attack";
-import {Follow} from "./state/Follow";
-import {MoveAttack} from "./state/MoveAttack";
 export class Selector extends Phaser.Graphics
 {
     private corner: Phaser.Point = null;

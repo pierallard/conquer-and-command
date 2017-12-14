@@ -1,5 +1,6 @@
 import {Ground} from "../Ground";
 import {UnitRepository} from "../repository/UnitRepository";
+import {AStarSprite} from "../sprite/AStarSprite";
 
 export class Player {
     private tankKey: string;
@@ -19,4 +20,15 @@ export class Player {
     public isPositionAccessible(position: PIXI.Point): boolean {
         return this.ground.isCellAccessible(position) && this.unitRepository.isCellNotOccupied(position);
     };
+
+    /**
+     * @deprecated
+     */
+    getUnitRepository(): UnitRepository {
+        return this.unitRepository;
+    }
+
+    getEnnemyUnits(): AStarSprite[] {
+        return this.unitRepository.getEnnemyUnits(this);
+    }
 }

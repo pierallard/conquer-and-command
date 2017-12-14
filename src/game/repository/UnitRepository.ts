@@ -1,4 +1,3 @@
-import {MovedSprite} from "../sprite/MovedSprite";
 import Play from "../game_state/Play";
 import {AStarSprite} from "../sprite/AStarSprite";
 import {Player} from "../player/Player";
@@ -19,10 +18,9 @@ export class UnitRepository
         for (let i = 0; i < 80; i++) {
             let playerId = Math.floor(Math.random() * players.length);
             this.units.push(new AStarSprite(
-                this,
+                players[playerId],
                 Math.random() * this.play_.game.width / 2 + (playerId === 1 ? this.play_.game.width / 2 : 0),
-                Math.random() * this.play_.game.height,
-                players[playerId]
+                Math.random() * this.play_.game.height
             ));
         }
     }
@@ -57,7 +55,7 @@ export class UnitRepository
         return null;
     }
 
-    getEnnemyUnits(player: Player): MovedSprite[] {
+    getEnnemyUnits(player: Player): AStarSprite[] {
         return this.units.filter((unit) => {
             return unit.getPlayer() !== player;
         });
