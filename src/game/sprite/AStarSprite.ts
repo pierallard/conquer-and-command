@@ -14,9 +14,10 @@ const MAKE_ANIM = true;
 
 enum Mode {
     STAND,
-    MOVETO,
+    MOVE_TO,
     ATTACK,
-    FOLLOW
+    FOLLOW,
+    MOVE_ATTACK
 }
 
 export class AStarSprite extends MovedSprite
@@ -67,14 +68,13 @@ export class AStarSprite extends MovedSprite
             this.unitRepository.isCellNotOccupied(position);
     };
 
-    update()
-    {
+    update() {
         if (this.isSelected() && this.game.input.activePointer.rightButton.isDown) {
             this.updateState();
         }
 
         if (this.isArrived()) {
-            if (this.state === Mode.MOVETO) {
+            if (this.state === Mode.MOVE_TO) {
                 this.cellGoal = null;
                 this.state = Mode.STAND;
             }
@@ -85,13 +85,20 @@ export class AStarSprite extends MovedSprite
                 this.unitGoal = null;
                 this.state = Mode.STAND;
             } else {
-                if (this.isAbleToShoot()) {
-                    this.shootz();
+                if (this.isAbleToShoot(this.unitGoal)) {
+                    this.shootz(this.unitGoal);
                 }
             }
         }
 
-        if ((this.state === Mode.MOVETO || this.state === Mode.FOLLOW || this.state === Mode.ATTACK) && this.canMove) {
+        if (this.state === Mode.MOVE_ATTACK && this.canMove) {
+            const shootable = this.getClosestShootable();
+            if (shootable) {
+                this.shootz(shootable)
+            }
+        }
+
+        if (([Mode.MOVE_TO, Mode.FOLLOW, Mode.ATTACK, Mode.MOVE_ATTACK].indexOf(this.state) > -1) && this.canMove) {
             let nextStep = null;
             if (this.cellGoal) {
                 nextStep = AStar.nextStep(this.cellPosition, this.cellGoal, this.isPositionAccessible.bind(this));
@@ -138,7 +145,7 @@ export class AStarSprite extends MovedSprite
             this.unitGoal = unit;
             this.cellGoal = null;
         } else {
-            this.state = Mode.MOVETO;
+            this.state = Mode.MOVE_ATTACK;
             this.cellGoal = cell;
             this.unitGoal = null;
         }
@@ -148,23 +155,25 @@ export class AStarSprite extends MovedSprite
         }
     }
 
-    private isAbleToShoot() {
-        const distance = Math.sqrt(
-            (this.cellPosition.x - this.unitGoal.getCellPosition().x) * (this.cellPosition.x - this.unitGoal.getCellPosition().x) +
-            (this.cellPosition.y - this.unitGoal.getCellPosition().y) * (this.cellPosition.y - this.unitGoal.getCellPosition().y)
-        );
-
-        return distance <= 4;
+    private isAbleToShoot(ennemy: AStarSprite): boolean {
+        return this.distanceTo(ennemy) <= 4;
     }
 
-    private shootz() {
+    private distanceTo(unit: AStarSprite): number {
+        return Math.sqrt(
+            (this.cellPosition.x - unit.getCellPosition().x) * (this.cellPosition.x - unit.getCellPosition().x) +
+            (this.cellPosition.y - unit.getCellPosition().y) * (this.cellPosition.y - unit.getCellPosition().y)
+        );
+    }
+
+    private shootz(ennemy: AStarSprite): void {
         const rotation = this.getRotation(new Phaser.Point(
-            this.unitGoal.getCellPosition().x - this.cellPosition.x,
-            this.unitGoal.getCellPosition().y - this.cellPosition.y
+            ennemy.getCellPosition().x - this.cellPosition.x,
+            ennemy.getCellPosition().y - this.cellPosition.y
         ));
         this.loadRotation(rotation);
         this.game.add.existing(new Shoot(this.game, this.x, this.y, rotation));
-        this.unitGoal.lostLife(10);
+        ennemy.lostLife(10);
 
         this.canMove = false;
         this.unitRepository.play_.game.time.events.add(SHOOT_TIME, () => {
@@ -195,5 +204,25 @@ export class AStarSprite extends MovedSprite
 
     isDestroyed() {
         return this.life <= 0;
+    }
+
+    private getClosestShootable(): AStarSprite {
+        const ennemies = this.unitRepository.getUnits();
+        let minDistance = null;
+        let closest = null;
+        for (let i = 0; i < ennemies.length; i++) {
+            const ennemy = (<AStarSprite> ennemies[i]);
+            if (ennemy !== this) {
+                const distance = this.distanceTo(ennemy);
+                if (distance <= 4) {
+                    if (null === closest || minDistance > distance) {
+                        minDistance = distance;
+                        closest = ennemy;
+                    }
+                }
+            }
+        }
+
+        return closest;
     }
 }
