@@ -27,7 +27,7 @@ export class AStarSprite extends MovedSprite
     private unitGoal: AStarSprite = null;
     private cellPosition: PIXI.Point;
     private ground: Ground;
-    private canMove: boolean = true;
+    private isNotFreezed: boolean = true;
     private state: Mode;
     private player: Player;
 
@@ -83,7 +83,7 @@ export class AStarSprite extends MovedSprite
             }
         }
 
-        if (this.state === Mode.ATTACK && this.canMove) {
+        if (this.state === Mode.ATTACK && this.isNotFreezed) {
             if (this.unitGoal.isDestroyed()) {
                 this.unitGoal = null;
                 this.state = Mode.STAND;
@@ -94,14 +94,14 @@ export class AStarSprite extends MovedSprite
             }
         }
 
-        if (this.state === Mode.MOVE_ATTACK && this.canMove) {
+        if (([Mode.MOVE_ATTACK, Mode.STAND].indexOf(this.state) > -1) && this.isNotFreezed) {
             const shootable = this.getClosestShootable();
             if (shootable) {
                 this.shootz(shootable)
             }
         }
 
-        if (([Mode.MOVE_TO, Mode.FOLLOW, Mode.ATTACK, Mode.MOVE_ATTACK].indexOf(this.state) > -1) && this.canMove) {
+        if (([Mode.MOVE_TO, Mode.FOLLOW, Mode.ATTACK, Mode.MOVE_ATTACK].indexOf(this.state) > -1) && this.isNotFreezed) {
             let nextStep = null;
             if (this.cellGoal) {
                 nextStep = AStar.nextStep(this.cellPosition, this.cellGoal, this.isPositionAccessible.bind(this));
@@ -127,9 +127,9 @@ export class AStarSprite extends MovedSprite
                     this.y = Cell.cellToReal(this.cellPosition.y);
                 }
 
-                this.canMove = false;
+                this.isNotFreezed = false;
                 this.unitRepository.play_.game.time.events.add(MOVE_TIME, () => {
-                    this.canMove = true;
+                    this.isNotFreezed = true;
                 }, this);
             }
         }
@@ -182,9 +182,9 @@ export class AStarSprite extends MovedSprite
         this.game.add.existing(new Shoot(this.game, this.x, this.y, rotation));
         ennemy.lostLife(10);
 
-        this.canMove = false;
+        this.isNotFreezed = false;
         this.unitRepository.play_.game.time.events.add(SHOOT_TIME, () => {
-            this.canMove = true;
+            this.isNotFreezed = true;
         }, this);
     }
 
