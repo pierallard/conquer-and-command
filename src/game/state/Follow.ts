@@ -26,7 +26,7 @@ export class Follow implements State {
         return AlternativePosition.isArrived(
             this.goal.getCellPosition(),
             this.unit.getCellPosition(),
-            this.unit.getPlayer().isPositionAccessible.bind(this.unit)
+            this.unit.getPlayer().isPositionAccessible.bind(this.unit.getPlayer())
         );
     }
 
