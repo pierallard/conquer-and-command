@@ -6,6 +6,7 @@ export class Base extends Phaser.Sprite implements Building {
     private animationPump: Phaser.Animation;
     private animationElec: Phaser.Animation;
     private cellPosition: PIXI.Point;
+    private minerals: number = 0;
 
     constructor(game: Phaser.Game, x: number, y: number) {
         super(game, Cell.cellToReal(x), Cell.cellToReal(y), 'Base');
@@ -29,5 +30,9 @@ export class Base extends Phaser.Sprite implements Building {
 
     getCellHeight(): number {
         return 3;
+    }
+
+    addMinerals(loading: number) {
+        this.minerals += loading;
     }
 }

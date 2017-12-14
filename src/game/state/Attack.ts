@@ -1,13 +1,13 @@
 import {State} from "./State";
-import {AStarSprite} from "../sprite/AStarSprite";
+import {Unit} from "../unit/Unit";
 import {Stand} from "./Stand";
 import {AlternativePosition} from "../AlternativePosition";
 
 export class Attack implements State {
-    private unit: AStarSprite;
-    private goal: AStarSprite;
+    private unit: Unit;
+    private goal: Unit;
 
-    constructor(unit: AStarSprite, goal: AStarSprite) {
+    constructor(unit: Unit, goal: Unit) {
         this.unit = unit;
         this.goal = goal;
     }

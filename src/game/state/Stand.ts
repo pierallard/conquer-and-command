@@ -1,10 +1,10 @@
 import {State} from "./State";
-import {AStarSprite} from "../sprite/AStarSprite";
+import {Unit} from "../unit/Unit";
 
 export class Stand implements State {
-    private unit: AStarSprite;
+    private unit: Unit;
 
-    constructor(unit: AStarSprite) {
+    constructor(unit: Unit) {
         this.unit = unit;
     }
 

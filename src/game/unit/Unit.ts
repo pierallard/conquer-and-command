@@ -1,14 +1,15 @@
 import {Cell} from "../Cell";
 import {AStar} from "../AStar";
-import {Explosion} from "./Explosion";
+import {Explosion} from "../sprite/Explosion";
 import {CIRCLE_RADIUS, SCALE} from "../game_state/Play";
-import {Shoot} from "./Shoot";
+import {Shoot} from "../sprite/Shoot";
 import {Player} from "../player/Player";
 import {State} from "../state/State";
 import {Stand} from "../state/Stand";
 import {Attack} from "../state/Attack";
 import {Follow} from "../state/Follow";
 import {MoveAttack} from "../state/MoveAttack";
+import {Building} from "../building/Building";
 
 const MOVE_TIME = Phaser.Timer.SECOND / 4;
 const SHOOT_TIME = Phaser.Timer.SECOND / 2;
@@ -25,22 +26,22 @@ export enum Rotation {
     TOP_LEFT
 }
 
-export class AStarSprite extends Phaser.Sprite {
+export abstract class Unit extends Phaser.Sprite {
     private cellPosition: PIXI.Point;
-    private state: State;
-    private player: Player;
+    protected state: State;
+    protected player: Player;
     private isFreezed: boolean = false;
     private life: number = 100;
     private maxLife: number = 100;
     private lifeRectangle: Phaser.Graphics;
     private selectedRectable: Phaser.Graphics = null;
 
-    constructor(player: Player, x: number, y: number, ) {
+    constructor(player: Player, x: number, y: number, key: string) {
         super(
             player.getUnitRepository().play_.game,
             Cell.cellToReal(Cell.realToCell(x)),
             Cell.cellToReal(Cell.realToCell(y)),
-            player.getTankKey(),
+            key
         );
 
         this.scale.setTo(SCALE, SCALE);
@@ -66,18 +67,6 @@ export class AStarSprite extends Phaser.Sprite {
         super.update();
     }
 
-    attack(unit: AStarSprite) {
-        this.state = new Attack(this, unit);
-    }
-
-    follow(unit: AStarSprite) {
-        this.state = new Follow(this, unit);
-    }
-
-    move(cell: PIXI.Point) {
-        this.state = new MoveAttack(this, cell);
-    }
-
     getCellPosition(): PIXI.Point {
         return this.cellPosition;
     }
@@ -98,7 +87,7 @@ export class AStarSprite extends Phaser.Sprite {
         return this.selectedRectable !== null;
     }
 
-    shoot(ennemy: AStarSprite): void {
+    shoot(ennemy: Unit): void {
         this.rotateTowards(ennemy.getCellPosition());
         this.doShootEffect(ennemy.getCellPosition());
         ennemy.lostLife(10);
@@ -116,12 +105,12 @@ export class AStarSprite extends Phaser.Sprite {
         this.updateLife();
     }
 
-    getClosestShootable(): AStarSprite {
+    getClosestShootable(): Unit {
         const enemies = this.player.getEnnemyUnits();
         let minDistance = null;
         let closest = null;
         for (let i = 0; i < enemies.length; i++) {
-            const enemy = (<AStarSprite> enemies[i]);
+            const enemy = (<Unit> enemies[i]);
             if (enemy !== this) {
                 const distance = this.distanceTo(enemy);
                 if (distance <= this.getShootDistance()) {
@@ -171,7 +160,7 @@ export class AStarSprite extends Phaser.Sprite {
         }
     }
 
-    private distanceTo(unit: AStarSprite): number {
+    protected distanceTo(unit: Unit | Building): number {
         return Math.sqrt(
             (this.cellPosition.x - unit.getCellPosition().x) * (this.cellPosition.x - unit.getCellPosition().x) +
             (this.cellPosition.y - unit.getCellPosition().y) * (this.cellPosition.y - unit.getCellPosition().y)
@@ -186,7 +175,7 @@ export class AStarSprite extends Phaser.Sprite {
             CIRCLE_RADIUS/SCALE/2, this.life / this.maxLife * CIRCLE_RADIUS/SCALE, 2);
     }
 
-    private rotateTowards(cellPosition: PIXI.Point): void {
+    protected rotateTowards(cellPosition: PIXI.Point): void {
         const rotation = this.getRotation(new Phaser.Point(
             cellPosition.x - this.cellPosition.x,
             cellPosition.y - this.cellPosition.y
@@ -202,7 +191,7 @@ export class AStarSprite extends Phaser.Sprite {
         this.game.add.existing(new Shoot(this.game, this.x, this.y, rotation));
     }
 
-    private freeze(time: number) {
+    protected freeze(time: number) {
         this.isFreezed = true;
         this.game.time.events.add(time, () => {
             this.isFreezed = false;
@@ -251,15 +240,27 @@ export class AStarSprite extends Phaser.Sprite {
     private loadRotation(rotation: Rotation)
     {
         switch(rotation) {
-            case Rotation.TOP: this.loadTexture(this.player.getTankKey(), 1); break;
-            case Rotation.TOP_RIGHT: this.loadTexture(this.player.getTankKey(), 2); break;
-            case Rotation.RIGHT: this.loadTexture(this.player.getTankKey(), 5); break;
-            case Rotation.BOTTOM_RIGHT: this.loadTexture(this.player.getTankKey(), 8); break;
-            case Rotation.BOTTOM: this.loadTexture(this.player.getTankKey(), 7); break;
-            case Rotation.BOTTOM_LEFT: this.loadTexture(this.player.getTankKey(), 6); break;
-            case Rotation.LEFT: this.loadTexture(this.player.getTankKey(), 3); break;
-            case Rotation.TOP_LEFT: this.loadTexture(this.player.getTankKey(), 0); break;
+            case Rotation.TOP: this.loadTexture(this.key, 1); break;
+            case Rotation.TOP_RIGHT: this.loadTexture(this.key, 2); break;
+            case Rotation.RIGHT: this.loadTexture(this.key, 5); break;
+            case Rotation.BOTTOM_RIGHT: this.loadTexture(this.key, 8); break;
+            case Rotation.BOTTOM: this.loadTexture(this.key, 7); break;
+            case Rotation.BOTTOM_LEFT: this.loadTexture(this.key, 6); break;
+            case Rotation.LEFT: this.loadTexture(this.key, 3); break;
+            case Rotation.TOP_LEFT: this.loadTexture(this.key, 0); break;
         }
     }
 
+    updateStateAfterclick(cell: PIXI.Point) {
+        const unit = this.player.getUnitRepository().unitAt(cell);
+        if (null !== unit) {
+            if (this.getPlayer() !== unit.getPlayer()) {
+                this.state = new Attack(this, unit);
+            } else {
+                this.state = new Follow(this, unit);
+            }
+        } else {
+            this.state = new MoveAttack(this, cell);
+        }
+    }
 }

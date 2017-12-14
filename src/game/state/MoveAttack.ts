@@ -1,13 +1,13 @@
 import {State} from "./State";
-import {AStarSprite} from "../sprite/AStarSprite";
+import {Unit} from "../unit/Unit";
 import {Stand} from "./Stand";
 import {AlternativePosition} from "../AlternativePosition";
 
 export class MoveAttack implements State {
-    private unit: AStarSprite;
+    private unit: Unit;
     private goal: PIXI.Point;
 
-    constructor(unit: AStarSprite, goal: PIXI.Point) {
+    constructor(unit: Unit, goal: PIXI.Point) {
         this.unit = unit;
         this.goal = goal;
     }

@@ -1,5 +1,5 @@
 import {UnitRepository} from "./repository/UnitRepository";
-import {AStarSprite} from "./sprite/AStarSprite";
+import {Unit} from "./unit/Unit";
 import {Player} from "./player/Player";
 import {Cell} from "./Cell";
 
@@ -38,20 +38,10 @@ export class Selector extends Phaser.Graphics
 
         if (this.game.input.activePointer.rightButton.isDown) {
             this.unitRepository.getSelectedUnits().forEach((source) => {
-                const cell = new PIXI.Point(
+                source.updateStateAfterclick(new PIXI.Point(
                     Cell.realToCell(this.game.input.mousePointer.x),
                     Cell.realToCell(this.game.input.mousePointer.y)
-                );
-                const unit = this.unitRepository.unitAt(cell);
-                if (null !== unit) {
-                    if (source.getPlayer() !== unit.getPlayer()) {
-                        source.attack(unit);
-                    } else {
-                        source.follow(unit);
-                    }
-                } else {
-                    source.move(cell);
-                }
+                ));
             });
         }
 
@@ -68,8 +58,8 @@ export class Selector extends Phaser.Graphics
         }
     }
 
-    private isInside(sprite: AStarSprite) {
-        if (!(sprite instanceof AStarSprite)) {
+    private isInside(sprite: Unit) {
+        if (!(sprite instanceof Unit)) {
             return false;
         }
         const left = Math.min(this.corner.x, this.game.input.mousePointer.x);

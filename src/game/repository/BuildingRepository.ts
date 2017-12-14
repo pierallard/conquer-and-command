@@ -25,18 +25,26 @@ export class BuildingRepository {
     }
 
     isCellNotOccupied(position: PIXI.Point): boolean {
+        return this.buildingAt(position) === null;
+    }
+
+    buildingAt(position: PIXI.Point): Building {
         for (let i = 0; i < this.buildings.length; i++) {
             let building = this.buildings[i];
             for (let x = 0; x < building.getCellWidth(); x++) {
                 for (let y = 0; y < building.getCellHeight(); y++) {
                     if (building.getCellPosition().x + x === position.x &&
                         building.getCellPosition().y + y === position.y) {
-                        return false;
+                        return building;
                     }
                 }
             }
         }
 
-        return true;
+        return null;
+    }
+
+    getBuildings() {
+        return this.buildings;
     }
 }

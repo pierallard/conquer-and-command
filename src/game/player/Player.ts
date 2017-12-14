@@ -1,7 +1,8 @@
 import {Ground} from "../Ground";
 import {UnitRepository} from "../repository/UnitRepository";
-import {AStarSprite} from "../sprite/AStarSprite";
+import {Unit} from "../unit/Unit";
 import {BuildingRepository} from "../repository/BuildingRepository";
+import {Base} from "../building/Base";
 
 export class Player {
     private tankKey: string;
@@ -38,7 +39,24 @@ export class Player {
         return this.unitRepository;
     }
 
-    getEnnemyUnits(): AStarSprite[] {
+    getEnnemyUnits(): Unit[] {
         return this.unitRepository.getEnnemyUnits(this);
+    }
+
+    getHarversterKey() {
+        return 'Builder2';
+    }
+
+    /**
+     * @deprecated
+     */
+    getBuildingRepository(): BuildingRepository {
+        return this.buildingRepository;
+    }
+
+    getBases() {
+        return this.buildingRepository.getBuildings().filter((building) => {
+            return building instanceof Base;
+        })
     }
 }

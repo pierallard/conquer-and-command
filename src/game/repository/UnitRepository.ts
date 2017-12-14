@@ -1,10 +1,12 @@
 import Play from "../game_state/Play";
-import {AStarSprite} from "../sprite/AStarSprite";
+import {Unit} from "../unit/Unit";
 import {Player} from "../player/Player";
+import {Tank} from "../unit/Tank";
+import {Harvester} from "../unit/Harvester";
 
 export class UnitRepository
 {
-    private units: AStarSprite[];
+    private units: Unit[];
     public play_: Play;
 
     constructor(play_: Play)
@@ -15,21 +17,28 @@ export class UnitRepository
 
     public generateRandomUnits(players: Player[]): void
     {
-        for (let i = 0; i < 80; i++) {
-            let playerId = Math.floor(Math.random() * players.length);
-            this.units.push(new AStarSprite(
-                players[playerId],
-                Math.random() * this.play_.game.width / 2 + (playerId === 1 ? this.play_.game.width / 2 : 0),
+        // for (let i = 0; i < 80; i++) {
+        //     let playerId = Math.floor(Math.random() * players.length);
+        //     this.units.push(new Tank(
+        //         players[playerId],
+        //         Math.random() * this.play_.game.width / 2 + (playerId === 1 ? this.play_.game.width / 2 : 0),
+        //         Math.random() * this.play_.game.height
+        //     ));
+        // }
+        for (let i = 0; i < 10; i++) {
+            this.units.push(new Harvester(
+                players[0],
+                Math.random() * this.play_.game.width / 2,
                 Math.random() * this.play_.game.height
             ));
         }
     }
 
-    getUnits(): AStarSprite[] {
+    getUnits(): Unit[] {
         return this.units;
     }
 
-    removeSprite(movedSprite: AStarSprite) {
+    removeSprite(movedSprite: Unit) {
         const index = this.units.indexOf(movedSprite);
         if (index > -1) {
             this.units.splice(index, 1);
@@ -40,14 +49,14 @@ export class UnitRepository
         return null === this.unitAt(position)
     }
 
-    unitAt(position: PIXI.Point): AStarSprite {
+    unitAt(position: PIXI.Point): Unit {
         for (let i = 0; i < this.units.length; i++) {
-            if (this.units[i] instanceof AStarSprite) {
+            if (this.units[i] instanceof Unit) {
                 if (
                     this.units[i].getCellPosition().x === position.x &&
                     this.units[i].getCellPosition().y === position.y
                 ) {
-                    return (<AStarSprite> this.units[i]);
+                    return (<Unit> this.units[i]);
                 }
             }
         }
@@ -55,7 +64,7 @@ export class UnitRepository
         return null;
     }
 
-    getEnnemyUnits(player: Player): AStarSprite[] {
+    getEnnemyUnits(player: Player): Unit[] {
         return this.units.filter((unit) => {
             return unit.getPlayer() !== player;
         });
