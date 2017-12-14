@@ -20,7 +20,7 @@ export class AStarSprite extends MovedSprite {
     private cellPosition: PIXI.Point;
     private state: State;
     private player: Player;
-    private isNotFreezed: boolean = true;
+    private isFreezed: boolean = false;
 
     constructor(unitRepository: UnitRepository, x: number, y: number, player: Player) {
         super(
@@ -37,7 +37,7 @@ export class AStarSprite extends MovedSprite {
     }
 
     update() {
-        if (this.isNotFreezed) {
+        if (!this.isFreezed) {
             this.state = this.state.getNextStep();
             this.state.run();
         }
@@ -164,9 +164,9 @@ export class AStarSprite extends MovedSprite {
     }
 
     private freeze(time: number) {
-        this.isNotFreezed = false;
+        this.isFreezed = true;
         this.unitRepository.play_.game.time.events.add(time, () => {
-            this.isNotFreezed = true;
+            this.isFreezed = false;
         }, this);
     }
 
