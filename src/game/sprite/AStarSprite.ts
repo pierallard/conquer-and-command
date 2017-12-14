@@ -6,6 +6,7 @@ import {AStar} from "../AStar";
 import {AlternativePosition} from "../AlternativePosition";
 import {Explosion} from "./Explosion";
 import {CIRCLE_RADIUS, SCALE} from "../state/Play";
+import {Shoot} from "./Shoot";
 
 const MOVE_TIME = Phaser.Timer.SECOND / 4;
 const SHOOT_TIME = Phaser.Timer.SECOND / 2;
@@ -80,13 +81,18 @@ export class AStarSprite extends MovedSprite
         }
 
         if (this.state === Mode.ATTACK && this.canMove) {
-            if (this.isAbleToShoot()) {
-                this.shootz();
+            if (this.unitGoal.isDestroyed()) {
+                this.unitGoal = null;
+                this.state = Mode.STAND;
+            } else {
+                if (this.isAbleToShoot()) {
+                    this.shootz();
+                }
             }
         }
 
-        let nextStep = null;
-        if (this.canMove) {
+        if ((this.state === Mode.MOVETO || this.state === Mode.FOLLOW || this.state === Mode.ATTACK) && this.canMove) {
+            let nextStep = null;
             if (this.cellGoal) {
                 nextStep = AStar.nextStep(this.cellPosition, this.cellGoal, this.isPositionAccessible.bind(this));
             } else if (this.unitGoal && !this.isArrived()) {
@@ -152,6 +158,12 @@ export class AStarSprite extends MovedSprite
     }
 
     private shootz() {
+        const rotation = this.getRotation(new Phaser.Point(
+            this.unitGoal.getCellPosition().x - this.cellPosition.x,
+            this.unitGoal.getCellPosition().y - this.cellPosition.y
+        ));
+        this.loadRotation(rotation);
+        this.game.add.existing(new Shoot(this.game, this.x, this.y, rotation));
         this.unitGoal.lostLife(10);
 
         this.canMove = false;
@@ -176,6 +188,12 @@ export class AStarSprite extends MovedSprite
     {
         this.lifeRectangle.clear();
         this.lifeRectangle.beginFill(0x00ff00);
-        this.lifeRectangle.drawRect(-CIRCLE_RADIUS/SCALE/2, CIRCLE_RADIUS/SCALE/2, this.life / this.maxLife * CIRCLE_RADIUS/SCALE/2, 2);
+        this.lifeRectangle.drawRect(
+            -CIRCLE_RADIUS/SCALE/2,
+            CIRCLE_RADIUS/SCALE/2, this.life / this.maxLife * CIRCLE_RADIUS/SCALE, 2);
+    }
+
+    isDestroyed() {
+        return this.life <= 0;
     }
 }

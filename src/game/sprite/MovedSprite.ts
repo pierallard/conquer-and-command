@@ -1,7 +1,5 @@
 import Play, {CIRCLE_RADIUS, SCALE} from "../state/Play";
-import {Shoot} from "./Shoot";
 import {UnitRepository} from "../repository/UnitRepository";
-import {Explosion} from "./Explosion";
 
 export enum Rotation {
     TOP = 1,
@@ -14,13 +12,10 @@ export enum Rotation {
     TOP_LEFT
 }
 
-const MIN_SHOOT_DISTANCE = 200;
-
 export class MovedSprite extends Phaser.Sprite
 {
     private displayLife: boolean = true;
     protected vector: Phaser.Point = null;
-    protected debugText: Phaser.Text;
     protected spriteKey: string;
     protected lifeRectangle: Phaser.Graphics;
     protected maxLife: number = 100;
@@ -36,9 +31,6 @@ export class MovedSprite extends Phaser.Sprite
         this.unitRepository = unitRepository;
         this.spriteKey = spriteKey;
         this.weight = weight;
-        const style = { font: "8px Arial", fill: "#ff0000" };
-        this.debugText = this.game.add.text(-10, -16, "", style);
-        this.addChild(this.debugText);
 
         this.lifeRectangle = this.game.add.graphics(0, 0);
         this.lifeRectangle.beginFill(0x00ff00);
@@ -56,32 +48,6 @@ export class MovedSprite extends Phaser.Sprite
         this.unitRepository.play_.game.time.events.add(Math.random() * 4 * Phaser.Timer.SECOND, () => {
             this.shootEnabled = true;
         }, this);
-    }
-
-    update()
-    {
-        if (this.shootEnabled) {
-            const ennemy = this.getClosestEnnemy();
-            if (ennemy) {
-                this.shoot(ennemy);
-            }
-        }
-
-        if (null !== this.vector) {
-            this.setKey();
-            this.x = this.x + this.vector.x;
-            this.y = this.y + this.vector.y;
-
-            this.debugText.setText(Math.floor(this.vector.x) + ',' + Math.floor(this.vector.y));
-        }
-        else {
-            this.debugText.setText('');
-        }
-    }
-
-    private setKey(): void
-    {
-        this.loadRotation(this.getRotation(this.vector));
     }
 
     public getRotation(vector: PIXI.Point): Rotation
@@ -131,46 +97,6 @@ export class MovedSprite extends Phaser.Sprite
             case Rotation.LEFT: this.loadTexture(this.spriteKey, 3); break;
             case Rotation.TOP_LEFT: this.loadTexture(this.spriteKey, 0); break;
         }
-    }
-
-    public getWeight()
-    {
-        return this.weight;
-    }
-
-    private getClosestEnnemy(): MovedSprite {
-        let closest = null;
-        let closestDist = null;
-
-        this.unitRepository.getUnits().forEach((sprite) => {
-            if (this.isEnnemy(sprite)) {
-                const dist = Math.sqrt((sprite.x - this.x) * (sprite.x - this.x) + (sprite.y - this.y) * (sprite.y - this.y));
-                if (dist < MIN_SHOOT_DISTANCE) {
-                    if (null === closest || closestDist > dist) {
-                        closestDist = dist;
-                        closest = sprite;
-                    }
-                }
-            }
-        });
-
-        return closest;
-    }
-
-    private shoot(ennemy: MovedSprite): void {
-        let newRotation = this.getRotation(new Phaser.Point(ennemy.x - this.x, ennemy.y - this.y));
-        this.loadRotation(newRotation);
-        this.game.add.existing(new Shoot(this.game, this.x, this.y, newRotation));
-        // ennemy.lostLife(20);
-        this.shootEnabled = false;
-
-        this.unitRepository.play_.game.time.events.add(Phaser.Timer.SECOND, () => {
-            this.shootEnabled = true;
-        }, this);
-    }
-
-    protected isEnnemy(sprite: MovedSprite) {
-        return false;
     }
 
     setSelected(value: boolean) {
