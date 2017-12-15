@@ -1,5 +1,5 @@
 import {Cell} from "../Cell";
-import {AStar} from "../AStar";
+import {AStar, Path} from "../AStar";
 import {Explosion} from "../sprite/Explosion";
 import {CIRCLE_RADIUS, SCALE} from "../game_state/Play";
 import {Shoot} from "../sprite/Shoot";
@@ -26,6 +26,9 @@ export enum Rotation {
 }
 
 export abstract class Unit extends Phaser.Sprite {
+    private pathCache: Path;
+    private goalCache: PIXI.Point;
+
     private cellPosition: PIXI.Point;
     protected state: State;
     protected player: Player;
@@ -44,7 +47,7 @@ export abstract class Unit extends Phaser.Sprite {
         );
 
         this.scale.setTo(SCALE, SCALE);
-        this.anchor.setTo(0.5, 0.5)
+        this.anchor.setTo(0.5, 0.5);
         this.player = player;
         this.cellPosition = new PIXI.Point(Cell.realToCell(x), Cell.realToCell(y));
         this.state = new Stand(this);
@@ -123,12 +126,28 @@ export abstract class Unit extends Phaser.Sprite {
     }
 
     moveTowards(goal: PIXI.Point) {
-        // TODO avoid recomputing of A* when path is accessible
-        const nextStep = AStar.nextStep(
-            this.cellPosition,
-            goal,
-            this.getPlayer().isPositionAccessible.bind(this.getPlayer())
-        );
+        if (goal !== this.goalCache) {
+            this.goalCache = null;
+            this.pathCache = null;
+        }
+        let nextStep = null;
+        if (this.pathCache) {
+            if (this.pathCache.isStillAvailable(this.getPlayer().isPositionAccessible.bind(this.getPlayer()))) {
+                nextStep = this.pathCache.splice();
+            }
+        }
+        if (!nextStep) {
+            const newPath = AStar.getPath(
+                this.cellPosition,
+                goal,
+                this.getPlayer().isPositionAccessible.bind(this.getPlayer())
+            );
+            if (null !== newPath) {
+                this.pathCache = newPath;
+                this.goalCache = goal;
+                nextStep = this.pathCache.splice();
+            }
+        }
 
         if (nextStep) {
             this.rotateTowards(nextStep);

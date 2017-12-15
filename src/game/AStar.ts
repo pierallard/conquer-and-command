@@ -14,7 +14,7 @@ export class AStar {
         return path.firstStep();
     }
 
-    private static getPath(
+    static getPath(
         cellPosition: PIXI.Point,
         cellGoal: PIXI.Point,
         isPositionAccessible: (position: PIXI.Point) => boolean
@@ -98,7 +98,7 @@ class Paths {
     }
 }
 
-class Path {
+export class Path {
     private steps: PIXI.Point[];
     private goal: PIXI.Point;
     private confidence: number;
@@ -211,5 +211,19 @@ class Path {
             }
         }
         this.steps = newSteps;
+    }
+
+    isStillAvailable(isPositionAccessible: (position: PIXI.Point) => boolean): boolean {
+        for (let i = 0; i < this.steps.length; i++) {
+            if (!isPositionAccessible(this.steps[i])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    splice(): PIXI.Point {
+        return this.steps.splice(1,1)[0];
     }
 }
