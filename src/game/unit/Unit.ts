@@ -162,7 +162,7 @@ export abstract class Unit extends Phaser.Sprite {
         }
     }
 
-    setSelected(value: boolean) {
+    setSelected(value: boolean = true) {
         if (value) {
             if (null === this.selectedRectable) {
                 this.selectedRectable = this.game.add.graphics(0, 0);
