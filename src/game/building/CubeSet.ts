@@ -11,12 +11,14 @@ export class CubeSet implements Building {
     }
 
     getCellPositions(): PIXI.Point[] {
+        this.checkEmptyCubes();
         return this.cubes.map((cube) => {
             return cube.getCellPositions()[0];
         });
     }
 
     isEmpty() {
+        this.checkEmptyCubes();
         for (let i = 0; i < this.cubes.length; i++) {
             if (!this.cubes[i].isEmpty()) {
                 return false;
@@ -27,6 +29,13 @@ export class CubeSet implements Building {
     }
 
     getCubes(): Cube[] {
+        this.checkEmptyCubes();
         return this.cubes;
+    }
+
+    private checkEmptyCubes() {
+        this.cubes = this.cubes.filter((cube) => {
+            return !cube.isEmpty();
+        });
     }
 }
