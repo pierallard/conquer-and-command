@@ -1,3 +1,4 @@
+import {AStar} from "./AStar";
 const MAX_SEARCH_RADIUS = 20;
 
 export class AlternativePosition
@@ -23,7 +24,7 @@ export class AlternativePosition
                 if (currentPosition.x === test.x && currentPosition.y === test.y) {
                     return true;
                 }
-                if (isAccessible(test)) {
+                if (isAccessible(test) && null !== AStar.getPath(currentPosition, goalPosition, isAccessible)) {
                     foundAccessible = true;
                 }
             }

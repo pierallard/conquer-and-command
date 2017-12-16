@@ -1,19 +1,6 @@
 import {AlternativePosition} from "./AlternativePosition";
 
 export class AStar {
-    static nextStep(
-        cellPosition: PIXI.Point,
-        cellGoal: PIXI.Point,
-        isPositionAccessible: (position: PIXI.Point) => boolean
-    ): PIXI.Point {
-        const path = AStar.getPath(cellPosition, cellGoal, isPositionAccessible);
-        if (null === path) {
-            return null;
-        }
-
-        return path.firstStep();
-    }
-
     static getPath(
         cellPosition: PIXI.Point,
         cellGoal: PIXI.Point,
