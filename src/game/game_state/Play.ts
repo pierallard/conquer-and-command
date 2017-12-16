@@ -32,5 +32,8 @@ export default class Play extends Phaser.State {
 
     public update()
     {
+        this.unitRepository.getUnits().forEach((unit) => {
+            unit.update();
+        });
     }
 }

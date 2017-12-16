@@ -1,5 +1,4 @@
 import {UnitRepository} from "./repository/UnitRepository";
-import {Unit} from "./unit/Unit";
 import {Player} from "./player/Player";
 import {Cell} from "./Cell";
 
@@ -50,10 +49,15 @@ export class Selector extends Phaser.Graphics
                 }
 
             } else {
+                const left = Math.min(this.corner.x, this.game.input.mousePointer.x);
+                const right = Math.max(this.corner.x, this.game.input.mousePointer.x);
+                const top = Math.min(this.corner.y, this.game.input.mousePointer.y);
+                const bottom = Math.max(this.corner.y, this.game.input.mousePointer.y);
+
                 this.unitRepository.getUnits().forEach((unit) => {
                     let isInside = false;
                     if (unit.getPlayer() === this.player) {
-                        isInside = this.isInside(unit);
+                        isInside = unit.isInside(left, right, top, bottom);
                     }
                     unit.setSelected(isInside);
                 });
@@ -90,22 +94,5 @@ export class Selector extends Phaser.Graphics
                 this.game.input.mousePointer.y - this.corner.y
             );
         }
-    }
-
-    private isInside(sprite: Unit) {
-        if (!(sprite instanceof Unit)) {
-            return false;
-        }
-        const left = Math.min(this.corner.x, this.game.input.mousePointer.x);
-        const right = Math.max(this.corner.x, this.game.input.mousePointer.x);
-        const top = Math.min(this.corner.y, this.game.input.mousePointer.y);
-        const bottom = Math.max(this.corner.y, this.game.input.mousePointer.y);
-
-        return (
-            sprite.x - sprite.width/2 > left &&
-            sprite.x + sprite.width/2 < right &&
-            sprite.y - sprite.height/2 > top &&
-            sprite.y + sprite.height/2 < bottom
-        );
     }
 }

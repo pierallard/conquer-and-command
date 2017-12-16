@@ -1,5 +1,5 @@
 import {SCALE} from "../game_state/Play";
-import {Rotation} from "../unit/Unit";
+import {Rotation} from "./UnitSprite";
 
 export class Shoot extends Phaser.Sprite
 {

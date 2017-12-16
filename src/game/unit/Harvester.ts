@@ -42,7 +42,6 @@ export class Harvester extends Unit {
 
     getClosestBase() {
         const bases = this.player.getBases();
-        console.log(bases);
         let minDistance = null;
         let closest = null;
         for (let i = 0; i < bases.length; i++) {
@@ -69,7 +68,7 @@ export class Harvester extends Unit {
     }
 
     load(cube: Cube) {
-        this.rotateTowards(cube.getCellPosition());
+        this.unitSprite.doLoad(cube.getCellPosition());
         this.loading += cube.harvest();
 
         this.freeze(LOAD_TIME);
