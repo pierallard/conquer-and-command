@@ -1,14 +1,16 @@
 import {Selector} from "../Selector";
 import {UnitRepository} from "../repository/UnitRepository";
-import {Ground} from "../Ground";
+import {Ground} from "../map/Ground";
 import {Player} from "../player/Player";
 import {BuildingRepository} from "../repository/BuildingRepository";
+import {Minimap} from "../map/Minimap";
 
 export const SCALE = 1.5;
 export const CIRCLE_RADIUS: number = 19 * SCALE;
 export const MOVE = 4;
 
 export default class Play extends Phaser.State {
+    private minimap: Minimap;
     private unitRepository: UnitRepository;
     private buildingsRepository: BuildingRepository;
     private selector: Selector;
@@ -24,9 +26,10 @@ export default class Play extends Phaser.State {
         this.world.setBounds(0, 0, this.ground.getGroundWidth(), this.ground.getGroundHeight());
         this.unitRepository = new UnitRepository(this);
         this.buildingsRepository = new BuildingRepository(this);
+        this.minimap = new Minimap(this, this.unitRepository);
         this.players = [
-            new Player(this.ground, this.unitRepository, this.buildingsRepository, 'Tank11'),
-            new Player(this.ground, this.unitRepository, this.buildingsRepository, 'Tank12'),
+            new Player(this.ground, this.unitRepository, this.buildingsRepository, 'Tank11', 0x00ff00),
+            new Player(this.ground, this.unitRepository, this.buildingsRepository, 'Tank12', 0xff00ff),
         ];
 
         this.unitRepository.generateRandomUnits(this.players);
@@ -44,6 +47,7 @@ export default class Play extends Phaser.State {
         this.unitRepository.getUnits().forEach((unit) => {
             unit.update();
         });
+        this.minimap.update();
 
         if (this.upKey.isDown) {
             this.game.camera.setPosition(this.game.camera.position.x, this.game.camera.position.y - MOVE);

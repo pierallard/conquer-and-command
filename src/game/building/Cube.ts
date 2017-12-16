@@ -1,6 +1,6 @@
 import {Cell} from "../Cell";
 import {SCALE} from "../game_state/Play";
-import {GROUND_SIZE} from "../Ground";
+import {GROUND_SIZE} from "../map/Ground";
 
 const START_AMOUNT = 100;
 const HARVEST_QUANTITY = 10;

@@ -1,4 +1,4 @@
-import {Ground} from "../Ground";
+import {Ground} from "../map/Ground";
 import {UnitRepository} from "../repository/UnitRepository";
 import {Unit} from "../unit/Unit";
 import {BuildingRepository} from "../repository/BuildingRepository";
@@ -9,17 +9,20 @@ export class Player {
     private ground: Ground;
     private unitRepository: UnitRepository;
     private buildingRepository: BuildingRepository;
+    private color: number;
 
     constructor(
         ground: Ground,
         unitRepository: UnitRepository,
         buildingRepository: BuildingRepository,
-        tankKey: string
+        tankKey: string,
+        color: number
     ) {
         this.tankKey = tankKey;
         this.ground = ground;
         this.unitRepository = unitRepository;
         this.buildingRepository = buildingRepository;
+        this.color = color;
     }
 
     getTankKey(): string {
@@ -58,5 +61,9 @@ export class Player {
         return this.buildingRepository.getBuildings().filter((building) => {
             return building instanceof Base;
         })
+    }
+
+    getColor(): number {
+        return this.color;
     }
 }

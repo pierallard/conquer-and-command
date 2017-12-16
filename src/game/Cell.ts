@@ -1,4 +1,4 @@
-import {GROUND_SIZE} from "./Ground";
+import {GROUND_SIZE} from "./map/Ground";
 import {SCALE} from "./game_state/Play";
 
 export class Cell {
