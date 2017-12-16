@@ -52,11 +52,14 @@ export class UnitRepository
     unitAt(position: PIXI.Point): Unit {
         for (let i = 0; i < this.units.length; i++) {
             if (this.units[i] instanceof Unit) {
-                if (
-                    this.units[i].getCellPosition().x === position.x &&
-                    this.units[i].getCellPosition().y === position.y
-                ) {
-                    return (<Unit> this.units[i]);
+                const cellPositions = this.units[i].getCellPositions();
+                for (let j = 0; j < cellPositions.length; j++) {
+                    if (
+                        cellPositions[j].x === position.x &&
+                        cellPositions[j].y === position.y
+                    ) {
+                        return (<Unit> this.units[i]);
+                    }
                 }
             }
         }

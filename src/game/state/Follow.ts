@@ -17,15 +17,15 @@ export class Follow implements State {
 
     run(): void {
         if (!this.isArrived()) {
-            this.unit.moveTowards(this.goal.getCellPosition())
+            this.unit.moveTowards(this.goal.getCellPositions()[0])
         }
     }
 
     private isArrived(): boolean
     {
         return AlternativePosition.isArrived(
-            this.goal.getCellPosition(),
-            this.unit.getCellPosition(),
+            this.goal.getCellPositions()[0],
+            this.unit.getCellPositions()[0],
             this.unit.getPlayer().isPositionAccessible.bind(this.unit.getPlayer())
         );
     }

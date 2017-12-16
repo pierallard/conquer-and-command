@@ -20,19 +20,21 @@ export class Base extends Phaser.Sprite implements Building {
         this.game.add.existing(this);
     }
 
-    getCellPosition(): PIXI.Point {
-        return this.cellPosition;
-    }
-
-    getCellWidth(): number {
-        return 3;
-    }
-
-    getCellHeight(): number {
-        return 3;
-    }
-
     addMinerals(loading: number) {
         this.minerals += loading;
+    }
+
+    getCellPositions(): PIXI.Point[] {
+        return [
+            this.cellPosition,
+            new PIXI.Point(this.cellPosition.x + 1, this.cellPosition.y),
+            new PIXI.Point(this.cellPosition.x + 2, this.cellPosition.y),
+            new PIXI.Point(this.cellPosition.x, this.cellPosition.y + 1),
+            new PIXI.Point(this.cellPosition.x + 1, this.cellPosition.y + 1),
+            new PIXI.Point(this.cellPosition.x + 2, this.cellPosition.y + 1),
+            new PIXI.Point(this.cellPosition.x, this.cellPosition.y + 2),
+            new PIXI.Point(this.cellPosition.x + 1, this.cellPosition.y + 2),
+            new PIXI.Point(this.cellPosition.x + 2, this.cellPosition.y + 2),
+        ];
     }
 }

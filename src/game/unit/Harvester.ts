@@ -6,6 +6,8 @@ import {MoveAttack} from "../state/MoveAttack";
 import {Harvest} from "../state/Harvest";
 import {Cube} from "../building/Cube";
 import {Base} from "../building/Base";
+import {Distance} from "../Distance";
+import {CubeSet} from "../building/CubeSet";
 
 const MAX_LOADING = 50;
 const UNLOAD_TIME = Phaser.Timer.SECOND;
@@ -32,8 +34,8 @@ export class Harvester extends Unit {
             }
         } else {
             const building = this.player.getBuildingRepository().buildingAt(cell);
-            if (building && building instanceof Cube) {
-                this.state = new Harvest(this, (<Cube> building));
+            if (building && building instanceof CubeSet) {
+                this.state = new Harvest(this, (<CubeSet> building));
             } else {
                 this.state = new MoveAttack(this, cell);
             }
@@ -41,19 +43,11 @@ export class Harvester extends Unit {
     }
 
     getClosestBase() {
-        const bases = this.player.getBases();
-        let minDistance = null;
-        let closest = null;
-        for (let i = 0; i < bases.length; i++) {
-            const base = (<Base> bases[i]);
-            const distance = this.distanceTo(base);
-            if (null === closest || minDistance > distance) {
-                minDistance = distance;
-                closest = base;
-            }
-        }
+        return Distance.getClosest(this.getCellPositions()[0], this.player.getBases());
+    }
 
-        return closest;
+    getClosestCube(cubeSet: CubeSet) {
+        return Distance.getClosest(this.getCellPositions()[0], cubeSet.getCubes());
     }
 
     isFull() {
@@ -68,7 +62,7 @@ export class Harvester extends Unit {
     }
 
     load(cube: Cube) {
-        this.unitSprite.doLoad(cube.getCellPosition());
+        this.unitSprite.doLoad(cube.getCellPositions()[0]);
         this.loading += cube.harvest();
 
         this.freeze(LOAD_TIME);

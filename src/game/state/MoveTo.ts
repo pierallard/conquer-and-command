@@ -30,7 +30,7 @@ export class MoveTo implements State {
     {
         return AlternativePosition.isArrived(
             this.goal,
-            this.unit.getCellPosition(),
+            this.unit.getCellPositions()[0],
             this.unit.getPlayer().isPositionAccessible.bind(this.unit.getPlayer())
         );
     }

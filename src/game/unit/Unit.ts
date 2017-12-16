@@ -8,6 +8,7 @@ import {Follow} from "../state/Follow";
 import {MoveAttack} from "../state/MoveAttack";
 import {Building} from "../building/Building";
 import {UnitSprite} from "../sprite/UnitSprite";
+import {Distance} from "../Distance";
 
 const MOVE_TIME = Phaser.Timer.SECOND / 4;
 const SHOOT_TIME = Phaser.Timer.SECOND / 2;
@@ -44,8 +45,8 @@ export abstract class Unit {
         }
     }
 
-    getCellPosition(): PIXI.Point {
-        return this.cellPosition;
+    getCellPositions(): PIXI.Point[] {
+        return [this.cellPosition];
     }
 
     getPlayer(): Player {
@@ -63,7 +64,7 @@ export abstract class Unit {
     }
 
     shoot(ennemy: Unit): void {
-        this.unitSprite.doShoot(ennemy.getCellPosition());
+        this.unitSprite.doShoot(ennemy.getCellPositions()[0]);
         ennemy.lostLife(10);
         this.freeze(SHOOT_TIME);
     }
@@ -85,7 +86,7 @@ export abstract class Unit {
         for (let i = 0; i < enemies.length; i++) {
             const enemy = (<Unit> enemies[i]);
             if (enemy !== this) {
-                const distance = this.distanceTo(enemy);
+                const distance = Distance.to(this.cellPosition, enemy.getCellPositions());
                 if (distance <= this.getShootDistance()) {
                     if (null === closest || minDistance > distance) {
                         minDistance = distance;
@@ -132,13 +133,6 @@ export abstract class Unit {
     setSelected(value: boolean = true) {
         this.selected = value;
         this.unitSprite.setSelected(value);
-    }
-
-    protected distanceTo(unit: Unit | Building): number {
-        return Math.sqrt(
-            (this.cellPosition.x - unit.getCellPosition().x) * (this.cellPosition.x - unit.getCellPosition().x) +
-            (this.cellPosition.y - unit.getCellPosition().y) * (this.cellPosition.y - unit.getCellPosition().y)
-        );
     }
 
     protected freeze(time: number) {

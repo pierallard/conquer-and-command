@@ -1,12 +1,11 @@
 import {Cell} from "../Cell";
 import {SCALE} from "../game_state/Play";
 import {GROUND_SIZE} from "../Ground";
-import {Building} from "./Building";
 
-const START_AMOUNT = 1000;
+const START_AMOUNT = 100;
 const HARVEST_QUANTITY = 10;
 
-export class Cube extends Phaser.Sprite implements Building {
+export class Cube extends Phaser.Sprite {
     private cellPosition: PIXI.Point;
     private amount: number;
 
@@ -21,16 +20,8 @@ export class Cube extends Phaser.Sprite implements Building {
         this.game.add.existing(this);
     }
 
-    getCellWidth(): number {
-        return 1;
-    }
-
-    getCellHeight(): number {
-        return 1;
-    }
-
-    getCellPosition(): PIXI.Point {
-        return this.cellPosition;
+    getCellPositions(): PIXI.Point[] {
+        return [this.cellPosition];
     }
 
     isEmpty() {

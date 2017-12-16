@@ -1,5 +1,3 @@
 export interface Building {
-    getCellWidth(): number;
-    getCellHeight(): number;
-    getCellPosition(): PIXI.Point;
+    getCellPositions(): PIXI.Point[];
 }

@@ -1,21 +1,22 @@
 import {State} from "./State";
 import {Stand} from "./Stand";
 import {AlternativePosition} from "../AlternativePosition";
-import {Cube} from "../building/Cube";
 import {Harvester} from "../unit/Harvester";
 import {Base} from "../building/Base";
+import {CubeSet} from "../building/CubeSet";
+import {Cube} from "../building/Cube";
 
 export class Harvest implements State {
     private harvester: Harvester;
-    private cube: Cube;
+    private cubeSet: CubeSet;
 
-    constructor(harvester: Harvester, cube: Cube) {
+    constructor(harvester: Harvester, cubeSet: CubeSet) {
         this.harvester = harvester;
-        this.cube = cube;
+        this.cubeSet = cubeSet;
     }
 
     getNextStep(): State {
-        if (this.cube.isEmpty()) {
+        if (this.cubeSet.isEmpty()) {
             return new Stand(this.harvester);
         }
 
@@ -28,22 +29,23 @@ export class Harvest implements State {
             if (this.isArrivedToBase(closestBase)) {
                 this.harvester.unload(closestBase);
             } else {
-                this.harvester.moveTowards(new PIXI.Point(closestBase.getCellPosition().x + 1, closestBase.getCellPosition().y + 1));
+                this.harvester.moveTowards(new PIXI.Point(closestBase.getCellPositions()[0].x + 1, closestBase.getCellPositions()[0].y + 1));
             }
         } else {
-            if (this.isArrivedToCube()) {
-                this.harvester.load(this.cube);
+            const closestCube = this.harvester.getClosestCube(this.cubeSet);
+            if (this.isArrivedToCube(closestCube)) {
+                this.harvester.load(closestCube);
             } else {
-                this.harvester.moveTowards(this.cube.getCellPosition());
+                this.harvester.moveTowards(closestCube.getCellPositions()[0]);
             }
         }
     }
 
-    private isArrivedToCube(): boolean
+    private isArrivedToCube(cube: Cube): boolean
     {
         return AlternativePosition.isArrived(
-            this.cube.getCellPosition(),
-            this.harvester.getCellPosition(),
+            cube.getCellPositions()[0],
+            this.harvester.getCellPositions()[0],
             this.harvester.getPlayer().isPositionAccessible.bind(this.harvester.getPlayer())
         );
     }
@@ -51,8 +53,8 @@ export class Harvest implements State {
     private isArrivedToBase(base: Base): boolean
     {
         return AlternativePosition.isArrived(
-            new PIXI.Point(base.getCellPosition().x + 1, base.getCellPosition().y + 1),
-            this.harvester.getCellPosition(),
+            new PIXI.Point(base.getCellPositions()[0].x + 1, base.getCellPositions()[0].y + 1),
+            this.harvester.getCellPositions()[0],
             this.harvester.getPlayer().isPositionAccessible.bind(this.harvester.getPlayer())
         );
     }
