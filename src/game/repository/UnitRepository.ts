@@ -21,15 +21,15 @@ export class UnitRepository
             let playerId = Math.floor(Math.random() * players.length);
             this.units.push(new Tank(
                 players[playerId],
-                Math.random() * this.play_.game.width / 2 + (playerId === 1 ? this.play_.game.width / 2 : 0),
-                Math.random() * this.play_.game.height
+                Math.random() * this.play_.game.world.width / 2 + (playerId === 1 ? this.play_.game.world.width / 2 : 0),
+                Math.random() * this.play_.game.world.height
             ));
         }
         for (let i = 0; i < 10; i++) {
             this.units.push(new Harvester(
                 players[0],
-                Math.random() * this.play_.game.width / 2,
-                Math.random() * this.play_.game.height
+                Math.random() * this.play_.game.world.width / 2,
+                Math.random() * this.play_.game.world.height
             ));
         }
     }

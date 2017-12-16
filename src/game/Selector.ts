@@ -17,16 +17,25 @@ export class Selector extends Phaser.Graphics
         this.game.input.mouse.capture = true;
         this.game.canvas.oncontextmenu = function (e) { e.preventDefault(); };
         this.player = player;
+
+        this.game.add.existing(this);
+    }
+
+    getMousePointer(): PIXI.Point {
+        return new PIXI.Point(
+            this.game.input.mousePointer.x + this.game.camera.position.x,
+            this.game.input.mousePointer.y + this.game.camera.position.y
+        );
     }
 
     update()
     {
         if (null === this.corner && this.game.input.activePointer.leftButton.isDown) {
-            this.corner = new PIXI.Point(this.game.input.mousePointer.x, this.game.input.mousePointer.y);
+            this.corner = this.getMousePointer();
         }
 
         if (this.corner !== null && this.game.input.activePointer.leftButton.isUp) {
-            if (this.corner.x === this.game.input.mousePointer.x && this.corner.y === this.game.input.mousePointer.y) {
+            if (this.corner.x === this.getMousePointer().x && this.corner.y === this.getMousePointer().y) {
                 let unitUnderPointer = this.unitRepository.unitAt(new PIXI.Point(
                     Cell.realToCell(this.corner.x),
                     Cell.realToCell(this.corner.y)
@@ -34,14 +43,18 @@ export class Selector extends Phaser.Graphics
                 if (unitUnderPointer && unitUnderPointer.getPlayer() !== this.player) {
                     unitUnderPointer = null;
                 }
-                if (this.isDoubleClick) {
-                    this.unitRepository.getUnits().forEach((unit) => {
-                        unit.setSelected(
-                            unitUnderPointer !== null &&
-                            unit.getPlayer() === this.player &&
-                            unit.constructor === unitUnderPointer.constructor
-                        );
-                    });
+                if (unitUnderPointer && this.isDoubleClick) {
+                    this.selectUnitsInside(
+                        new PIXI.Point(
+                            this.game.camera.position.x,
+                            this.game.camera.position.y
+                        ),
+                        new PIXI.Point(
+                            this.game.camera.position.x + this.game.width,
+                            this.game.camera.position.y + this.game.height,
+                        ),
+                        unitUnderPointer.constructor
+                    );
                 } else {
                     this.unitRepository.getUnits().forEach((unit) => {
                         unit.setSelected(unit === unitUnderPointer);
@@ -49,18 +62,7 @@ export class Selector extends Phaser.Graphics
                 }
 
             } else {
-                const left = Math.min(this.corner.x, this.game.input.mousePointer.x);
-                const right = Math.max(this.corner.x, this.game.input.mousePointer.x);
-                const top = Math.min(this.corner.y, this.game.input.mousePointer.y);
-                const bottom = Math.max(this.corner.y, this.game.input.mousePointer.y);
-
-                this.unitRepository.getUnits().forEach((unit) => {
-                    let isInside = false;
-                    if (unit.getPlayer() === this.player) {
-                        isInside = unit.isInside(left, right, top, bottom);
-                    }
-                    unit.setSelected(isInside);
-                });
+                this.selectUnitsInside(this.corner, this.getMousePointer());
             }
             this.corner = null;
             this.clear();
@@ -77,8 +79,8 @@ export class Selector extends Phaser.Graphics
         if (this.game.input.activePointer.rightButton.isDown) {
             this.unitRepository.getSelectedUnits().forEach((source) => {
                 source.updateStateAfterclick(new PIXI.Point(
-                    Cell.realToCell(this.game.input.mousePointer.x),
-                    Cell.realToCell(this.game.input.mousePointer.y)
+                    Cell.realToCell(this.getMousePointer().x),
+                    Cell.realToCell(this.getMousePointer().y)
                 ));
             });
         }
@@ -90,9 +92,25 @@ export class Selector extends Phaser.Graphics
             this.drawRect(
                 this.corner.x,
                 this.corner.y,
-                this.game.input.mousePointer.x - this.corner.x,
-                this.game.input.mousePointer.y - this.corner.y
+                this.getMousePointer().x - this.corner.x,
+                this.getMousePointer().y - this.corner.y
             );
         }
     }
+
+    private selectUnitsInside(corner: PIXI.Point, mousePointer: PIXI.Point, constructor: any = null) {
+        const left = Math.min(corner.x, mousePointer.x);
+        const right = Math.max(corner.x, mousePointer.x);
+        const top = Math.min(corner.y, mousePointer.y);
+        const bottom = Math.max(corner.y, mousePointer.y);
+
+        this.unitRepository.getUnits().forEach((unit) => {
+            let isInside = false;
+            if (unit.getPlayer() === this.player && (null === constructor || unit.constructor == constructor)) {
+                isInside = unit.isInside(left, right, top, bottom);
+            }
+            unit.setSelected(isInside);
+        });
+    }
+
 }

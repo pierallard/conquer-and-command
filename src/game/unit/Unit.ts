@@ -6,7 +6,6 @@ import {Stand} from "../state/Stand";
 import {Attack} from "../state/Attack";
 import {Follow} from "../state/Follow";
 import {MoveAttack} from "../state/MoveAttack";
-import {Building} from "../building/Building";
 import {UnitSprite} from "../sprite/UnitSprite";
 import {Distance} from "../Distance";
 
@@ -18,9 +17,9 @@ export abstract class Unit {
     private goalCache: PIXI.Point;
     private cellPosition: PIXI.Point;
     private isFreezed: boolean = false;
-    private life: number = 100;
-    private maxLife: number = 100;
     private selected: boolean = false;
+    protected life: number = 100;
+    protected maxLife: number = 100;
     protected unitSprite: UnitSprite;
     protected state: State;
     protected player: Player;

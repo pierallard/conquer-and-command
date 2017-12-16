@@ -6,21 +6,14 @@ export class Ground {
     private obstacles: PIXI.Point[] = [];
     private map: Phaser.Tilemap;
 
-    constructor(play: Play)
-    {
+    constructor(play: Play) {
         this.map = play.game.add.tilemap('basicmap');
         this.map.addTilesetImage('GrasClif', 'GrasClif');
         this.map.addTilesetImage('GrssMisc', 'GrssMisc');
         let layer = this.map.createLayer('layer');
         layer.scale.setTo(SCALE, SCALE);
-        for (let x = 0; x < this.map.width; x++) {
-            for (let y = 0; y < this.map.height; y++) {
-                let index = this.map.getTile(x, y, layer).index;
-                if (index !== 13) {
-                    this.obstacles.push(new PIXI.Point(x, y));
-                }
-            }
-        }
+
+        this.initializeObstacles();
     }
 
     isCellAccessible(position: PIXI.Point): boolean {
@@ -34,5 +27,24 @@ export class Ground {
         }
 
         return true;
+    }
+
+    getGroundWidth() {
+        return this.map.widthInPixels * SCALE;
+    }
+
+    getGroundHeight() {
+        return this.map.heightInPixels * SCALE;
+    }
+
+    private initializeObstacles() {
+        for (let x = 0; x < this.map.width; x++) {
+            for (let y = 0; y < this.map.height; y++) {
+                let index = this.map.getTile(x, y).index;
+                if (index !== 13) {
+                    this.obstacles.push(new PIXI.Point(x, y));
+                }
+            }
+        }
     }
 }
