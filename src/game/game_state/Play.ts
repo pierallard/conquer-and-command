@@ -10,6 +10,7 @@ export const CIRCLE_RADIUS: number = 19 * SCALE;
 export const MOVE = 4;
 
 export default class Play extends Phaser.State {
+    private rightPanel: Phaser.Group;
     private minimap: Minimap;
     private unitRepository: UnitRepository;
     private buildingsRepository: BuildingRepository;
@@ -26,7 +27,6 @@ export default class Play extends Phaser.State {
         this.world.setBounds(0, 0, this.ground.getGroundWidth(), this.ground.getGroundHeight());
         this.unitRepository = new UnitRepository(this);
         this.buildingsRepository = new BuildingRepository(this);
-        this.minimap = new Minimap(this, this.unitRepository);
         this.players = [
             new Player(this.ground, this.unitRepository, this.buildingsRepository, 'Tank11', 0x00ff00),
             new Player(this.ground, this.unitRepository, this.buildingsRepository, 'Tank12', 0xff00ff),
@@ -34,6 +34,10 @@ export default class Play extends Phaser.State {
 
         this.unitRepository.generateRandomUnits(this.players);
         this.buildingsRepository.generateRandomBuildings(this.players);
+
+        this.rightPanel = this.game.add.group();
+        this.minimap = new Minimap(this, this.unitRepository, this.rightPanel);
+
         this.selector = new Selector(this.game, this.unitRepository, this.players[0]);
 
         this.upKey = this.game.input.keyboard.addKey(Phaser.Keyboard.UP);
@@ -42,7 +46,7 @@ export default class Play extends Phaser.State {
         this.rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
     }
 
-    public update()
+    update()
     {
         this.unitRepository.getUnits().forEach((unit) => {
             unit.update();
@@ -51,16 +55,24 @@ export default class Play extends Phaser.State {
 
         if (this.upKey.isDown) {
             this.game.camera.setPosition(this.game.camera.position.x, this.game.camera.position.y - MOVE);
+            this.rightPanel.position.y = this.game.camera.position.y;
         }
         else if (this.downKey.isDown) {
             this.game.camera.setPosition(this.game.camera.position.x, this.game.camera.position.y + MOVE);
+            this.rightPanel.position.y = this.game.camera.position.y;
         }
 
         if (this.leftKey.isDown) {
             this.game.camera.setPosition(this.game.camera.position.x - MOVE, this.game.camera.position.y);
+            this.rightPanel.position.x = this.game.camera.position.x;
         }
         else if (this.rightKey.isDown) {
             this.game.camera.setPosition(this.game.camera.position.x + MOVE, this.game.camera.position.y);
+            this.rightPanel.position.x = this.game.camera.position.x;
         }
+    }
+
+    render() {
+        // this.game.debug.cameraInfo(this.game.camera, 500, 32);
     }
 }
