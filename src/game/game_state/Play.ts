@@ -5,7 +5,7 @@ import {Player} from "../player/Player";
 import {BuildingRepository} from "../repository/BuildingRepository";
 import {Minimap} from "../map/Minimap";
 
-export const SCALE = 1.5;
+export const SCALE = 4;
 export const CIRCLE_RADIUS: number = 19 * SCALE;
 export const MOVE = 4;
 

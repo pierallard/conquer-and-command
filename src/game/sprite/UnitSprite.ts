@@ -2,6 +2,8 @@ import {CIRCLE_RADIUS, SCALE} from "../game_state/Play";
 import {Explosion} from "./Explosion";
 import {Shoot} from "./Shoot";
 import {Cell} from "../Cell";
+import {SelectRectangle} from "./SelectRectangle";
+import {LifeRectangle} from "./LifeRectangle";
 
 export enum Rotation {
     TOP = 1,
@@ -15,8 +17,8 @@ export enum Rotation {
 }
 
 export class UnitSprite extends Phaser.Sprite {
-    private lifeRectangle: Phaser.Graphics;
-    private selectedRectable: Phaser.Graphics = null;
+    private lifeRectangle: LifeRectangle;
+    private selectedRectable: SelectRectangle;
 
     constructor(game: Phaser.Game, x: number, y: number, key: string) {
         super(game, x, y, key);
@@ -24,9 +26,10 @@ export class UnitSprite extends Phaser.Sprite {
         this.scale.setTo(SCALE, SCALE);
         this.anchor.setTo(0.5, 0.5);
 
-        this.lifeRectangle = this.game.add.graphics(0, 0);
-        this.lifeRectangle.beginFill(0x00ff00);
-        this.lifeRectangle.drawRect(-CIRCLE_RADIUS/SCALE/2, CIRCLE_RADIUS/SCALE/2, CIRCLE_RADIUS/SCALE, 2);
+        this.selectedRectable = new SelectRectangle(game, this.width / SCALE, this.height / SCALE);
+        this.addChild(this.selectedRectable);
+
+        this.lifeRectangle = new LifeRectangle(game, this.width / SCALE, this.height / SCALE);
         this.addChild(this.lifeRectangle);
 
         this.game.add.existing(this);
@@ -43,11 +46,7 @@ export class UnitSprite extends Phaser.Sprite {
     }
 
     updateLife(life: number, maxLife: number) {
-        this.lifeRectangle.clear();
-        this.lifeRectangle.beginFill(0x00ff00);
-        this.lifeRectangle.drawRect(
-            -CIRCLE_RADIUS/SCALE/2,
-            CIRCLE_RADIUS/SCALE/2, life / maxLife * CIRCLE_RADIUS/SCALE, 2);
+        this.lifeRectangle.updateLife(life / maxLife);
     }
 
     doMove(cellPosition: PIXI.Point, duration: number) {
@@ -63,17 +62,8 @@ export class UnitSprite extends Phaser.Sprite {
     }
 
     setSelected(value: boolean = true) {
-        if (value) {
-            if (null === this.selectedRectable) {
-                this.selectedRectable = this.game.add.graphics(0, 0);
-                this.selectedRectable.lineStyle(1, 0x00ff00, 0.5);
-                this.selectedRectable.drawRect(-CIRCLE_RADIUS / SCALE / 2, -CIRCLE_RADIUS / SCALE / 2, CIRCLE_RADIUS / SCALE, CIRCLE_RADIUS / SCALE);
-                this.addChild(this.selectedRectable);
-            }
-        } else if (this.selectedRectable !== null) {
-            this.selectedRectable.destroy();
-            this.selectedRectable = null;
-        }
+        this.selectedRectable.setVisible(value);
+        this.lifeRectangle.setVisible(value);
     }
 
     private rotateTowards(cellPosition: PIXI.Point): void {
