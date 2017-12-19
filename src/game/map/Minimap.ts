@@ -6,9 +6,12 @@ const SIZE = 200;
 export class Minimap {
     private graphics: Phaser.Graphics;
     private unitRepository: UnitRepository;
+    private game: Phaser.Game;
+    private hasRenderedRecently: boolean = false;
 
     constructor(play: Play, unitRepository: UnitRepository, group: Phaser.Group) {
         this.unitRepository = unitRepository;
+        this.game = play.game;
 
         let map = new Phaser.Tilemap(play.game, 'basicmap');
         map.addTilesetImage('GrasClif', 'GrasClif');
@@ -26,6 +29,10 @@ export class Minimap {
     }
 
     update() {
+        if (this.hasRenderedRecently) {
+            return;
+        }
+
         this.graphics.clear();
         this.unitRepository.getUnits().forEach((unit) => {
             this.graphics.beginFill(unit.getPlayer().getColor());
@@ -33,5 +40,10 @@ export class Minimap {
                 this.graphics.drawRect(cellPosition.x, cellPosition.y, 1, 1);
             });
         });
+
+        this.hasRenderedRecently = true;
+        this.game.time.events.add(Phaser.Timer.SECOND, () => {
+            this.hasRenderedRecently = false;
+        }, this);
     }
 }

@@ -5,7 +5,7 @@ import {Player} from "../player/Player";
 import {BuildingRepository} from "../repository/BuildingRepository";
 import {Minimap} from "../map/Minimap";
 
-export const SCALE = 4;
+export const SCALE = 2;
 export const CIRCLE_RADIUS: number = 19 * SCALE;
 export const MOVE = 4;
 
@@ -70,9 +70,5 @@ export default class Play extends Phaser.State {
             this.game.camera.setPosition(this.game.camera.position.x + MOVE, this.game.camera.position.y);
             this.rightPanel.position.x = this.game.camera.position.x;
         }
-    }
-
-    render() {
-        // this.game.debug.cameraInfo(this.game.camera, 500, 32);
     }
 }
