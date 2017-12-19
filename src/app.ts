@@ -4,8 +4,9 @@ import Boot from "./game/game_state/Boot";
 import Preload from "./game/game_state/Preload";
 import Play from "./game/game_state/Play";
 
-const GAME_WIDTH = 1600 * 0.8;
-const GAME_HEIGHT = 900 * 0.8;
+export const GAME_WIDTH = 1600 * 0.8;
+export const GAME_HEIGHT = 900 * 0.8;
+
 class SimpleGame extends Phaser.Game {
 
     constructor()

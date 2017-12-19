@@ -8,6 +8,7 @@ import {Minimap} from "../map/Minimap";
 export const SCALE = 2;
 export const CIRCLE_RADIUS: number = 19 * SCALE;
 export const MOVE = 4;
+export const PANEL_WIDTH = 80;
 
 export default class Play extends Phaser.State {
     private rightPanel: Phaser.Group;
@@ -36,7 +37,7 @@ export default class Play extends Phaser.State {
         this.buildingsRepository.generateRandomBuildings(this.players);
 
         this.rightPanel = this.game.add.group();
-        this.minimap = new Minimap(this, this.unitRepository, this.rightPanel);
+        this.minimap = new Minimap(this, this.unitRepository);
 
         this.selector = new Selector(this.game, this.unitRepository, this.players[0]);
 
@@ -44,6 +45,16 @@ export default class Play extends Phaser.State {
         this.downKey = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
         this.leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
         this.rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+
+        let interface_ = new Phaser.Sprite(this.game, 0, 0, 'interface');
+        this.rightPanel.add(interface_);
+        interface_.scale.setTo(SCALE);
+        this.game.camera.bounds.setTo(
+            0,
+            0,
+            this.ground.getGroundWidth() + PANEL_WIDTH * SCALE,
+            this.ground.getGroundHeight()
+        );
     }
 
     update()

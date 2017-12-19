@@ -30,7 +30,6 @@ export default class Preload extends Phaser.State {
 
     private loadGameImages()
     {
-        this.load.spritesheet('Circle', 'assets/circle.png', 500, 500);
         this.load.spritesheet('Tank11', 'assets/Tank11.png', 19, 19, 9, 1, 1);
         this.load.spritesheet('Tank12', 'assets/Tank12.png', 19, 19, 9, 1, 1);
         this.load.spritesheet('Builder2', 'assets/Builder2.png', 19, 19, 9, 1, 1);
@@ -41,6 +40,7 @@ export default class Preload extends Phaser.State {
         this.load.spritesheet('GrasClif', 'assets/GrasClif.png', 20, 20, 45, 0, 0);
         this.load.spritesheet('Base', 'assets/Base.png', 60, 60, 8, 0, 0);
         this.load.spritesheet('Cube', 'assets/Cube.png', 23, 27, 21, 1, 1);
+        this.load.spritesheet('interface', 'assets/interface.png', 640, 360);
     }
 
     private loadFonts()
