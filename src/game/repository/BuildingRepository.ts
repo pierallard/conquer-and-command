@@ -3,6 +3,7 @@ import Play from "../game_state/Play";
 import {Player} from "../player/Player";
 import {Building} from "../building/Building";
 import {CubeSet} from "../building/CubeSet";
+import {Power} from "../building/Power";
 
 export class BuildingRepository {
     private play_: Play;
@@ -18,6 +19,7 @@ export class BuildingRepository {
     generateRandomBuildings(players: Player[]) {
         this.buildings.push(
             new Base(this.play_.game, 10, 5, this.group),
+            new Power(this.play_.game, 10, 10, this.group),
             new CubeSet(this.play_.game, [
                 new PIXI.Point(9, 18),
                 new PIXI.Point(10, 18),
