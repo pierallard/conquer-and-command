@@ -8,7 +8,7 @@ export class Base extends Phaser.Sprite implements Building {
     private cellPosition: PIXI.Point;
     private minerals: number = 0;
 
-    constructor(game: Phaser.Game, x: number, y: number) {
+    constructor(game: Phaser.Game, x: number, y: number, group: Phaser.Group) {
         super(game, Cell.cellToReal(x), Cell.cellToReal(y), 'Base');
 
         this.cellPosition = new PIXI.Point(x, y);
@@ -17,7 +17,8 @@ export class Base extends Phaser.Sprite implements Building {
         this.animationPump = this.animations.add('toto', [0,1,2,3,2,1]);
         this.animationElec = this.animations.add('toto', [5,6,7]);
         this.animationElec.play(10, true, false);
-        this.game.add.existing(this);
+
+        group.add(this);
     }
 
     addMinerals(loading: number) {

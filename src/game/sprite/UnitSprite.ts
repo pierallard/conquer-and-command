@@ -19,9 +19,12 @@ export enum Rotation {
 export class UnitSprite extends Phaser.Sprite {
     private lifeRectangle: LifeRectangle;
     private selectedRectable: SelectRectangle;
+    private group: Phaser.Group;
 
     constructor(game: Phaser.Game, x: number, y: number, group: Phaser.Group, key: string) {
         super(game, x, y, key);
+
+        this.group = group;
 
         this.scale.setTo(SCALE, SCALE);
         this.anchor.setTo(0.5, 0.5);
@@ -32,7 +35,6 @@ export class UnitSprite extends Phaser.Sprite {
         this.lifeRectangle = new LifeRectangle(game, this.width / SCALE, this.height / SCALE);
         this.addChild(this.lifeRectangle);
 
-        // this.game.add.existing(this);
         group.add(this);
     }
 
@@ -76,7 +78,7 @@ export class UnitSprite extends Phaser.Sprite {
     }
 
     private doExplodeEffect() {
-        this.game.add.existing(new Explosion(this.game, this.x, this.y));
+        this.group.add(new Explosion(this.game, this.x, this.y));
     }
 
     private doShootEffect(cellPosition: PIXI.Point) {
@@ -84,7 +86,7 @@ export class UnitSprite extends Phaser.Sprite {
             cellPosition.x - Cell.realToCell(this.x),
             cellPosition.y - Cell.realToCell(this.y)
         ));
-        this.game.add.existing(new Shoot(this.game, this.x, this.y, rotation));
+        this.group.add(new Shoot(this.game, this.x, this.y, rotation));
     }
 
     private loadRotation(rotation: Rotation)

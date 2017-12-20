@@ -5,6 +5,7 @@ import TilemapLayer = Phaser.TilemapLayer;
 const SIZE = 60;
 const X = 571;
 const Y = 9;
+const REFRESH_TIME = 0.5 * Phaser.Timer.SECOND;
 
 export class Minimap {
     private graphics: Phaser.Graphics;
@@ -52,7 +53,7 @@ export class Minimap {
         });
 
         this.hasRenderedRecently = true;
-        this.game.time.events.add(Phaser.Timer.SECOND, () => {
+        this.game.time.events.add(REFRESH_TIME, () => {
             this.hasRenderedRecently = false;
         }, this);
     }

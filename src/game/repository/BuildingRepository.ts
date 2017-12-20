@@ -7,22 +7,24 @@ import {CubeSet} from "../building/CubeSet";
 export class BuildingRepository {
     private play_: Play;
     private buildings: Building[];
+    private group: Phaser.Group;
 
-    constructor(play: Play) {
+    constructor(play: Play, group: Phaser.Group) {
         this.play_ = play;
+        this.group = group;
         this.buildings = [];
     }
 
     generateRandomBuildings(players: Player[]) {
         this.buildings.push(
-            new Base(this.play_.game, 10, 5),
+            new Base(this.play_.game, 10, 5, this.group),
             new CubeSet(this.play_.game, [
                 new PIXI.Point(9, 18),
                 new PIXI.Point(10, 18),
                 new PIXI.Point(11, 18),
                 new PIXI.Point(12, 18),
                 new PIXI.Point(13, 17),
-            ])
+            ], this.group)
         );
     }
 

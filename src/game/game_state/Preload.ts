@@ -1,6 +1,5 @@
 
 export default class Preload extends Phaser.State {
-
     public preload ()
     {
         this.loadAudio();

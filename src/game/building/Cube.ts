@@ -9,7 +9,7 @@ export class Cube extends Phaser.Sprite {
     private cellPosition: PIXI.Point;
     private amount: number;
 
-    constructor(game: Phaser.Game, x: number, y: number) {
+    constructor(game: Phaser.Game, x: number, y: number, group: Phaser.Group) {
         super(game, Cell.cellToReal(x), Cell.cellToReal(y), 'Cube');
 
         this.amount = START_AMOUNT;
@@ -17,7 +17,8 @@ export class Cube extends Phaser.Sprite {
         this.cellPosition = new PIXI.Point(x, y);
         this.scale.setTo(SCALE * GROUND_SIZE / 27);
         this.anchor.setTo(0.5, 0.5);
-        this.game.add.existing(this);
+
+        group.add(this);
     }
 
     getCellPositions(): PIXI.Point[] {

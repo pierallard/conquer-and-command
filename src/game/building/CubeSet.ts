@@ -4,9 +4,9 @@ import {Building} from "./Building";
 export class CubeSet implements Building {
     private cubes: Cube[];
 
-    constructor(game: Phaser.Game, cubePositions: PIXI.Point[]) {
+    constructor(game: Phaser.Game, cubePositions: PIXI.Point[], group: Phaser.Group) {
         this.cubes = cubePositions.map((position) => {
-            return new Cube(game, position.x, position.y);
+            return new Cube(game, position.x, position.y, group);
         });
     }
 
