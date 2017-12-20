@@ -38,4 +38,7 @@ export class CubeSet implements Building {
             return !cube.isEmpty();
         });
     }
+
+    build(unit: string): void {
+    }
 }

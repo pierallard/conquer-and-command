@@ -4,6 +4,7 @@ import {Ground} from "../map/Ground";
 import {Player} from "../player/Player";
 import {BuildingRepository} from "../repository/BuildingRepository";
 import {Minimap} from "../map/Minimap";
+import {UnitCreator} from "../UnitCreator";
 
 export const SCALE = 2;
 export const CIRCLE_RADIUS: number = 19 * SCALE;
@@ -50,6 +51,8 @@ export default class Play extends Phaser.State {
         let interface_ = new Phaser.Sprite(this.game, 0, 0, 'interface');
         interface_.scale.setTo(SCALE);
         this.interfaceGroup.add(interface_);
+
+        let zelifnsleiffn = new UnitCreator(this.game, this.interfaceGroup, this.buildingsRepository);
 
         this.minimap = new Minimap(this, this.unitRepository);
 

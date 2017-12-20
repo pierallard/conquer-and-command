@@ -1,15 +1,21 @@
 import {Cell} from "../Cell";
 import {SCALE} from "../game_state/Play";
 import {Building} from "./Building";
+import {Tank} from "../unit/Tank";
+import {Player} from "../player/Player";
 
 export class Power extends Phaser.Sprite implements Building {
     private animationElec: Phaser.Animation;
     private cellPosition: PIXI.Point;
     private minerals: number = 0;
+    private player: Player;
+    private group: Phaser.Group;
 
-    constructor(game: Phaser.Game, x: number, y: number, group: Phaser.Group) {
+    constructor(game: Phaser.Game, x: number, y: number, group: Phaser.Group, player: Player) {
         super(game, Cell.cellToReal(x), Cell.cellToReal(y), 'Factory2');
 
+        this.group = group;
+        this.player = player;
         this.cellPosition = new PIXI.Point(x, y);
         this.scale.setTo(SCALE);
         this.anchor.setTo(1/4, 1/6);
@@ -32,5 +38,15 @@ export class Power extends Phaser.Sprite implements Building {
             new PIXI.Point(this.cellPosition.x, this.cellPosition.y + 2),
             new PIXI.Point(this.cellPosition.x + 1, this.cellPosition.y + 2),
         ];
+    }
+
+    build(unit: string): void {
+        let tank = new Tank(
+            this.player,
+            this.x,
+            this.y,
+            this.group
+        );
+        this.player.getUnitRepository().add(tank);
     }
 }

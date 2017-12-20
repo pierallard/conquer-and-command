@@ -19,7 +19,7 @@ export class BuildingRepository {
     generateRandomBuildings(players: Player[]) {
         this.buildings.push(
             new Base(this.play_.game, 10, 5, this.group),
-            new Power(this.play_.game, 10, 10, this.group),
+            new Power(this.play_.game, 10, 10, this.group, players[0]),
             new CubeSet(this.play_.game, [
                 new PIXI.Point(9, 18),
                 new PIXI.Point(10, 18),
@@ -51,5 +51,16 @@ export class BuildingRepository {
 
     getBuildings() {
         return this.buildings;
+    }
+
+    getCreatorOf(unit: string): Building {
+        for (let i = 0; i < this.buildings.length; i++) {
+            let building = this.buildings[i];
+            if (building instanceof Power) {
+                return building;
+            }
+        }
+
+        return null;
     }
 }

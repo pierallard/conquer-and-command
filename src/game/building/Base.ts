@@ -38,4 +38,7 @@ export class Base extends Phaser.Sprite implements Building {
             new PIXI.Point(this.cellPosition.x + 2, this.cellPosition.y + 2),
         ];
     }
+
+    build(unit: string): void {
+    }
 }
