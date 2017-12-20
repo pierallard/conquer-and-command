@@ -20,7 +20,7 @@ export class UnitSprite extends Phaser.Sprite {
     private lifeRectangle: LifeRectangle;
     private selectedRectable: SelectRectangle;
 
-    constructor(game: Phaser.Game, x: number, y: number, key: string) {
+    constructor(game: Phaser.Game, x: number, y: number, group: Phaser.Group, key: string) {
         super(game, x, y, key);
 
         this.scale.setTo(SCALE, SCALE);
@@ -32,7 +32,8 @@ export class UnitSprite extends Phaser.Sprite {
         this.lifeRectangle = new LifeRectangle(game, this.width / SCALE, this.height / SCALE);
         this.addChild(this.lifeRectangle);
 
-        this.game.add.existing(this);
+        // this.game.add.existing(this);
+        group.add(this);
     }
 
     doDestroy() {
