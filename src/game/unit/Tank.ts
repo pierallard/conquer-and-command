@@ -4,8 +4,8 @@ import {Player} from "../player/Player";
 const SHOOT_DISTANCE = 4;
 
 export class Tank extends Unit {
-    constructor(player: Player, x: number, y: number) {
-        super(player, x, y, player.getTankKey());
+    constructor(player: Player, x: number, y: number, group: Phaser.Group) {
+        super(player, x, y, group, player.getTankKey());
         this.life = 500;
         this.maxLife = 500;
     }

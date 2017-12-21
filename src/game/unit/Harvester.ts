@@ -18,8 +18,8 @@ const SHOOT_DISTANCE = Math.sqrt(2);
 export class Harvester extends Unit {
     private loading: number;
 
-    constructor(player: Player, x: number, y: number) {
-        super(player, x, y, player.getHarversterKey());
+    constructor(player: Player, x: number, y: number, group: Phaser.Group) {
+        super(player, x, y, group, player.getHarversterKey());
 
         this.loading = 0;
     }

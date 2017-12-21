@@ -7,31 +7,40 @@ import {Harvester} from "../unit/Harvester";
 export class UnitRepository
 {
     private units: Unit[];
+    // TODO Remove this
     public play_: Play;
+    private group: Phaser.Group;
 
-    constructor(play_: Play)
+    constructor(play_: Play, group: Phaser.Group)
     {
         this.play_ = play_;
         this.units = [];
+        this.group = group;
     }
 
     public generateRandomUnits(players: Player[]): void
     {
         for (let i = 0; i < 30; i++) {
             let playerId = Math.floor(Math.random() * players.length);
-            this.units.push(new Tank(
+            this.add(new Tank(
                 players[playerId],
                 Math.random() * this.play_.game.world.width / 2 + (playerId === 1 ? this.play_.game.world.width / 2 : 0),
-                Math.random() * this.play_.game.world.height
+                Math.random() * this.play_.game.world.height,
+                this.group
             ));
         }
         for (let i = 0; i < 10; i++) {
-            this.units.push(new Harvester(
+            this.add(new Harvester(
                 players[0],
                 Math.random() * this.play_.game.world.width / 2,
-                Math.random() * this.play_.game.world.height
+                Math.random() * this.play_.game.world.height,
+                this.group
             ));
         }
+    }
+
+    add(unit: Unit): void {
+        this.units.push(unit);
     }
 
     getUnits(): Unit[] {

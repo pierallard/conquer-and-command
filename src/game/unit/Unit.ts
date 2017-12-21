@@ -24,11 +24,12 @@ export abstract class Unit {
     protected state: State;
     protected player: Player;
 
-    constructor(player: Player, x: number, y: number, key: string) {
+    constructor(player: Player, x: number, y: number, group: Phaser.Group, key: string) {
         this.unitSprite = new UnitSprite(
             player.getUnitRepository().play_.game,
             Cell.cellToReal(Cell.realToCell(x)),
             Cell.cellToReal(Cell.realToCell(y)),
+            group,
             key
         );
 
