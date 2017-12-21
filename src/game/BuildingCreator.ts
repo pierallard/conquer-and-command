@@ -1,5 +1,8 @@
-
+///<reference path="BuildingPositionner.ts"/>
 import {SCALE} from "./game_state/Play";
+import {BuildingPositionner} from "./BuildingPositionner";
+import {UnitRepository} from "./repository/UnitRepository";
+import {BuildingRepository} from "./repository/BuildingRepository";
 
 const X = 1202 - 66;
 const WIDTH = 33;
@@ -10,14 +13,19 @@ const BUILDINGS = {
 };
 
 export class BuildingCreator {
-    constructor(game: Phaser.Game, group: Phaser.Group) {
+    constructor(game: Phaser.Game, group: Phaser.Group, unitRepository: UnitRepository, buildingRepository: BuildingRepository) {
         let top = 250;
         Object.keys(BUILDINGS).forEach((building) => {
             let button = new Phaser.Sprite(game, X, top, 'buttons', 0);
             button.scale.setTo(SCALE, SCALE);
             button.inputEnabled = true;
             button.events.onInputDown.add(() => {
-                console.log('todo');
+                new BuildingPositionner(
+                    game,
+                    [new PIXI.Point(0,0), new PIXI.Point(1,0), new PIXI.Point(0,1), new PIXI.Point(1,1)],
+                    unitRepository,
+                    buildingRepository
+                );
             }, this);
             group.add(button);
 
