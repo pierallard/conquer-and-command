@@ -41,4 +41,8 @@ export class CubeSet implements Building {
 
     build(unit: string): void {
     }
+
+    getBuildMethods(): Object {
+        return {};
+    }
 }

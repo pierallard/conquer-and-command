@@ -1,8 +1,9 @@
 import {Cell} from "../Cell";
 import {SCALE} from "../game_state/Play";
 import {Building} from "./Building";
+import {BaseBuilding} from "./BaseBuilding";
 
-export class Base extends Phaser.Sprite implements Building {
+export class Base extends BaseBuilding {
     private animationPump: Phaser.Animation;
     private animationElec: Phaser.Animation;
     private cellPosition: PIXI.Point;
@@ -37,8 +38,5 @@ export class Base extends Phaser.Sprite implements Building {
             new PIXI.Point(this.cellPosition.x + 1, this.cellPosition.y + 2),
             new PIXI.Point(this.cellPosition.x + 2, this.cellPosition.y + 2),
         ];
-    }
-
-    build(unit: string): void {
     }
 }

@@ -56,7 +56,8 @@ export class BuildingRepository {
     getCreatorOf(unit: string): Building {
         for (let i = 0; i < this.buildings.length; i++) {
             let building = this.buildings[i];
-            if (building instanceof Power) {
+            let methods = building.getBuildMethods();
+            if (Object.keys(methods).indexOf(unit) > -1) {
                 return building;
             }
         }
