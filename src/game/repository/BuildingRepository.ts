@@ -18,7 +18,7 @@ export class BuildingRepository {
 
     generateRandomBuildings(players: Player[]) {
         this.buildings.push(
-            new Base(this.play_.game, 10, 5, this.group),
+            new Base(this.play_.game, 10, 5, this.group, players[0]),
             new Power(this.play_.game, 10, 10, this.group, players[0]),
             new CubeSet(this.play_.game, [
                 new PIXI.Point(9, 18),
