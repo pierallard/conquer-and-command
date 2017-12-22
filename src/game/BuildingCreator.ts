@@ -3,6 +3,8 @@ import {SCALE} from "./game_state/Play";
 import {BuildingPositionner} from "./BuildingPositionner";
 import {UnitRepository} from "./repository/UnitRepository";
 import {BuildingRepository} from "./repository/BuildingRepository";
+import {Power} from "./building/Power";
+import {Player} from "./player/Player";
 
 const X = 1202 - 66;
 const WIDTH = 33;
@@ -13,7 +15,15 @@ const BUILDINGS = {
 };
 
 export class BuildingCreator {
-    constructor(game: Phaser.Game, group: Phaser.Group, unitRepository: UnitRepository, buildingRepository: BuildingRepository) {
+    private game: Phaser.Game;
+    private buildingRepository: BuildingRepository;
+    private player: Player;
+
+    constructor(game: Phaser.Game, group: Phaser.Group, unitRepository: UnitRepository, buildingRepository: BuildingRepository, player:Player) {
+        this.game = game;
+        this.buildingRepository = buildingRepository;
+        this.player = player;
+
         let top = 250;
         Object.keys(BUILDINGS).forEach((building) => {
             let button = new Phaser.Sprite(game, X, top, 'buttons', 0);
@@ -21,10 +31,12 @@ export class BuildingCreator {
             button.inputEnabled = true;
             button.events.onInputDown.add(() => {
                 new BuildingPositionner(
+                    this,
                     game,
                     [new PIXI.Point(0,0), new PIXI.Point(1,0), new PIXI.Point(0,1), new PIXI.Point(1,1)],
                     unitRepository,
-                    buildingRepository
+                    buildingRepository,
+                    building
                 );
             }, this);
             group.add(button);
@@ -36,5 +48,17 @@ export class BuildingCreator {
             top += HEIGHT * SCALE;
             group.add(buildingSprite);
         });
+    }
+
+    build(buildingName: string, cellX: number, cellY: number) {
+        if (buildingName === 'Power') {
+            this.buildingRepository.add(new Power(
+                this.game,
+                cellX,
+                cellY,
+                this.buildingRepository.getGroup(),
+                this.player
+            ));
+        }
     }
 }

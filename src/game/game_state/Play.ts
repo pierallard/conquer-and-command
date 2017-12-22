@@ -54,7 +54,7 @@ export default class Play extends Phaser.State {
         this.interfaceGroup.add(interface_);
 
         let unitCreator = new UnitCreator(this.game, this.interfaceGroup, this.buildingsRepository);
-        let buildingCreator = new BuildingCreator(this.game, this.interfaceGroup, this.unitRepository, this.buildingsRepository);
+        let buildingCreator = new BuildingCreator(this.game, this.interfaceGroup, this.unitRepository, this.buildingsRepository, this.players[0]);
 
         this.minimap = new Minimap(this, this.unitRepository);
 

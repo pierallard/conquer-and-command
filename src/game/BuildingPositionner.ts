@@ -3,15 +3,20 @@ import {Cell} from "./Cell";
 import {GROUND_SIZE} from "./map/Ground";
 import {UnitRepository} from "./repository/UnitRepository";
 import {BuildingRepository} from "./repository/BuildingRepository";
+import {BuildingCreator} from "./BuildingCreator";
 
 export class BuildingPositionner extends Phaser.Graphics {
     private positions: PIXI.Point[];
     private unitRpository: UnitRepository;
     private buildingRepository: BuildingRepository;
+    private buildingName: string;
+    private buildingCreator: BuildingCreator;
 
-    constructor(game: Phaser.Game, positions: PIXI.Point[], unitRepository: UnitRepository, buildingRepository: BuildingRepository) {
+    constructor(buildingCreateor: BuildingCreator, game: Phaser.Game, positions: PIXI.Point[], unitRepository: UnitRepository, buildingRepository: BuildingRepository, buildingName: string) {
         super(game);
 
+        this.buildingCreator = buildingCreateor;
+        this.buildingName = buildingName;
         this.unitRpository = unitRepository;
         this.buildingRepository = buildingRepository;
         this.positions = positions;
@@ -31,6 +36,11 @@ export class BuildingPositionner extends Phaser.Graphics {
                 posable = false;
             }
         });
+
+        if (posable && this.game.input.activePointer.leftButton.isDown) {
+            this.buildingCreator.build(this.buildingName, cellX, cellY);
+            this.destroy();
+        }
 
         this.positions.forEach((position) => {
             let cellGapX = cellX + position.x;
@@ -61,7 +71,5 @@ export class BuildingPositionner extends Phaser.Graphics {
             this.moveTo(realCellGapX + GROUND_SIZE/4, realCellGapY + GROUND_SIZE / 2);
             this.lineTo(realCellGapX + GROUND_SIZE/2, realCellGapY + GROUND_SIZE / 4);
         });
-
-
     }
 }
