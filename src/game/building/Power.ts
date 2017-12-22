@@ -17,7 +17,7 @@ export class Power extends BaseBuilding {
         this.player = player;
         this.cellPosition = new PIXI.Point(x, y);
         this.scale.setTo(SCALE);
-        this.anchor.setTo(1/4, 1/6);
+        this.anchor.setTo(1/4, 3/6);
         this.animationElec = this.animations.add('toto', [0,1,2,3,4,5,8,9,10,11,12,11,10,9,8,5,4,3,2,1]);
         this.animationElec.play(10, true, false);
 
@@ -25,14 +25,9 @@ export class Power extends BaseBuilding {
     }
 
     getCellPositions(): PIXI.Point[] {
-        return [
-            this.cellPosition,
-            new PIXI.Point(this.cellPosition.x + 1, this.cellPosition.y),
-            new PIXI.Point(this.cellPosition.x, this.cellPosition.y + 1),
-            new PIXI.Point(this.cellPosition.x + 1, this.cellPosition.y + 1),
-            new PIXI.Point(this.cellPosition.x, this.cellPosition.y + 2),
-            new PIXI.Point(this.cellPosition.x + 1, this.cellPosition.y + 2),
-        ];
+        return Power.getBuildingPositions().map((position) => {
+            return new PIXI.Point(this.cellPosition.x + position.x, this.cellPosition.y + position.y);
+        });
     }
 
     getBuildMethods() {
@@ -48,5 +43,17 @@ export class Power extends BaseBuilding {
             this.y,
             this.group
         );
+    }
+
+    static getBuildingSpriteKey(): string {
+        return 'Factory2'
+    };
+
+    static getBuildingSpriteLayer(): number {
+        return 0;
+    };
+
+    static getBuildingPositions(): PIXI.Point[] {
+        return [new PIXI.Point(0,0), new PIXI.Point(1,0), new PIXI.Point(0,1), new PIXI.Point(1,1)]
     }
 }

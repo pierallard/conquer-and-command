@@ -1,4 +1,3 @@
-///<reference path="BuildingPositionner.ts"/>
 import {SCALE} from "./game_state/Play";
 import {BuildingPositionner} from "./BuildingPositionner";
 import {UnitRepository} from "./repository/UnitRepository";
@@ -11,7 +10,7 @@ const WIDTH = 33;
 const HEIGHT = 28;
 
 const BUILDINGS = {
-    'Power': 'Factory2'
+    'Power': Power
 };
 
 export class BuildingCreator {
@@ -33,7 +32,7 @@ export class BuildingCreator {
                 new BuildingPositionner(
                     this,
                     game,
-                    [new PIXI.Point(0,0), new PIXI.Point(1,0), new PIXI.Point(0,1), new PIXI.Point(1,1)],
+                    BUILDINGS[building].getBuildingPositions(),
                     unitRepository,
                     buildingRepository,
                     building
@@ -41,7 +40,13 @@ export class BuildingCreator {
             }, this);
             group.add(button);
 
-            let buildingSprite = new Phaser.Sprite(game, X + WIDTH * SCALE / 2, top + HEIGHT * SCALE / 2, BUILDINGS[building], 0);
+            let buildingSprite = new Phaser.Sprite(
+                game,
+                X + WIDTH * SCALE / 2,
+                top + HEIGHT * SCALE / 2,
+                BUILDINGS[building].getBuildingSpriteKey(),
+                BUILDINGS[building].getBuildingSpriteLayer()
+            );
             buildingSprite.scale.setTo(SCALE / 2, SCALE / 2);
             buildingSprite.anchor.setTo(0.5, 0.7);
 

@@ -4,7 +4,7 @@ import {Player} from "../player/Player";
 export abstract class BaseBuilding extends Phaser.Sprite implements Building {
     protected player: Player;
 
-    abstract getCellPositions();
+    abstract getCellPositions(): PIXI.Point[];
 
     getBuildMethods(): Object {
         return {}
