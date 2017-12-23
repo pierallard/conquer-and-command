@@ -6,7 +6,7 @@ const WIDTH = 33;
 const HEIGHT = 28;
 const UNITS = {
     'Tank': 'Tank11',
-    'Harvester': 'Builder2'
+    'Harvester': 'Builder2',
 };
 
 export class UnitCreator {

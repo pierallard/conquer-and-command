@@ -45,12 +45,14 @@ export class Harvest implements State {
         if (this.isArrivedToBase(closestBase)) {
             this.harvester.unload(closestBase);
         } else {
-            this.harvester.moveTowards(new PIXI.Point(closestBase.getCellPositions()[0].x + 1, closestBase.getCellPositions()[0].y + 1));
+            this.harvester.moveTowards(new PIXI.Point(
+                closestBase.getCellPositions()[0].x + 1,
+                closestBase.getCellPositions()[0].y + 1
+            ));
         }
     }
 
-    private isArrivedToCube(cube: Cube): boolean
-    {
+    private isArrivedToCube(cube: Cube): boolean {
         return AlternativePosition.isArrived(
             cube.getCellPositions()[0],
             this.harvester.getCellPositions()[0],
@@ -58,8 +60,7 @@ export class Harvest implements State {
         );
     }
 
-    private isArrivedToBase(base: Base): boolean
-    {
+    private isArrivedToBase(base: Base): boolean {
         return AlternativePosition.isArrived(
             new PIXI.Point(base.getCellPositions()[0].x + 1, base.getCellPositions()[0].y + 1),
             this.harvester.getCellPositions()[0],

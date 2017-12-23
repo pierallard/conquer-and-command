@@ -60,7 +60,7 @@ export class Player {
     getBases() {
         return this.buildingRepository.getBuildings().filter((building) => {
             return building instanceof Base;
-        })
+        });
     }
 
     getColor(): number {

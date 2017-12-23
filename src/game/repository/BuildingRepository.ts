@@ -6,20 +6,20 @@ import {CubeSet} from "../building/CubeSet";
 import {Power} from "../building/Power";
 
 export class BuildingRepository {
-    private play_: Play;
+    private play: Play;
     private buildings: Building[];
     private group: Phaser.Group;
 
     constructor(play: Play, group: Phaser.Group) {
-        this.play_ = play;
+        this.play = play;
         this.group = group;
         this.buildings = [];
     }
 
     generateRandomBuildings(players: Player[]) {
-        this.add(new Base(this.play_.game, 10, 5, this.group, players[0]));
-        this.add(new Power(this.play_.game, 10, 10, this.group, players[0]));
-        this.add(new CubeSet(this.play_.game, [
+        this.add(new Base(this.play.game, 10, 5, this.group, players[0]));
+        this.add(new Power(this.play.game, 10, 10, this.group, players[0]));
+        this.add(new CubeSet(this.play.game, [
                 new PIXI.Point(9, 18),
                 new PIXI.Point(10, 18),
                 new PIXI.Point(11, 18),

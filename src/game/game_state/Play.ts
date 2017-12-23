@@ -13,6 +13,8 @@ export const MOVE = 3 * SCALE;
 export const PANEL_WIDTH = 80;
 
 export default class Play extends Phaser.State {
+    private buildingCreator: BuildingCreator;
+    private unitCreator: UnitCreator;
     private interfaceGroup: Phaser.Group;
     private unitBuildingGroup: Phaser.Group;
     private minimap: Minimap;
@@ -49,12 +51,12 @@ export default class Play extends Phaser.State {
         this.interfaceGroup = this.game.add.group();
         this.interfaceGroup.fixedToCamera = true;
 
-        let interface_ = new Phaser.Sprite(this.game, 0, 0, 'interface');
-        interface_.scale.setTo(SCALE);
-        this.interfaceGroup.add(interface_);
+        let interfaceSprite = new Phaser.Sprite(this.game, 0, 0, 'interface');
+        interfaceSprite.scale.setTo(SCALE);
+        this.interfaceGroup.add(interfaceSprite);
 
-        let unitCreator = new UnitCreator(this.game, this.interfaceGroup, this.buildingsRepository);
-        let buildingCreator = new BuildingCreator(
+        this.unitCreator = new UnitCreator(this.game, this.interfaceGroup, this.buildingsRepository);
+        this.buildingCreator = new BuildingCreator(
             this.game,
             this.interfaceGroup,
             this.unitRepository,
@@ -81,8 +83,7 @@ export default class Play extends Phaser.State {
         this.registerInputs();
     }
 
-    update()
-    {
+    update() {
         this.unitRepository.getUnits().forEach((unit) => {
             unit.update();
         });
@@ -90,15 +91,13 @@ export default class Play extends Phaser.State {
 
         if (this.upKey.isDown || this.zKey.isDown) {
             this.game.camera.setPosition(this.game.camera.position.x, this.game.camera.position.y - MOVE);
-        }
-        else if (this.downKey.isDown || this.sKey.isDown) {
+        } else if (this.downKey.isDown || this.sKey.isDown) {
             this.game.camera.setPosition(this.game.camera.position.x, this.game.camera.position.y + MOVE);
         }
 
         if (this.leftKey.isDown || this.qKey.isDown) {
             this.game.camera.setPosition(this.game.camera.position.x - MOVE, this.game.camera.position.y);
-        }
-        else if (this.rightKey.isDown || this.dKey.isDown) {
+        } else if (this.rightKey.isDown || this.dKey.isDown) {
             this.game.camera.setPosition(this.game.camera.position.x + MOVE, this.game.camera.position.y);
         }
 

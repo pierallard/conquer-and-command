@@ -15,9 +15,10 @@
   "license": "MIT",
   "homepage": "https://github.com/nidup/ldjam40",
   "devDependencies": {
+    "tslint": "^3.15.1",
+    "typescript": "2.2.2",
     "webpack": "^2.4.1",
-    "webpack-dev-server": "^2.4.2",
-    "typescript": "2.2.2"
+    "webpack-dev-server": "^2.4.2"
   },
   "dependencies": {
     "ts-loader": "^2.0.3"

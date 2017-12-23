@@ -13,20 +13,20 @@ const MOVE_TIME = Phaser.Timer.SECOND / 4;
 const SHOOT_TIME = Phaser.Timer.SECOND / 2;
 
 export abstract class Unit {
-    private pathCache: Path;
-    private goalCache: PIXI.Point;
-    private cellPosition: PIXI.Point;
-    private isFreezed: boolean = false;
-    private selected: boolean = false;
     protected life: number = 100;
     protected maxLife: number = 100;
     protected unitSprite: UnitSprite;
     protected state: State;
     protected player: Player;
+    private pathCache: Path;
+    private goalCache: PIXI.Point;
+    private cellPosition: PIXI.Point;
+    private isFreezed: boolean = false;
+    private selected: boolean = false;
 
     constructor(player: Player, x: number, y: number, group: Phaser.Group, key: string) {
         this.unitSprite = new UnitSprite(
-            player.getUnitRepository().play_.game,
+            player.getUnitRepository().play.game,
             Cell.cellToReal(Cell.realToCell(x)),
             Cell.cellToReal(Cell.realToCell(y)),
             group,
@@ -69,8 +69,8 @@ export abstract class Unit {
         this.freeze(SHOOT_TIME);
     }
 
-    lostLife(number: number) {
-        this.life -= number;
+    lostLife(life: number) {
+        this.life -= life;
         if (!this.isAlive()) {
             this.unitSprite.doDestroy();
             this.player.getUnitRepository().removeSprite(this);
@@ -135,13 +135,6 @@ export abstract class Unit {
         this.unitSprite.setSelected(value);
     }
 
-    protected freeze(time: number) {
-        this.isFreezed = true;
-        this.player.getUnitRepository().play_.game.time.events.add(time, () => {
-            this.isFreezed = false;
-        }, this);
-    }
-
     updateStateAfterclick(cell: PIXI.Point) {
         const unit = this.player.getUnitRepository().unitAt(cell);
         if (null !== unit) {
@@ -158,4 +151,12 @@ export abstract class Unit {
     isInside(left: number, right: number, top: number, bottom: number): boolean {
         return this.unitSprite.isInside(left, right, top, bottom);
     }
+
+    protected freeze(time: number) {
+        this.isFreezed = true;
+        this.player.getUnitRepository().play.game.time.events.add(time, () => {
+            this.isFreezed = false;
+        }, this);
+    }
+
 }

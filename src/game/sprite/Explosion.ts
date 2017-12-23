@@ -1,7 +1,6 @@
 import {SCALE} from "../game_state/Play";
 
-export class Explosion extends Phaser.Sprite
-{
+export class Explosion extends Phaser.Sprite {
     constructor(game: Phaser.Game, x: number, y: number) {
         super(game, x, y, 'exploBig');
 

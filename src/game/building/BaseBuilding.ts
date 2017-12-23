@@ -7,7 +7,7 @@ export abstract class BaseBuilding extends Phaser.Sprite implements Building {
     abstract getCellPositions(): PIXI.Point[];
 
     getBuildMethods(): Object {
-        return {}
+        return {};
     }
 
     build(unitName: string): void {

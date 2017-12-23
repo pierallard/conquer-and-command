@@ -10,7 +10,7 @@ const WIDTH = 33;
 const HEIGHT = 28;
 
 const BUILDINGS = {
-    'Power': Power
+    'Power': Power,
 };
 
 export class BuildingCreator {
@@ -18,7 +18,13 @@ export class BuildingCreator {
     private buildingRepository: BuildingRepository;
     private player: Player;
 
-    constructor(game: Phaser.Game, group: Phaser.Group, unitRepository: UnitRepository, buildingRepository: BuildingRepository, player:Player) {
+    constructor(
+        game: Phaser.Game,
+        group: Phaser.Group,
+        unitRepository: UnitRepository,
+        buildingRepository: BuildingRepository,
+        player: Player
+    ) {
         this.game = game;
         this.buildingRepository = buildingRepository;
         this.player = player;

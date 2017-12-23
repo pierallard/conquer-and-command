@@ -3,10 +3,10 @@ import {SCALE} from "./game_state/Play";
 
 export class Cell {
     static cellToReal(position) {
-        return GROUND_SIZE * SCALE * position + (GROUND_SIZE * SCALE)/2
+        return GROUND_SIZE * SCALE * position + (GROUND_SIZE * SCALE) / 2;
     }
 
     static realToCell(position) {
-        return Math.round((position - (GROUND_SIZE * SCALE)/2) / (GROUND_SIZE * SCALE));
+        return Math.round((position - (GROUND_SIZE * SCALE) / 2) / (GROUND_SIZE * SCALE));
     }
 }

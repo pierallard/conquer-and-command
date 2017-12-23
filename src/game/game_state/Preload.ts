@@ -1,7 +1,6 @@
 
 export default class Preload extends Phaser.State {
-    public preload ()
-    {
+    public preload () {
         this.loadAudio();
         this.loadLevels();
         this.loadTileMaps();
@@ -9,26 +8,21 @@ export default class Preload extends Phaser.State {
         this.loadFonts();
     }
 
-    public create ()
-    {
+    public create () {
         this.game.state.start('Play');
     }
 
-    private loadAudio()
-    {
+    private loadAudio() {
     }
 
-    private loadLevels()
-    {
+    private loadLevels() {
     }
 
-    private loadTileMaps()
-    {
+    private loadTileMaps() {
         this.load.tilemap('basicmap', 'assets/basicmap.json', null, Phaser.Tilemap.TILED_JSON);
     }
 
-    private loadGameImages()
-    {
+    private loadGameImages() {
         this.load.spritesheet('Tank11', 'assets/Tank11.png', 19, 19, 9, 1, 1);
         this.load.spritesheet('Tank12', 'assets/Tank12.png', 19, 19, 9, 1, 1);
         this.load.spritesheet('Builder2', 'assets/Builder2.png', 19, 19, 9, 1, 1);
@@ -44,7 +38,6 @@ export default class Preload extends Phaser.State {
         this.load.spritesheet('buttons', 'assets/buttons.png', 33, 28, 2, 0, 0);
     }
 
-    private loadFonts()
-    {
+    private loadFonts() {
     }
 }

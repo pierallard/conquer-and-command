@@ -1,8 +1,7 @@
 import {AStar} from "./AStar";
 const MAX_SEARCH_RADIUS = 20;
 
-export class AlternativePosition
-{
+export class AlternativePosition {
     /**
      * Returns true if the unit is arrived to its goal, or close enough to be considered as arrived.
      *
@@ -52,7 +51,7 @@ export class AlternativePosition
         for (let radius = 0; radius < MAX_SEARCH_RADIUS; radius++) {
             let possiblePositions = this.getPointsFromRadius(goalPosition, radius);
             possiblePositions = possiblePositions.filter((pos) => {
-                return isAccessible(pos)
+                return isAccessible(pos);
             });
 
             if (possiblePositions.length) {
@@ -77,7 +76,7 @@ export class AlternativePosition
         let possiblePositions = [];
 
         if (radius === 0) {
-            possiblePositions.push(new PIXI.Point(position.x, position.y))
+            possiblePositions.push(new PIXI.Point(position.x, position.y));
         } else {
             for (let x = -radius; x <= radius; x++) {
                 possiblePositions.push(new PIXI.Point(position.x + x, position.y - radius));

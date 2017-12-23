@@ -1,4 +1,4 @@
-import Play, {SCALE} from "../game_state/Play";
+import {SCALE} from "../game_state/Play";
 
 export const GROUND_SIZE = 20;
 
@@ -19,7 +19,7 @@ export class Ground {
     }
 
     isCellAccessible(position: PIXI.Point): boolean {
-        if (position.x < 0 || position.x >= this.map.width || position.y < 0 || position.y >= this.map.height) {
+        if (position.x < 0 || position.x >= this.map.width || position.y < 0 || position.y >= this.map.height) {
             return false;
         }
         for (let i = 0; i < this.obstacles.length; i++) {

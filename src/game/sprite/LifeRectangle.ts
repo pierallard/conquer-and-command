@@ -21,7 +21,12 @@ export class LifeRectangle extends Phaser.Graphics {
             this.drawRect(-this.unitWidth / 2 + 1, -this.unitHeight / 2 - 1 - HEIGHT, this.unitWidth - 2, HEIGHT);
             this.lineStyle(null);
             this.beginFill(0x00ff00, 1);
-            this.drawRect(-this.unitWidth / 2 + 2, -this.unitHeight / 2 - HEIGHT, Math.round((this.unitWidth - 4 + 1) * this.percentage), HEIGHT - 1);
+            this.drawRect(
+                -this.unitWidth / 2 + 2,
+                -this.unitHeight / 2 - HEIGHT,
+                Math.round((this.unitWidth - 4 + 1) * this.percentage),
+                HEIGHT - 1
+            );
         }
     }
 

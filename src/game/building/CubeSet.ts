@@ -33,16 +33,16 @@ export class CubeSet implements Building {
         return this.cubes;
     }
 
-    private checkEmptyCubes() {
-        this.cubes = this.cubes.filter((cube) => {
-            return !cube.isEmpty();
-        });
-    }
-
     build(unit: string): void {
     }
 
     getBuildMethods(): Object {
         return {};
+    }
+
+    private checkEmptyCubes() {
+        this.cubes = this.cubes.filter((cube) => {
+            return !cube.isEmpty();
+        });
     }
 }

@@ -2,8 +2,7 @@ import {UnitRepository} from "./repository/UnitRepository";
 import {Player} from "./player/Player";
 import {Cell} from "./Cell";
 
-export class Selector extends Phaser.Graphics
-{
+export class Selector extends Phaser.Graphics {
     private isDoubleClick: boolean;
     private corner: PIXI.Point = null;
     private unitRepository: UnitRepository;
@@ -28,8 +27,7 @@ export class Selector extends Phaser.Graphics
         );
     }
 
-    update()
-    {
+    update() {
         if (null === this.corner && this.game.input.activePointer.leftButton.isDown) {
             this.corner = this.getMousePointer();
         }
@@ -106,7 +104,7 @@ export class Selector extends Phaser.Graphics
 
         this.unitRepository.getUnits().forEach((unit) => {
             let isInside = false;
-            if (unit.getPlayer() === this.player && (null === constructor || unit.constructor == constructor)) {
+            if (unit.getPlayer() === this.player && (null === constructor || unit.constructor === constructor)) {
                 isInside = unit.isInside(left, right, top, bottom);
             }
             unit.setSelected(isInside);

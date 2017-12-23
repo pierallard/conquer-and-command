@@ -9,8 +9,7 @@ export const GAME_HEIGHT = 900 * 0.8;
 
 class SimpleGame extends Phaser.Game {
 
-    constructor()
-    {
+    constructor() {
         super(
             GAME_WIDTH,
             GAME_HEIGHT,

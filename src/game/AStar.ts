@@ -98,7 +98,10 @@ export class Path {
 
     add(position: PIXI.Point): Path {
         this.steps.push(position);
-        this.confidence = Math.sqrt((position.x - this.goal.x) * (position.x - this.goal.x) + (position.y - this.goal.y) * (position.y - this.goal.y));
+        this.confidence = Math.sqrt(
+            (position.x - this.goal.x) * (position.x - this.goal.x) +
+            (position.y - this.goal.y) * (position.y - this.goal.y)
+        );
 
         return this;
     }
@@ -126,7 +129,7 @@ export class Path {
     }
 
     toString() {
-        return this.steps.map((step) => { return '(' + step.x + ', ' + step.y + ')'}).join(', ');
+        return this.steps.map((step) => { return '(' + step.x + ', ' + step.y + ')'; }).join(', ');
     }
 
     passThrough(position: PIXI.Point): boolean {
@@ -192,7 +195,7 @@ export class Path {
         const y = newPath.steps[newPath.steps.length - 1].y;
         for (let i = 0; i < this.steps.length; i++) {
             if (add) {
-                newSteps.push(this.steps[i])
+                newSteps.push(this.steps[i]);
             } else if (this.steps[i].x === x && this.steps[i].y === y) {
                 add = true;
             }
@@ -211,6 +214,6 @@ export class Path {
     }
 
     splice(): PIXI.Point {
-        return this.steps.splice(1,1)[0];
+        return this.steps.splice(1, 1)[0];
     }
 }

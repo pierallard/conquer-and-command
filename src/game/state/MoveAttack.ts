@@ -29,8 +29,7 @@ export class MoveAttack implements State {
         }
     }
 
-    private isArrived(): boolean
-    {
+    private isArrived(): boolean {
         return AlternativePosition.isArrived(
             this.goal,
             this.unit.getCellPositions()[0],

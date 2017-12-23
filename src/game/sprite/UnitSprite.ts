@@ -1,4 +1,4 @@
-import {CIRCLE_RADIUS, SCALE} from "../game_state/Play";
+import {SCALE} from "../game_state/Play";
 import {Explosion} from "./Explosion";
 import {Shoot} from "./Shoot";
 import {Cell} from "../Cell";
@@ -56,7 +56,7 @@ export class UnitSprite extends Phaser.Sprite {
         this.rotateTowards(cellPosition);
         this.game.add.tween(this).to({
             x: Cell.cellToReal(cellPosition.x),
-            y: Cell.cellToReal(cellPosition.y)
+            y: Cell.cellToReal(cellPosition.y),
         }, duration, Phaser.Easing.Default, true);
     }
 
@@ -67,6 +67,13 @@ export class UnitSprite extends Phaser.Sprite {
     setSelected(value: boolean = true) {
         this.selectedRectable.setVisible(value);
         this.lifeRectangle.setVisible(value);
+    }
+
+    isInside(left: number, right: number, top: number, bottom: number): boolean {
+        return this.x + this.width / 2 > left &&
+            this.x - this.width / 2 < right &&
+            this.y + this.height / 2 > top &&
+            this.y - this.height / 2 < bottom;
     }
 
     private rotateTowards(cellPosition: PIXI.Point): void {
@@ -89,9 +96,8 @@ export class UnitSprite extends Phaser.Sprite {
         this.group.add(new Shoot(this.game, this.x, this.y, rotation));
     }
 
-    private loadRotation(rotation: Rotation)
-    {
-        switch(rotation) {
+    private loadRotation(rotation: Rotation) {
+        switch (rotation) {
             case Rotation.TOP: this.loadTexture(this.key, 1); break;
             case Rotation.TOP_RIGHT: this.loadTexture(this.key, 2); break;
             case Rotation.RIGHT: this.loadTexture(this.key, 5); break;
@@ -103,45 +109,37 @@ export class UnitSprite extends Phaser.Sprite {
         }
     }
 
-    private getRotation(vector: PIXI.Point): Rotation
-    {
+    private getRotation(vector: PIXI.Point): Rotation {
         if (null === vector) {
             return Rotation.TOP_LEFT;
         }
 
         const angle = Math.atan2(vector.y, vector.x);
-        if (angle > Math.PI/8 * 7) {
+        if (angle > Math.PI / 8 * 7) {
             return Rotation.LEFT;
         }
-        if (angle > Math.PI/8 * 5) {
+        if (angle > Math.PI / 8 * 5) {
             return Rotation.BOTTOM_LEFT;
         }
-        if (angle > Math.PI/8 * 3) {
+        if (angle > Math.PI / 8 * 3) {
             return Rotation.BOTTOM;
         }
-        if (angle > Math.PI/8) {
+        if (angle > Math.PI / 8) {
             return Rotation.BOTTOM_RIGHT;
         }
-        if (angle > Math.PI/8 * -1) {
+        if (angle > Math.PI / 8 * -1) {
             return Rotation.RIGHT;
         }
-        if (angle > Math.PI/8 * -3) {
+        if (angle > Math.PI / 8 * -3) {
             return Rotation.TOP_RIGHT;
         }
-        if (angle > Math.PI/8 * -5) {
+        if (angle > Math.PI / 8 * -5) {
             return Rotation.TOP;
         }
-        if (angle > Math.PI/8 * -7) {
+        if (angle > Math.PI / 8 * -7) {
             return Rotation.TOP_LEFT;
         }
 
         return Rotation.LEFT;
-    }
-
-    isInside(left: number, right: number, top: number, bottom: number): boolean {
-        return this.x + this.width/2 > left &&
-            this.x - this.width/2 < right &&
-            this.y + this.height/2 > top &&
-            this.y - this.height/2 < bottom;
     }
 }

@@ -4,36 +4,33 @@ import {Player} from "../player/Player";
 import {Tank} from "../unit/Tank";
 import {Harvester} from "../unit/Harvester";
 
-export class UnitRepository
-{
-    private units: Unit[];
+export class UnitRepository {
     // TODO Remove this
-    public play_: Play;
+    public play: Play;
+    private units: Unit[];
     private group: Phaser.Group;
 
-    constructor(play_: Play, group: Phaser.Group)
-    {
-        this.play_ = play_;
+    constructor(play: Play, group: Phaser.Group) {
+        this.play = play;
         this.units = [];
         this.group = group;
     }
 
-    public generateRandomUnits(players: Player[]): void
-    {
+    public generateRandomUnits(players: Player[]): void {
         for (let i = 0; i < 30; i++) {
             let playerId = Math.floor(Math.random() * players.length);
             this.add(new Tank(
                 players[playerId],
-                Math.random() * this.play_.game.world.width / 2 + (playerId === 1 ? this.play_.game.world.width / 2 : 0),
-                Math.random() * this.play_.game.world.height,
+                Math.random() * this.play.game.world.width / 2 + (playerId === 1 ? this.play.game.world.width / 2 : 0),
+                Math.random() * this.play.game.world.height,
                 this.group
             ));
         }
         for (let i = 0; i < 10; i++) {
             this.add(new Harvester(
                 players[0],
-                Math.random() * this.play_.game.world.width / 2,
-                Math.random() * this.play_.game.world.height,
+                Math.random() * this.play.game.world.width / 2,
+                Math.random() * this.play.game.world.height,
                 this.group
             ));
         }
@@ -55,7 +52,7 @@ export class UnitRepository
     }
 
     isCellNotOccupied(position: PIXI.Point): boolean {
-        return null === this.unitAt(position)
+        return null === this.unitAt(position);
     }
 
     unitAt(position: PIXI.Point): Unit {

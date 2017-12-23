@@ -12,7 +12,14 @@ export class BuildingPositionner extends Phaser.Graphics {
     private buildingName: string;
     private buildingCreator: BuildingCreator;
 
-    constructor(buildingCreateor: BuildingCreator, game: Phaser.Game, positions: PIXI.Point[], unitRepository: UnitRepository, buildingRepository: BuildingRepository, buildingName: string) {
+    constructor(
+        buildingCreateor: BuildingCreator,
+        game: Phaser.Game,
+        positions: PIXI.Point[],
+        unitRepository: UnitRepository,
+        buildingRepository: BuildingRepository,
+        buildingName: string
+    ) {
         super(game);
 
         this.buildingCreator = buildingCreateor;
@@ -50,26 +57,26 @@ export class BuildingPositionner extends Phaser.Graphics {
             let realCellGapY = Cell.cellToReal(cellGapY) / SCALE;
 
             this.lineStyle(1, posable ? 0xffffff : 0xff0000, 0.8);
-            this.moveTo(realCellGapX - GROUND_SIZE/2, realCellGapY - GROUND_SIZE / 4);
-            this.lineTo(realCellGapX - GROUND_SIZE/4, realCellGapY - GROUND_SIZE / 2);
+            this.moveTo(realCellGapX - GROUND_SIZE / 2, realCellGapY - GROUND_SIZE / 4);
+            this.lineTo(realCellGapX - GROUND_SIZE / 4, realCellGapY - GROUND_SIZE / 2);
 
-            this.moveTo(realCellGapX - GROUND_SIZE/2, realCellGapY);
+            this.moveTo(realCellGapX - GROUND_SIZE / 2, realCellGapY);
             this.lineTo(realCellGapX, realCellGapY - GROUND_SIZE / 2);
 
-            this.moveTo(realCellGapX - GROUND_SIZE/2, realCellGapY + GROUND_SIZE / 4);
-            this.lineTo(realCellGapX + GROUND_SIZE/4, realCellGapY - GROUND_SIZE / 2);
+            this.moveTo(realCellGapX - GROUND_SIZE / 2, realCellGapY + GROUND_SIZE / 4);
+            this.lineTo(realCellGapX + GROUND_SIZE / 4, realCellGapY - GROUND_SIZE / 2);
 
-            this.moveTo(realCellGapX - GROUND_SIZE/2, realCellGapY + GROUND_SIZE / 2);
-            this.lineTo(realCellGapX + GROUND_SIZE/2, realCellGapY - GROUND_SIZE / 2);
+            this.moveTo(realCellGapX - GROUND_SIZE / 2, realCellGapY + GROUND_SIZE / 2);
+            this.lineTo(realCellGapX + GROUND_SIZE / 2, realCellGapY - GROUND_SIZE / 2);
 
-            this.moveTo(realCellGapX - GROUND_SIZE/4, realCellGapY + GROUND_SIZE / 2);
-            this.lineTo(realCellGapX + GROUND_SIZE/2, realCellGapY - GROUND_SIZE / 4);
+            this.moveTo(realCellGapX - GROUND_SIZE / 4, realCellGapY + GROUND_SIZE / 2);
+            this.lineTo(realCellGapX + GROUND_SIZE / 2, realCellGapY - GROUND_SIZE / 4);
 
             this.moveTo(realCellGapX, realCellGapY + GROUND_SIZE / 2);
-            this.lineTo(realCellGapX + GROUND_SIZE/2, realCellGapY);
+            this.lineTo(realCellGapX + GROUND_SIZE / 2, realCellGapY);
 
-            this.moveTo(realCellGapX + GROUND_SIZE/4, realCellGapY + GROUND_SIZE / 2);
-            this.lineTo(realCellGapX + GROUND_SIZE/2, realCellGapY + GROUND_SIZE / 4);
+            this.moveTo(realCellGapX + GROUND_SIZE / 4, realCellGapY + GROUND_SIZE / 2);
+            this.lineTo(realCellGapX + GROUND_SIZE / 2, realCellGapY + GROUND_SIZE / 4);
         });
     }
 }

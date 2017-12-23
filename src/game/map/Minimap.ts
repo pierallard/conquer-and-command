@@ -1,6 +1,5 @@
 import Play, {SCALE} from "../game_state/Play";
 import {UnitRepository} from "../repository/UnitRepository";
-import TilemapLayer = Phaser.TilemapLayer;
 
 const SIZE = 60;
 const X = 571;

@@ -17,12 +17,11 @@ export class Follow implements State {
 
     run(): void {
         if (!this.isArrived()) {
-            this.unit.moveTowards(this.goal.getCellPositions()[0])
+            this.unit.moveTowards(this.goal.getCellPositions()[0]);
         }
     }
 
-    private isArrived(): boolean
-    {
+    private isArrived(): boolean {
         return AlternativePosition.isArrived(
             this.goal.getCellPositions()[0],
             this.unit.getCellPositions()[0],
