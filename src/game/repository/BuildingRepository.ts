@@ -4,6 +4,7 @@ import {Player} from "../player/Player";
 import {Building} from "../building/Building";
 import {CubeSet} from "../building/CubeSet";
 import {Power} from "../building/Power";
+import {BuildingProperties} from "../building/BuildingProperties";
 
 export class BuildingRepository {
     private play: Play;
@@ -63,8 +64,7 @@ export class BuildingRepository {
     getCreatorOf(unit: string): Building {
         for (let i = 0; i < this.buildings.length; i++) {
             let building = this.buildings[i];
-            let methods = building.getBuildMethods();
-            if (Object.keys(methods).indexOf(unit) > -1) {
+            if (BuildingProperties.getConstructableUnits(building.constructor.name).indexOf(unit) > -1) {
                 return building;
             }
         }

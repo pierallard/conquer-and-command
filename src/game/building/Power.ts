@@ -3,23 +3,10 @@ import {SCALE} from "../game_state/Play";
 import {Player} from "../player/Player";
 import {Tank} from "../unit/Tank";
 import {Unit} from "../unit/Unit";
-import {BaseBuilding} from "./BaseBuilding";
+import {ConstructableBuilding} from "./ConstructableBuilding";
 
-export class Power extends BaseBuilding {
-    static getBuildingSpriteKey(): string {
-        return 'Factory2';
-    };
-
-    static getBuildingSpriteLayer(): number {
-        return 0;
-    };
-
-    static getBuildingPositions(): PIXI.Point[] {
-        return [new PIXI.Point(0, 0), new PIXI.Point(1, 0), new PIXI.Point(0, 1), new PIXI.Point(1, 1)];
-    }
-
+export class Power extends ConstructableBuilding {
     private animationElec: Phaser.Animation;
-    private cellPosition: PIXI.Point;
     private group: Phaser.Group;
 
     constructor(game: Phaser.Game, x: number, y: number, group: Phaser.Group, player: Player) {
@@ -37,18 +24,6 @@ export class Power extends BaseBuilding {
         this.animationElec.play(10, true, false);
 
         group.add(this);
-    }
-
-    getCellPositions(): PIXI.Point[] {
-        return Power.getBuildingPositions().map((position) => {
-            return new PIXI.Point(this.cellPosition.x + position.x, this.cellPosition.y + position.y);
-        });
-    }
-
-    getBuildMethods() {
-        return {
-            'Tank': this.buildTank,
-        };
     }
 
     private buildTank(): Unit {

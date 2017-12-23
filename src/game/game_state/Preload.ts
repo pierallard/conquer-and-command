@@ -35,7 +35,8 @@ export default class Preload extends Phaser.State {
         this.load.spritesheet('Cube', 'assets/Cube.png', 23, 27, 21, 1, 1);
         this.load.spritesheet('interface', 'assets/interface.png', 640, 360);
         this.load.spritesheet('Factory2', 'assets/Factory2.png', 40, 60, 24, 0, 0);
-        this.load.spritesheet('buttons', 'assets/buttons.png', 33, 28, 2, 0, 0);
+        this.load.spritesheet('buttons', 'assets/buttons.png', 33, 36, 2, 0, 0);
+        this.load.spritesheet('button-progress', 'assets/button-progress.png', 33, 8, 1, 0, 0);
     }
 
     private loadFonts() {

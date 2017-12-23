@@ -3,7 +3,7 @@ import {BuildingRepository} from "./repository/BuildingRepository";
 
 const X = 1202;
 const WIDTH = 33;
-const HEIGHT = 28;
+const HEIGHT = 36;
 const UNITS = {
     'Tank': 'Tank11',
     'Harvester': 'Builder2',

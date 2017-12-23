@@ -1,32 +1,33 @@
 import {SCALE} from "./game_state/Play";
 import {Cell} from "./Cell";
-import {GROUND_SIZE} from "./map/Ground";
+import {Ground, GROUND_SIZE} from "./map/Ground";
 import {UnitRepository} from "./repository/UnitRepository";
 import {BuildingRepository} from "./repository/BuildingRepository";
 import {BuildingCreator} from "./BuildingCreator";
+import {BuildingProperties} from "./building/BuildingProperties";
 
 export class BuildingPositionner extends Phaser.Graphics {
-    private positions: PIXI.Point[];
-    private unitRpository: UnitRepository;
+    private unitRepository: UnitRepository;
     private buildingRepository: BuildingRepository;
     private buildingName: string;
     private buildingCreator: BuildingCreator;
+    private ground: Ground;
 
     constructor(
-        buildingCreateor: BuildingCreator,
+        buildingCreator: BuildingCreator,
         game: Phaser.Game,
-        positions: PIXI.Point[],
         unitRepository: UnitRepository,
         buildingRepository: BuildingRepository,
+        ground: Ground,
         buildingName: string
     ) {
         super(game);
 
-        this.buildingCreator = buildingCreateor;
+        this.buildingCreator = buildingCreator;
         this.buildingName = buildingName;
-        this.unitRpository = unitRepository;
+        this.unitRepository = unitRepository;
         this.buildingRepository = buildingRepository;
-        this.positions = positions;
+        this.ground = ground;
         game.add.existing(this);
         this.scale.set(SCALE, SCALE);
     }
@@ -37,9 +38,11 @@ export class BuildingPositionner extends Phaser.Graphics {
         let cellY = Cell.realToCell(this.game.input.mousePointer.y + this.game.camera.position.y);
 
         let posable = true;
-        this.positions.forEach((position) => {
+        BuildingProperties.getCellPositions(this.buildingName).forEach((position) => {
             let cell = new PIXI.Point(cellX + position.x, cellY + position.y);
-            if (!this.buildingRepository.isCellNotOccupied(cell) || !this.unitRpository.isCellNotOccupied(cell)) {
+            if (!this.buildingRepository.isCellNotOccupied(cell) ||
+                !this.unitRepository.isCellNotOccupied(cell) ||
+                !this.ground.isCellAccessible(cell)) {
                 posable = false;
             }
         });
@@ -49,7 +52,7 @@ export class BuildingPositionner extends Phaser.Graphics {
             this.destroy();
         }
 
-        this.positions.forEach((position) => {
+        BuildingProperties.getCellPositions(this.buildingName).forEach((position) => {
             let cellGapX = cellX + position.x;
             let cellGapY = cellY + position.y;
 

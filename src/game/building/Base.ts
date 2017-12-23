@@ -1,14 +1,13 @@
 import {Cell} from "../Cell";
 import {SCALE} from "../game_state/Play";
-import {BaseBuilding} from "./BaseBuilding";
+import {ConstructableBuilding} from "./ConstructableBuilding";
 import {Unit} from "../unit/Unit";
 import {Harvester} from "../unit/Harvester";
 import {Player} from "../player/Player";
 
-export class Base extends BaseBuilding {
+export class Base extends ConstructableBuilding {
     private animationPump: Phaser.Animation;
     private animationElec: Phaser.Animation;
-    private cellPosition: PIXI.Point;
     private minerals: number = 0;
     private group: Phaser.Group;
 
@@ -29,26 +28,6 @@ export class Base extends BaseBuilding {
 
     addMinerals(loading: number) {
         this.minerals += loading;
-    }
-
-    getCellPositions(): PIXI.Point[] {
-        return [
-            this.cellPosition,
-            new PIXI.Point(this.cellPosition.x + 1, this.cellPosition.y),
-            new PIXI.Point(this.cellPosition.x + 2, this.cellPosition.y),
-            new PIXI.Point(this.cellPosition.x, this.cellPosition.y + 1),
-            new PIXI.Point(this.cellPosition.x + 1, this.cellPosition.y + 1),
-            new PIXI.Point(this.cellPosition.x + 2, this.cellPosition.y + 1),
-            new PIXI.Point(this.cellPosition.x, this.cellPosition.y + 2),
-            new PIXI.Point(this.cellPosition.x + 1, this.cellPosition.y + 2),
-            new PIXI.Point(this.cellPosition.x + 2, this.cellPosition.y + 2),
-        ];
-    }
-
-    getBuildMethods(): Object {
-        return {
-            'Harvester': this.buildHarvester,
-        };
     }
 
     private buildHarvester(): Unit {

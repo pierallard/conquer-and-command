@@ -60,7 +60,8 @@ export default class Play extends Phaser.State {
             this.interfaceGroup,
             this.unitRepository,
             this.buildingsRepository,
-            this.players[0]
+            this.players[0],
+            this.ground
         );
 
         this.minimap = new Minimap(this, this.unitRepository);
