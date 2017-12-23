@@ -17,10 +17,9 @@ export class BuildingRepository {
     }
 
     generateRandomBuildings(players: Player[]) {
-        this.buildings.push(
-            new Base(this.play_.game, 10, 5, this.group),
-            new Power(this.play_.game, 10, 10, this.group, players[0]),
-            new CubeSet(this.play_.game, [
+        this.add(new Base(this.play_.game, 10, 5, this.group, players[0]));
+        this.add(new Power(this.play_.game, 10, 10, this.group, players[0]));
+        this.add(new CubeSet(this.play_.game, [
                 new PIXI.Point(9, 18),
                 new PIXI.Point(10, 18),
                 new PIXI.Point(11, 18),
@@ -28,6 +27,14 @@ export class BuildingRepository {
                 new PIXI.Point(13, 17),
             ], this.group)
         );
+    }
+
+    getGroup(): Phaser.Group {
+        return this.group;
+    }
+
+    add(building: Building) {
+        this.buildings.push(building);
     }
 
     isCellNotOccupied(position: PIXI.Point): boolean {
@@ -56,7 +63,8 @@ export class BuildingRepository {
     getCreatorOf(unit: string): Building {
         for (let i = 0; i < this.buildings.length; i++) {
             let building = this.buildings[i];
-            if (building instanceof Power) {
+            let methods = building.getBuildMethods();
+            if (Object.keys(methods).indexOf(unit) > -1) {
                 return building;
             }
         }
