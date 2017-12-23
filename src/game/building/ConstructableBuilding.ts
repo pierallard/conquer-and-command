@@ -1,10 +1,12 @@
 import {Building} from "./Building";
 import {Player} from "../player/Player";
 import {BuildingProperties} from "./BuildingProperties";
+import {BuildingSprite} from "../sprite/BuildingSprite";
 
-export abstract class ConstructableBuilding extends Phaser.Sprite implements Building {
+export abstract class ConstructableBuilding implements Building {
     protected player: Player;
     protected cellPosition: PIXI.Point;
+    protected sprite: BuildingSprite;
 
     getCellPositions(): PIXI.Point[] {
         return BuildingProperties.getCellPositions(this.constructor.name).map((position) => {
