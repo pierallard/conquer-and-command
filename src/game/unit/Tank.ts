@@ -1,16 +1,11 @@
 import {Unit} from "./Unit";
 import {Player} from "../player/Player";
-
-const SHOOT_DISTANCE = 4;
+import {UnitProperties} from "./UnitProperties";
 
 export class Tank extends Unit {
     constructor(player: Player, x: number, y: number, group: Phaser.Group) {
-        super(player, x, y, group, player.getTankKey());
-        this.life = 500;
-        this.maxLife = 500;
-    }
+        super(player, x, y, group, UnitProperties.getSprite(Tank.prototype.constructor.name, player.getId()));
 
-    getShootDistance(): number {
-        return SHOOT_DISTANCE;
+        this.life = this.maxLife = UnitProperties.getLife(Tank.prototype.constructor.name);
     }
 }

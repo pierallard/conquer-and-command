@@ -8,19 +8,15 @@ import {Cube} from "../building/Cube";
 import {Base} from "../building/Base";
 import {Distance} from "../Distance";
 import {CubeSet} from "../building/CubeSet";
-
-const MAX_LOADING = 50;
-const UNLOAD_TIME = Phaser.Timer.SECOND;
-const LOAD_TIME = Phaser.Timer.SECOND;
-
-const SHOOT_DISTANCE = Math.sqrt(2);
+import {UnitProperties} from "./UnitProperties";
 
 export class Harvester extends Unit {
     private loading: number;
 
     constructor(player: Player, x: number, y: number, group: Phaser.Group) {
-        super(player, x, y, group, player.getHarversterKey());
+        super(player, x, y, group, UnitProperties.getSprite(Harvester.prototype.constructor.name, player.getId()));
 
+        this.life = this.maxLife = UnitProperties.getLife(Harvester.prototype.constructor.name);
         this.loading = 0;
     }
 
@@ -51,25 +47,21 @@ export class Harvester extends Unit {
     }
 
     isFull() {
-        return this.loading >= MAX_LOADING;
+        return this.loading >= UnitProperties.getOption(this.constructor.name, 'max_loading');
     }
 
     unload(base: Base) {
         base.addMinerals(this.loading);
         this.loading = 0;
 
-        this.freeze(UNLOAD_TIME);
+        this.freeze(UnitProperties.getOption(this.constructor.name, 'unload_time') * Phaser.Timer.SECOND);
     }
 
     load(cube: Cube) {
         this.unitSprite.doLoad(cube.getCellPositions()[0]);
         this.loading += cube.harvest();
 
-        this.freeze(LOAD_TIME);
-    }
-
-    getShootDistance(): number {
-        return SHOOT_DISTANCE;
+        this.freeze(UnitProperties.getOption(this.constructor.name, 'load_time') * Phaser.Timer.SECOND);
     }
 
     isLoaded() {

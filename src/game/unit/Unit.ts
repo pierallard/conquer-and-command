@@ -8,13 +8,11 @@ import {Follow} from "../state/Follow";
 import {MoveAttack} from "../state/MoveAttack";
 import {UnitSprite} from "../sprite/UnitSprite";
 import {Distance} from "../Distance";
-
-const MOVE_TIME = Phaser.Timer.SECOND / 4;
-const SHOOT_TIME = Phaser.Timer.SECOND / 2;
+import {UnitProperties} from "./UnitProperties";
 
 export abstract class Unit {
-    protected life: number = 100;
-    protected maxLife: number = 100;
+    protected life: number;
+    protected maxLife: number;
     protected unitSprite: UnitSprite;
     protected state: State;
     protected player: Player;
@@ -53,7 +51,9 @@ export abstract class Unit {
         return this.player;
     }
 
-    abstract getShootDistance(): number;
+    getShootDistance(): number {
+        return UnitProperties.getShootDistance(this.constructor.name);
+    }
 
     isAlive(): boolean {
         return this.life > 0;
@@ -66,7 +66,7 @@ export abstract class Unit {
     shoot(ennemy: Unit): void {
         this.unitSprite.doShoot(ennemy.getCellPositions()[0]);
         ennemy.lostLife(10);
-        this.freeze(SHOOT_TIME);
+        this.freeze(UnitProperties.getShootTime(this.constructor.name) * Phaser.Timer.SECOND);
     }
 
     lostLife(life: number) {
@@ -125,8 +125,8 @@ export abstract class Unit {
 
         if (nextStep) {
             this.cellPosition = nextStep;
-            this.unitSprite.doMove(nextStep, MOVE_TIME);
-            this.freeze(MOVE_TIME);
+            this.unitSprite.doMove(nextStep, UnitProperties.getSlownessTime(this.constructor.name) * Phaser.Timer.SECOND);
+            this.freeze(UnitProperties.getSlownessTime(this.constructor.name) * Phaser.Timer.SECOND);
         }
     }
 

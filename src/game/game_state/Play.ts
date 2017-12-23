@@ -8,7 +8,6 @@ import {UnitCreator} from "../UnitCreator";
 import {BuildingCreator} from "../BuildingCreator";
 
 export const SCALE = 2;
-export const CIRCLE_RADIUS: number = 19 * SCALE;
 export const MOVE = 3 * SCALE;
 export const PANEL_WIDTH = 80;
 
@@ -42,8 +41,8 @@ export default class Play extends Phaser.State {
         this.buildingsRepository = new BuildingRepository(this, this.unitBuildingGroup);
 
         this.players = [
-            new Player(this.ground, this.unitRepository, this.buildingsRepository, 'Tank11', 0x00ff00),
-            new Player(this.ground, this.unitRepository, this.buildingsRepository, 'Tank12', 0xff00ff),
+            new Player(0, this.ground, this.unitRepository, this.buildingsRepository, 0x00ff00),
+            new Player(1, this.ground, this.unitRepository, this.buildingsRepository, 0xff00ff),
         ];
 
         this.selector = new Selector(this.game, this.unitRepository, this.players[0]);

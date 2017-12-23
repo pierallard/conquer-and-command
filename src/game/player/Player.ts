@@ -5,28 +5,24 @@ import {BuildingRepository} from "../repository/BuildingRepository";
 import {Base} from "../building/Base";
 
 export class Player {
-    private tankKey: string;
     private ground: Ground;
     private unitRepository: UnitRepository;
     private buildingRepository: BuildingRepository;
     private color: number;
+    private id: number;
 
     constructor(
+        id: number,
         ground: Ground,
         unitRepository: UnitRepository,
         buildingRepository: BuildingRepository,
-        tankKey: string,
         color: number
     ) {
-        this.tankKey = tankKey;
+        this.id = id;
         this.ground = ground;
         this.unitRepository = unitRepository;
         this.buildingRepository = buildingRepository;
         this.color = color;
-    }
-
-    getTankKey(): string {
-        return this.tankKey;
     }
 
     public isPositionAccessible(position: PIXI.Point): boolean {
@@ -46,10 +42,6 @@ export class Player {
         return this.unitRepository.getEnnemyUnits(this);
     }
 
-    getHarversterKey() {
-        return 'Builder2';
-    }
-
     /**
      * @deprecated
      */
@@ -65,5 +57,9 @@ export class Player {
 
     getColor(): number {
         return this.color;
+    }
+
+    getId(): number {
+        return this.id;
     }
 }
