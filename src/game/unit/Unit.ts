@@ -17,9 +17,9 @@ export abstract class Unit {
     protected state: State;
     protected player: Player;
     protected worldKnowledge: WorldKnowledge;
+    protected cellPosition: PIXI.Point;
     private pathCache: Path;
     private goalCache: PIXI.Point;
-    private cellPosition: PIXI.Point;
     private isFreezed: boolean = false;
     private selected: boolean = false;
     private key: string;

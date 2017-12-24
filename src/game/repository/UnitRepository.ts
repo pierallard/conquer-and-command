@@ -24,7 +24,7 @@ export class UnitRepository {
     }
 
     isCellNotOccupied(position: PIXI.Point): boolean {
-        return null === this.unitAt(position);
+        return (null === this.unitAt(position));
     }
 
     unitAt(position: PIXI.Point): Unit {

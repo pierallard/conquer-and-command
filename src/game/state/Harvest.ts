@@ -2,7 +2,7 @@ import {State} from "./State";
 import {Stand} from "./Stand";
 import {AlternativePosition} from "../AlternativePosition";
 import {Harvester} from "../unit/Harvester";
-import {Base} from "../building/Base";
+import {ConstructionYard} from "../building/ConstructionYard";
 import {CubeSet} from "../building/CubeSet";
 import {Cube} from "../building/Cube";
 
@@ -60,7 +60,7 @@ export class Harvest implements State {
         );
     }
 
-    private isArrivedToBase(base: Base): boolean {
+    private isArrivedToBase(base: ConstructionYard): boolean {
         return AlternativePosition.isArrived(
             new PIXI.Point(base.getCellPositions()[0].x + 1, base.getCellPositions()[0].y + 1),
             this.harvester.getCellPositions()[0],

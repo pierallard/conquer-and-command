@@ -1,6 +1,6 @@
 import {SCALE} from "./game_state/Play";
 import {BuildingPositionner} from "./BuildingPositionner";
-import {Power} from "./building/Power";
+import {PowerPlant} from "./building/PowerPlant";
 import {Player} from "./player/Player";
 import {BuildingProperties} from "./building/BuildingProperties";
 import {WorldKnowledge} from "./WorldKnowledge";
@@ -31,8 +31,8 @@ export class BuildingCreator {
     }
 
     build(buildingName: string, cellPosition: PIXI.Point) {
-        if (buildingName === 'Power') {
-            let newBuilding = new Power(cellPosition, this.player);
+        if (buildingName === 'PowerPlant') {
+            let newBuilding = new PowerPlant(cellPosition, this.player);
             this.worldKnowledge.addBuilding(newBuilding);
         }
 

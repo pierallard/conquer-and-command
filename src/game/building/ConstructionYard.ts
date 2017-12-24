@@ -1,9 +1,9 @@
 import {Cell} from "../Cell";
 import {ConstructableBuilding} from "./ConstructableBuilding";
 import {Player} from "../player/Player";
-import {BaseSprite} from "../sprite/BaseSprite";
+import {ConstructionYardSprite} from "../sprite/ConstructionYardSprite";
 
-export class Base extends ConstructableBuilding {
+export class ConstructionYard extends ConstructableBuilding {
     private minerals: number = 0;
 
     constructor(cellPosition: PIXI.Point, player: Player) {
@@ -11,11 +11,11 @@ export class Base extends ConstructableBuilding {
     }
 
     create(game: Phaser.Game, group: Phaser.Group) {
-        this.sprite = new BaseSprite(
+        this.sprite = new ConstructionYardSprite(
             game,
             Cell.cellToReal(this.cellPosition.x),
             Cell.cellToReal(this.cellPosition.y),
-            'Base'
+            'ConstructionYard'
         );
         group.add(this.sprite);
     }

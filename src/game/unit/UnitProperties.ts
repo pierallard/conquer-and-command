@@ -18,6 +18,12 @@ const DATA = {
         slowness: 0.25,
         shoot: 0.5,
     },
+    MCV: {
+        life: 1000,
+        shoot_distance: -1,
+        sprites: ['Transprt', 'Transprt'],
+        slowness: 0.8,
+    }
 };
 
 export class UnitProperties {

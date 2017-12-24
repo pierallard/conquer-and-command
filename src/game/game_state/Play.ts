@@ -3,6 +3,7 @@ import {Player} from "../player/Player";
 import {WorldKnowledge} from "../WorldKnowledge";
 import {UserInterface} from "../UserInterface";
 import {BuildingPositionner} from "../BuildingPositionner";
+import {MCV} from "../unit/MCV";
 
 export const SCALE = 2;
 export const MOVE = 3 * SCALE;
@@ -52,6 +53,12 @@ export default class Play extends Phaser.State {
         );
 
         this.registerInputs();
+
+        this.start();
+    }
+
+    public start() {
+        this.worldKnowledge.addUnit(new MCV(this.worldKnowledge, new PIXI.Point(5, 5), this.players[0]));
     }
 
     update() {

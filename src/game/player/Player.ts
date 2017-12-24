@@ -22,8 +22,8 @@ export class Player {
     }
 
     // TODO No player needed ?
-    getBases() {
-        return this.worldKnowledge.getPlayerBases();
+    getConstructionYards() {
+        return this.worldKnowledge.getPlayerConstructionYards();
     }
 
     getColor(): number {

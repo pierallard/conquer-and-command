@@ -1,6 +1,6 @@
 import {BuildingSprite} from "./BuildingSprite";
 
-export class BaseSprite extends BuildingSprite {
+export class ConstructionYardSprite extends BuildingSprite {
     private animationPump: Phaser.Animation;
     private animationElec: Phaser.Animation;
 

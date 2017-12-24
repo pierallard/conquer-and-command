@@ -43,9 +43,9 @@ export class WorldKnowledge {
         return this.unitRepository.getEnemyUnits(player);
     }
 
-    getPlayerBases() {
+    getPlayerConstructionYards() {
         return this.buildingRepository.getBuildings().filter((building) => {
-            return building.constructor.name === 'Base';
+            return building.constructor.name === 'ConstructionYard';
         });
     }
 

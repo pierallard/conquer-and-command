@@ -1,6 +1,6 @@
 import {BuildingSprite} from "./BuildingSprite";
 
-export class PowerSprite extends BuildingSprite {
+export class PowerPlantSprite extends BuildingSprite {
     private animationElec: Phaser.Animation;
 
     constructor(game: Phaser.Game, x: number, y: number, key: string) {

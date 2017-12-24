@@ -5,7 +5,7 @@ import {Follow} from "../state/Follow";
 import {MoveAttack} from "../state/MoveAttack";
 import {Harvest} from "../state/Harvest";
 import {Cube} from "../building/Cube";
-import {Base} from "../building/Base";
+import {ConstructionYard} from "../building/ConstructionYard";
 import {Distance} from "../Distance";
 import {CubeSet} from "../building/CubeSet";
 import {UnitProperties} from "./UnitProperties";
@@ -45,7 +45,7 @@ export class Harvester extends Unit {
     }
 
     getClosestBase() {
-        return Distance.getClosest(this.getCellPositions()[0], this.player.getBases());
+        return Distance.getClosest(this.getCellPositions()[0], this.player.getConstructionYards());
     }
 
     getClosestCube(cubeSet: CubeSet) {
@@ -56,7 +56,7 @@ export class Harvester extends Unit {
         return this.loading >= UnitProperties.getOption(this.constructor.name, 'max_loading');
     }
 
-    unload(base: Base) {
+    unload(base: ConstructionYard) {
         base.addMinerals(this.loading);
         this.loading = 0;
 
