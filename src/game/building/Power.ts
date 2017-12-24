@@ -12,12 +12,17 @@ export class Power extends ConstructableBuilding {
         super();
 
         this.sprite = new PowerSprite(game, Cell.cellToReal(x), Cell.cellToReal(y), 'Factory2');
+        this.sprite.alpha = 0;
 
         this.group = group;
         this.player = player;
         this.cellPosition = new PIXI.Point(x, y);
 
         group.add(this.sprite);
+    }
+
+    showAlpha(): void {
+        this.sprite.alpha = 1;
     }
 
     private buildTank(): Unit {

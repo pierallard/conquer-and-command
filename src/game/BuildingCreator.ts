@@ -6,6 +6,7 @@ import {Power} from "./building/Power";
 import {Player} from "./player/Player";
 import {BuildingProperties} from "./building/BuildingProperties";
 import {Ground} from "./map/Ground";
+import {Appear} from "./sprite/Appear";
 
 const X = 1202 - 66;
 const WIDTH = 33;
@@ -39,13 +40,18 @@ export class BuildingCreator {
 
     build(buildingName: string, cellX: number, cellY: number) {
         if (buildingName === 'Power') {
-            this.buildingRepository.add(new Power(
+            let newBuilding = new Power(
                 this.game,
                 cellX,
                 cellY,
                 this.buildingRepository.getGroup(),
                 this.player
-            ));
+            );
+            this.buildingRepository.add(newBuilding);
+            new Appear(this.game, cellX, cellY);
+            this.game.time.events.add(Phaser.Timer.SECOND * 2, () => {
+                newBuilding.showAlpha();
+            }, this);
         }
 
         this.buildingButtons.forEach((buildingButton) => {
@@ -105,12 +111,15 @@ class BuildingButton {
         button.events.onInputDown.add(() => {
             if (this.state === STATE.AVAILABLE) {
                 this.state = STATE.PROGRESS;
+                button.loadTexture(button.key, 1);
                 const tween = this.progress.startProgress();
                 tween.onComplete.add(() => {
                     this.state = STATE.CONSTRUCTABLE;
+                    button.loadTexture(button.key, 2);
                 });
             } else if (this.state === STATE.CONSTRUCTABLE) {
                 this.state = STATE.PROGRESS;
+                button.loadTexture(button.key, 0);
                 buildingCreator.createPositionner(this.buildingName);
             }
         }, this);

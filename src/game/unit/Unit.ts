@@ -125,7 +125,10 @@ export abstract class Unit {
 
         if (nextStep) {
             this.cellPosition = nextStep;
-            this.unitSprite.doMove(nextStep, UnitProperties.getSlownessTime(this.constructor.name) * Phaser.Timer.SECOND);
+            this.unitSprite.doMove(
+                nextStep,
+                UnitProperties.getSlownessTime(this.constructor.name) * Phaser.Timer.SECOND
+            );
             this.freeze(UnitProperties.getSlownessTime(this.constructor.name) * Phaser.Timer.SECOND);
         }
     }
