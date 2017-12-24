@@ -1,4 +1,3 @@
-import {Ground} from "./map/Ground";
 import {BuildingRepository} from "./repository/BuildingRepository";
 import {Player} from "./player/Player";
 import {Building} from "./building/Building";
@@ -6,17 +5,18 @@ import {Unit} from "./unit/Unit";
 import {UnitRepository} from "./repository/UnitRepository";
 import {Appear} from "./sprite/Appear";
 import {AbstractCreator} from "./creator/AbstractCreator";
+import {GeneratedGround} from "./map/GeneratedGround";
 
 export class WorldKnowledge {
     private game: Phaser.Game;
-    private ground: Ground;
+    private ground: GeneratedGround;
     private unitBuildingGroup: Phaser.Group;
     private unitRepository: UnitRepository;
     private buildingRepository: BuildingRepository;
     private creators: AbstractCreator[];
 
     constructor() {
-        this.ground = new Ground();
+        this.ground = new GeneratedGround();
         this.unitRepository = new UnitRepository();
         this.buildingRepository = new BuildingRepository();
     }

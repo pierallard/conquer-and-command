@@ -23,19 +23,29 @@ export default class Preload extends Phaser.State {
     }
 
     private loadGameImages() {
+        // Units
         this.load.spritesheet('Tank11', 'assets/Tank11.png', 19, 19, 9, 1, 1);
         this.load.spritesheet('Tank12', 'assets/Tank12.png', 19, 19, 9, 1, 1);
         this.load.spritesheet('Builder2', 'assets/Builder2.png', 19, 19, 9, 1, 1);
         this.load.spritesheet('Tank5c', 'assets/Tank5c.png', 19, 19, 25, 1, 1);
-        this.load.spritesheet('exploBig', 'assets/exploBig.png', 39, 39, 12, 1, 1);
-        this.load.spritesheet('ArtlFlsh', 'assets/ArtlFlsh.png', 19, 19, 45, 1, 1);
+        this.load.spritesheet('Transprt', 'assets/Transprt.png', 39, 39, 9, 1, 1);
+
+        // Tiles
         this.load.spritesheet('GrssMisc', 'assets/GrssMisc.png', 20, 20, 40, 0, 0);
         this.load.spritesheet('GrasClif', 'assets/GrasClif.png', 20, 20, 45, 0, 0);
+        this.load.spritesheet('Ice2Snow', 'assets/Ice2Snow.png', 20, 20, 45, 0, 0);
+        this.load.spritesheet('Snow', 'assets/Snow.png', 20, 20, 45, 0, 0);
+
+        // Buildings
         this.load.spritesheet('Base', 'assets/Base.png', 60, 60, 8, 0, 0);
         this.load.spritesheet('Cube', 'assets/Cube.png', 23, 27, 21, 1, 1);
-        this.load.spritesheet('interface', 'assets/interface.png', 640, 360);
         this.load.spritesheet('Factory2', 'assets/Factory2.png', 40, 60, 24, 0, 0);
         this.load.spritesheet('Module', 'assets/Module.png', 40, 60, 1, 0, 0);
+
+        // Others
+        this.load.spritesheet('exploBig', 'assets/exploBig.png', 39, 39, 12, 1, 1);
+        this.load.spritesheet('ArtlFlsh', 'assets/ArtlFlsh.png', 19, 19, 45, 1, 1);
+        this.load.spritesheet('interface', 'assets/interface.png', 640, 360);
         this.load.spritesheet('buttons', 'assets/buttons.png', 33, 36, 3, 0, 0);
         this.load.spritesheet('button-progress', 'assets/button-progress.png', 33, 8, 1, 0, 0);
         this.load.spritesheet('Build1', 'assets/Build1.png', 80, 80, 14, 0, 0);
@@ -45,7 +55,6 @@ export default class Preload extends Phaser.State {
         this.load.spritesheet('Build5', 'assets/Build5.png', 80, 80, 8, 0, 0);
         this.load.spritesheet('Build6', 'assets/Build6.png', 80, 80, 8, 0, 0);
         this.load.spritesheet('Build7', 'assets/Build7.png', 80, 80, 8, 0, 0);
-        this.load.spritesheet('Transprt', 'assets/Transprt.png', 39, 39, 9, 1, 1);
     }
 
     private loadFonts() {
