@@ -31,7 +31,6 @@ export class BuildingCreator {
     }
 
     build(buildingName: string, cellPosition: PIXI.Point) {
-        this.buildingPositionner.deactivate();
         if (buildingName === 'Power') {
             let newBuilding = new Power(cellPosition, this.player);
             this.worldKnowledge.addBuilding(newBuilding);

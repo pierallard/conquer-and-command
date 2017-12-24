@@ -12,14 +12,14 @@ export class WorldKnowledge {
     private unitRepository: UnitRepository;
     private buildingRepository: BuildingRepository;
 
-    constructor(game: Phaser.Game) {
-        this.game = game;
+    constructor() {
         this.ground = new Ground();
         this.unitRepository = new UnitRepository();
         this.buildingRepository = new BuildingRepository();
     }
 
-    create() {
+    create(game: Phaser.Game) {
+        this.game = game;
         this.ground.create(this.game);
 
         this.unitBuildingGroup = this.game.add.group();
@@ -27,6 +27,7 @@ export class WorldKnowledge {
     }
 
     update() {
+        this.unitBuildingGroup.sort('y');
         this.unitRepository.getUnits().forEach((unit) => {
             unit.update();
         });
@@ -50,10 +51,6 @@ export class WorldKnowledge {
 
     getUnitRepository() {
         return this.unitRepository;
-    }
-
-    getBuildingRepository(): BuildingRepository {
-        return this.buildingRepository;
     }
 
     // TODO Deop these methods

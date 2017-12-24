@@ -1,5 +1,4 @@
 import {Selector} from "../Selector";
-import {Ground} from "../map/Ground";
 import {Player} from "../player/Player";
 import {WorldKnowledge} from "../WorldKnowledge";
 import {UserInterface} from "../UserInterface";
@@ -10,10 +9,8 @@ export const MOVE = 3 * SCALE;
 export const PANEL_WIDTH = 80;
 
 export default class Play extends Phaser.State {
-    private unitBuildingGroup: Phaser.Group;
     private selector: Selector;
     private players: Player[];
-    private ground: Ground;
     private upKey: Phaser.Key;
     private downKey: Phaser.Key;
     private leftKey: Phaser.Key;
@@ -29,7 +26,7 @@ export default class Play extends Phaser.State {
     constructor() {
         super();
 
-        this.worldKnowledge = new WorldKnowledge(this.game);
+        this.worldKnowledge = new WorldKnowledge();
         this.players = [
             new Player(this.worldKnowledge, 0, 0x00ff00),
             new Player(this.worldKnowledge, 1, 0xff00ff),
@@ -40,17 +37,18 @@ export default class Play extends Phaser.State {
     }
 
     public create() {
-        this.worldKnowledge.create();
+        this.worldKnowledge.create(this.game);
         this.selector.create(this.game);
         this.userInterface.create(this.game);
+        this.buildingPositionner.create(this.game);
 
         this.world.setBounds(0, 0, this.worldKnowledge.getGroundWidth(), this.worldKnowledge.getGroundHeight());
 
         this.game.camera.bounds.setTo(
             0,
             0,
-            this.ground.getGroundWidth() + PANEL_WIDTH * SCALE,
-            this.ground.getGroundHeight()
+            this.worldKnowledge.getGroundWidth() + PANEL_WIDTH * SCALE,
+            this.worldKnowledge.getGroundHeight()
         );
 
         this.registerInputs();
@@ -59,6 +57,7 @@ export default class Play extends Phaser.State {
     update() {
         this.worldKnowledge.update();
         this.userInterface.update();
+        this.selector.update();
 
         if (this.upKey.isDown || this.zKey.isDown) {
             this.game.camera.setPosition(this.game.camera.position.x, this.game.camera.position.y - MOVE);
@@ -71,8 +70,6 @@ export default class Play extends Phaser.State {
         } else if (this.rightKey.isDown || this.dKey.isDown) {
             this.game.camera.setPosition(this.game.camera.position.x + MOVE, this.game.camera.position.y);
         }
-
-        this.unitBuildingGroup.sort('y');
     }
 
     private registerInputs() {

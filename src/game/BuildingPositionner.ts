@@ -20,15 +20,11 @@ export class BuildingPositionner {
     activate(buildingCreator: BuildingCreator, buildingName: string) {
         this.graphics.activate(buildingCreator, buildingName);
     }
-
-    deactivate() {
-        this.graphics.deactivate();
-    }
 }
 
 class BuildingPositionnerGraphics extends Phaser.Graphics {
     private buildingCreator: BuildingCreator;
-    private buildingName: string;
+    private buildingName: string = null;
     private worldKnowledge: WorldKnowledge;
 
     constructor(game: Phaser.Game, worldKnowledge: WorldKnowledge) {
@@ -38,22 +34,20 @@ class BuildingPositionnerGraphics extends Phaser.Graphics {
 
         this.scale.set(SCALE, SCALE);
         game.add.existing(this);
-        this.alpha = 0;
     }
 
     activate(buildingCreator: BuildingCreator, buildingName: string) {
-        this.alpha = 1;
         this.buildingCreator = buildingCreator;
         this.buildingName = buildingName;
     }
 
     deactivate() {
-        this.alpha = 0;
+        this.buildingName = null;
     }
 
     update() {
         this.clear();
-        if (this.alpha > 0) {
+        if (null !== this.buildingName) {
             let cellX = Cell.realToCell(this.game.input.mousePointer.x + this.game.camera.position.x);
             let cellY = Cell.realToCell(this.game.input.mousePointer.y + this.game.camera.position.y);
 
@@ -67,7 +61,8 @@ class BuildingPositionnerGraphics extends Phaser.Graphics {
 
             if (posable && this.game.input.activePointer.leftButton.isDown) {
                 this.buildingCreator.build(this.buildingName, new PIXI.Point(cellX, cellY));
-                this.destroy();
+                this.deactivate();
+                return;
             }
 
             BuildingProperties.getCellPositions(this.buildingName).forEach((position) => {
