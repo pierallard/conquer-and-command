@@ -21,10 +21,11 @@ export class UnitSprite extends Phaser.Sprite {
     private selectedRectable: SelectRectangle;
     private group: Phaser.Group;
 
-    constructor(game: Phaser.Game, x: number, y: number, group: Phaser.Group, key: string) {
-        super(game, x, y, key);
+    constructor(game: Phaser.Game, group: Phaser.Group, cellPosition: PIXI.Point, key: string) {
+        super(game, Cell.cellToReal(cellPosition.x), Cell.cellToReal(cellPosition.y), key);
 
         this.group = group;
+        this.group.add(this);
 
         this.scale.setTo(SCALE, SCALE);
         this.anchor.setTo(0.5, 0.5);

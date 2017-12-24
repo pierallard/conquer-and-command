@@ -8,15 +8,16 @@ export abstract class ConstructableBuilding implements Building {
     protected cellPosition: PIXI.Point;
     protected sprite: BuildingSprite;
 
+    constructor(cellPosition: PIXI.Point, player: Player) {
+        this.cellPosition = cellPosition;
+        this.player = player;
+    }
+
+    abstract create(game: Phaser.Game, group: Phaser.Group): void;
+
     getCellPositions(): PIXI.Point[] {
         return BuildingProperties.getCellPositions(this.constructor.name).map((position) => {
             return new PIXI.Point(position.x + this.cellPosition.x, position.y + this.cellPosition.y);
         });
     };
-
-    build(unitName: string): void {
-        let f = eval(`this.build${unitName}`).bind(this);
-        let unit = f();
-        this.player.getUnitRepository().add(unit);
-    }
 }

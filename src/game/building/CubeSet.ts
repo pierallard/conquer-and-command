@@ -3,9 +3,14 @@ import {Building} from "./Building";
 
 export class CubeSet implements Building {
     private cubes: Cube[];
+    private cubePositions: PIXI.Point[];
 
-    constructor(game: Phaser.Game, cubePositions: PIXI.Point[], group: Phaser.Group) {
-        this.cubes = cubePositions.map((position) => {
+    constructor(cubePositions: PIXI.Point[]) {
+        this.cubePositions = cubePositions;
+    }
+
+    create(game: Phaser.Game, group: Phaser.Group) {
+        this.cubes = this.cubePositions.map((position) => {
             return new Cube(game, position.x, position.y, group);
         });
     }
@@ -31,13 +36,6 @@ export class CubeSet implements Building {
     getCubes(): Cube[] {
         this.checkEmptyCubes();
         return this.cubes;
-    }
-
-    build(unit: string): void {
-    }
-
-    getBuildMethods(): Object {
-        return {};
     }
 
     private checkEmptyCubes() {

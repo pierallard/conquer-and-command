@@ -8,7 +8,6 @@ export const GAME_WIDTH = 1600 * 0.8;
 export const GAME_HEIGHT = 900 * 0.8;
 
 class SimpleGame extends Phaser.Game {
-
     constructor() {
         super(
             GAME_WIDTH,

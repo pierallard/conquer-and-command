@@ -1,57 +1,40 @@
 import {SCALE} from "./game_state/Play";
 import {BuildingPositionner} from "./BuildingPositionner";
-import {UnitRepository} from "./repository/UnitRepository";
-import {BuildingRepository} from "./repository/BuildingRepository";
 import {Power} from "./building/Power";
 import {Player} from "./player/Player";
 import {BuildingProperties} from "./building/BuildingProperties";
-import {Ground} from "./map/Ground";
-import {Appear} from "./sprite/Appear";
+import {WorldKnowledge} from "./WorldKnowledge";
 
 const X = 1202 - 66;
 const WIDTH = 33;
 const HEIGHT = 36;
 
 export class BuildingCreator {
-    private game: Phaser.Game;
-    private buildingRepository: BuildingRepository;
-    private unitRepository: UnitRepository;
     private player: Player;
     private buildingButtons: BuildingButton[];
-    private ground: Ground;
+    private worldKnowledge: WorldKnowledge;
+    private buildingPositionner: BuildingPositionner;
 
-    constructor(
-        game: Phaser.Game,
-        group: Phaser.Group,
-        unitRepository: UnitRepository,
-        buildingRepository: BuildingRepository,
-        player: Player,
-        ground: Ground
-    ) {
-        this.game = game;
-        this.buildingRepository = buildingRepository;
-        this.unitRepository = unitRepository;
-        this.player = player;
+    constructor(worldKnowledge: WorldKnowledge, player: Player, buildingPositionner: BuildingPositionner) {
         this.buildingButtons = [];
-        this.ground = ground;
-
-        this.initializeBuildingButtons(game, group);
+        this.player = player;
+        this.worldKnowledge = worldKnowledge;
+        this.buildingPositionner = buildingPositionner;
     }
 
-    build(buildingName: string, cellX: number, cellY: number) {
+    create(game: Phaser.Game, group: Phaser.Group) {
+        let top = 250;
+        BuildingProperties.getConstructableBuildings().forEach((building) => {
+            this.buildingButtons.push(new BuildingButton(this, game, top, building, group));
+            top += HEIGHT * SCALE;
+        });
+    }
+
+    build(buildingName: string, cellPosition: PIXI.Point) {
+        this.buildingPositionner.deactivate();
         if (buildingName === 'Power') {
-            let newBuilding = new Power(
-                this.game,
-                cellX,
-                cellY,
-                this.buildingRepository.getGroup(),
-                this.player
-            );
-            this.buildingRepository.add(newBuilding);
-            new Appear(this.game, cellX, cellY);
-            this.game.time.events.add(Phaser.Timer.SECOND * 2, () => {
-                newBuilding.showAlpha();
-            }, this);
+            let newBuilding = new Power(cellPosition, this.player);
+            this.worldKnowledge.addBuilding(newBuilding);
         }
 
         this.buildingButtons.forEach((buildingButton) => {
@@ -62,25 +45,7 @@ export class BuildingCreator {
     }
 
     createPositionner(building) {
-        new BuildingPositionner(
-            this,
-            this.game,
-            this.unitRepository,
-            this.buildingRepository,
-            this.ground,
-            building
-        );
-    }
-
-    private initializeBuildingButtons(
-        game: Phaser.Game,
-        group: Phaser.Group
-    ) {
-        let top = 250;
-        BuildingProperties.getConstructableBuildings().forEach((building) => {
-            this.buildingButtons.push(new BuildingButton(this, game, top, building, group));
-            top += HEIGHT * SCALE;
-        });
+        this.buildingPositionner.activate(this, building);
     }
 }
 

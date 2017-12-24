@@ -1,24 +1,16 @@
 import {Selector} from "../Selector";
-import {UnitRepository} from "../repository/UnitRepository";
 import {Ground} from "../map/Ground";
 import {Player} from "../player/Player";
-import {BuildingRepository} from "../repository/BuildingRepository";
-import {Minimap} from "../map/Minimap";
-import {UnitCreator} from "../UnitCreator";
-import {BuildingCreator} from "../BuildingCreator";
+import {WorldKnowledge} from "../WorldKnowledge";
+import {UserInterface} from "../UserInterface";
+import {BuildingPositionner} from "../BuildingPositionner";
 
 export const SCALE = 2;
 export const MOVE = 3 * SCALE;
 export const PANEL_WIDTH = 80;
 
 export default class Play extends Phaser.State {
-    private buildingCreator: BuildingCreator;
-    private unitCreator: UnitCreator;
-    private interfaceGroup: Phaser.Group;
     private unitBuildingGroup: Phaser.Group;
-    private minimap: Minimap;
-    private unitRepository: UnitRepository;
-    private buildingsRepository: BuildingRepository;
     private selector: Selector;
     private players: Player[];
     private ground: Ground;
@@ -30,43 +22,29 @@ export default class Play extends Phaser.State {
     private sKey: Phaser.Key;
     private qKey: Phaser.Key;
     private dKey: Phaser.Key;
+    private worldKnowledge: WorldKnowledge;
+    private userInterface: UserInterface;
+    private buildingPositionner: BuildingPositionner;
+
+    constructor() {
+        super();
+
+        this.worldKnowledge = new WorldKnowledge(this.game);
+        this.players = [
+            new Player(this.worldKnowledge, 0, 0x00ff00),
+            new Player(this.worldKnowledge, 1, 0xff00ff),
+        ];
+        this.selector = new Selector(this.worldKnowledge.getUnitRepository(), this.players[0]);
+        this.buildingPositionner = new BuildingPositionner(this.worldKnowledge);
+        this.userInterface = new UserInterface(this.worldKnowledge, this.players[0], this.buildingPositionner);
+    }
 
     public create() {
-        // Create world
-        this.ground = new Ground(this.game);
+        this.worldKnowledge.create();
+        this.selector.create(this.game);
+        this.userInterface.create(this.game);
 
-        this.unitBuildingGroup = this.game.add.group();
-        this.unitBuildingGroup.fixedToCamera = false;
-        this.unitRepository = new UnitRepository(this, this.unitBuildingGroup);
-        this.buildingsRepository = new BuildingRepository(this, this.unitBuildingGroup);
-
-        this.players = [
-            new Player(0, this.ground, this.unitRepository, this.buildingsRepository, 0x00ff00),
-            new Player(1, this.ground, this.unitRepository, this.buildingsRepository, 0xff00ff),
-        ];
-
-        this.selector = new Selector(this.game, this.unitRepository, this.players[0]);
-
-        this.interfaceGroup = this.game.add.group();
-        this.interfaceGroup.fixedToCamera = true;
-
-        let interfaceSprite = new Phaser.Sprite(this.game, 0, 0, 'interface');
-        interfaceSprite.scale.setTo(SCALE);
-        this.interfaceGroup.add(interfaceSprite);
-
-        this.unitCreator = new UnitCreator(this.game, this.interfaceGroup, this.buildingsRepository);
-        this.buildingCreator = new BuildingCreator(
-            this.game,
-            this.interfaceGroup,
-            this.unitRepository,
-            this.buildingsRepository,
-            this.players[0],
-            this.ground
-        );
-
-        this.minimap = new Minimap(this, this.unitRepository);
-
-        this.world.setBounds(0, 0, this.ground.getGroundWidth(), this.ground.getGroundHeight());
+        this.world.setBounds(0, 0, this.worldKnowledge.getGroundWidth(), this.worldKnowledge.getGroundHeight());
 
         this.game.camera.bounds.setTo(
             0,
@@ -75,19 +53,12 @@ export default class Play extends Phaser.State {
             this.ground.getGroundHeight()
         );
 
-        // Generate units
-        this.unitRepository.generateRandomUnits(this.players);
-        this.buildingsRepository.generateRandomBuildings(this.players);
-
-        // Register inputs
         this.registerInputs();
     }
 
     update() {
-        this.unitRepository.getUnits().forEach((unit) => {
-            unit.update();
-        });
-        this.minimap.update();
+        this.worldKnowledge.update();
+        this.userInterface.update();
 
         if (this.upKey.isDown || this.zKey.isDown) {
             this.game.camera.setPosition(this.game.camera.position.x, this.game.camera.position.y - MOVE);

@@ -1,5 +1,5 @@
-import Play, {SCALE} from "../game_state/Play";
-import {UnitRepository} from "../repository/UnitRepository";
+import {WorldKnowledge} from "../WorldKnowledge";
+import {SCALE} from "../game_state/Play";
 
 const SIZE = 60;
 const X = 571;
@@ -8,16 +8,19 @@ const REFRESH_TIME = 0.5 * Phaser.Timer.SECOND;
 
 export class Minimap {
     private graphics: Phaser.Graphics;
-    private unitRepository: UnitRepository;
-    private game: Phaser.Game;
+    private worldKnowledge: WorldKnowledge;
     private hasRenderedRecently: boolean = false;
     private layer: Phaser.TilemapLayer;
+    private timerEvents: Phaser.Timer;
 
-    constructor(play: Play, unitRepository: UnitRepository) {
-        this.unitRepository = unitRepository;
-        this.game = play.game;
+    constructor(worldKnowledge: WorldKnowledge) {
+        this.worldKnowledge = worldKnowledge;
+    }
 
-        let map = new Phaser.Tilemap(play.game, 'basicmap');
+    create(game: Phaser.Game) {
+        this.timerEvents = game.time.events;
+
+        let map = new Phaser.Tilemap(game, 'basicmap');
         map.addTilesetImage('GrasClif', 'GrasClif');
         map.addTilesetImage('GrssMisc', 'GrssMisc');
         this.layer = map.createLayer('layer');
@@ -27,15 +30,14 @@ export class Minimap {
         this.layer.cameraOffset.setTo(X * SCALE, Y * SCALE);
         this.layer.scrollFactorX = 0;
         this.layer.scrollFactorY = 0;
-        this.game.add.existing(this.layer);
+        game.add.existing(this.layer);
 
         let scale2 = SIZE / Math.max(map.width, map.height) * SCALE;
-        this.graphics = new Phaser.Graphics(play.game);
+        this.graphics = new Phaser.Graphics(game);
         this.graphics.scale.set(scale2, scale2);
         this.graphics.position.setTo(X * SCALE, Y * SCALE);
         this.graphics.fixedToCamera = true;
-
-        this.game.add.existing(this.graphics);
+        game.add.existing(this.graphics);
     }
 
     update() {
@@ -44,7 +46,7 @@ export class Minimap {
         }
 
         this.graphics.clear();
-        this.unitRepository.getUnits().forEach((unit) => {
+        this.worldKnowledge.getUnits().forEach((unit) => {
             this.graphics.beginFill(unit.getPlayer().getColor());
             unit.getCellPositions().forEach((cellPosition) => {
                 this.graphics.drawRect(cellPosition.x, cellPosition.y, 1, 1);
@@ -52,7 +54,7 @@ export class Minimap {
         });
 
         this.hasRenderedRecently = true;
-        this.game.time.events.add(REFRESH_TIME, () => {
+        this.timerEvents.add(REFRESH_TIME, () => {
             this.hasRenderedRecently = false;
         }, this);
     }

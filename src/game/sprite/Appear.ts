@@ -6,17 +6,23 @@ const ANCHOR_X = 3 / 8;
 const ANCHOR_Y = 6.5 / 8;
 
 export class Appear {
-    private game: Phaser.Game;
     private position: PIXI.Point;
+    private game: Phaser.Game;
+    private group: Phaser.Group;
 
-    constructor(game: Phaser.Game, cellX: number, cellY: number) {
+    constructor(cellPosition: PIXI.Point) {
+        this.position = new PIXI.Point(Cell.cellToReal(cellPosition.x), Cell.cellToReal(cellPosition.y));
+    }
+
+    create(game: Phaser.Game, group: Phaser.Group) {
         this.game = game;
-        this.position = new PIXI.Point(Cell.cellToReal(cellX), Cell.cellToReal(cellY));
+        this.group = group;
         this.buildSprite1();
     }
 
     buildSprite1() {
         let sprite = this.game.add.sprite(this.position.x, this.position.y, 'Build1');
+        this.group.add(sprite);
         sprite.scale.setTo(SCALE, SCALE);
         sprite.anchor.setTo(ANCHOR_X, ANCHOR_Y);
         let spriteAnim = sprite.animations.add('toto', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13], FRAME_RATE);
@@ -26,6 +32,7 @@ export class Appear {
 
     buildSprite2() {
         let sprite = this.game.add.sprite(this.position.x, this.position.y, 'Build2');
+        this.group.add(sprite);
         sprite.scale.setTo(SCALE, SCALE);
         sprite.anchor.setTo(ANCHOR_X, ANCHOR_Y);
         let spriteAnim = sprite.animations.add('toto', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], FRAME_RATE);
@@ -35,6 +42,7 @@ export class Appear {
 
     buildSprite3() {
         let sprite = this.game.add.sprite(this.position.x, this.position.y, 'Build3');
+        this.group.add(sprite);
         sprite.scale.setTo(SCALE, SCALE);
         sprite.anchor.setTo(ANCHOR_X, ANCHOR_Y);
         let spriteAnim = sprite.animations.add('toto', [0, 1, 2, 3, 4, 5, 6, 7], FRAME_RATE);
@@ -44,6 +52,7 @@ export class Appear {
 
     buildSprite4() {
         let sprite = this.game.add.sprite(this.position.x, this.position.y, 'Build4');
+        this.group.add(sprite);
         sprite.scale.setTo(SCALE, SCALE);
         sprite.anchor.setTo(ANCHOR_X, ANCHOR_Y);
         let spriteAnim = sprite.animations.add('toto', [0, 1, 2, 3, 4, 5, 6, 7], FRAME_RATE);
@@ -53,6 +62,7 @@ export class Appear {
 
     buildSprite5() {
         let sprite = this.game.add.sprite(this.position.x, this.position.y, 'Build5');
+        this.group.add(sprite);
         sprite.scale.setTo(SCALE, SCALE);
         sprite.anchor.setTo(ANCHOR_X, ANCHOR_Y);
         let spriteAnim = sprite.animations.add('toto', [0, 1, 2, 3, 4, 5, 6, 7], FRAME_RATE);
@@ -62,6 +72,7 @@ export class Appear {
 
     buildSprite6() {
         let sprite = this.game.add.sprite(this.position.x, this.position.y, 'Build6');
+        this.group.add(sprite);
         sprite.scale.setTo(SCALE, SCALE);
         sprite.anchor.setTo(ANCHOR_X, ANCHOR_Y);
         let spriteAnim = sprite.animations.add('toto', [0, 1, 2, 3, 4, 5, 6, 7], FRAME_RATE);
@@ -71,6 +82,7 @@ export class Appear {
 
     buildSprite7() {
         let sprite = this.game.add.sprite(this.position.x, this.position.y, 'Build7');
+        this.group.add(sprite);
         sprite.scale.setTo(SCALE, SCALE);
         sprite.anchor.setTo(ANCHOR_X, ANCHOR_Y);
         let spriteAnim = sprite.animations.add('toto', [0, 1, 2, 3, 4, 5, 6, 7], FRAME_RATE);

@@ -9,19 +9,25 @@ import {Base} from "../building/Base";
 import {Distance} from "../Distance";
 import {CubeSet} from "../building/CubeSet";
 import {UnitProperties} from "./UnitProperties";
+import {WorldKnowledge} from "../WorldKnowledge";
 
 export class Harvester extends Unit {
     private loading: number;
 
-    constructor(player: Player, x: number, y: number, group: Phaser.Group) {
-        super(player, x, y, group, UnitProperties.getSprite(Harvester.prototype.constructor.name, player.getId()));
+    constructor(worldKnowledge: WorldKnowledge, cellPosition: PIXI.Point, player: Player) {
+        super(
+            worldKnowledge,
+            cellPosition,
+            player,
+            UnitProperties.getSprite(Harvester.prototype.constructor.name, player.getId())
+        );
 
         this.life = this.maxLife = UnitProperties.getLife(Harvester.prototype.constructor.name);
         this.loading = 0;
     }
 
     updateStateAfterclick(cell: PIXI.Point) {
-        const unit = this.player.getUnitRepository().unitAt(cell);
+        const unit = this.worldKnowledge.getUnitAt(cell);
         if (null !== unit) {
             if (this.getPlayer() !== unit.getPlayer()) {
                 this.state = new Attack(this, unit);
@@ -29,7 +35,7 @@ export class Harvester extends Unit {
                 this.state = new Follow(this, unit);
             }
         } else {
-            const building = this.player.getBuildingRepository().buildingAt(cell);
+            const building = this.worldKnowledge.getBuildingAt(cell);
             if (building && building instanceof CubeSet) {
                 this.state = new Harvest(this, (<CubeSet> building));
             } else {

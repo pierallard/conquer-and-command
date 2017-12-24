@@ -1,4 +1,4 @@
 export interface Building {
     getCellPositions(): PIXI.Point[];
-    build(unit: string): void;
+    create(game: Phaser.Game, group: Phaser.Group): void;
 }
