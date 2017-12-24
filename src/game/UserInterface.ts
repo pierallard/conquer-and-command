@@ -1,7 +1,7 @@
 import {SCALE} from "./game_state/Play";
-import {UnitCreator} from "./UnitCreator";
+import {UnitCreator} from "./creator/UnitCreator";
 import {WorldKnowledge} from "./WorldKnowledge";
-import {BuildingCreator} from "./BuildingCreator";
+import {BuildingCreator} from "./creator/BuildingCreator";
 import {Minimap} from "./map/Minimap";
 import {Player} from "./player/Player";
 import {BuildingPositionner} from "./BuildingPositionner";
@@ -18,7 +18,7 @@ export class UserInterface {
         this.buildingCreator = new BuildingCreator(worldKnowledge, this.player, buildingPositionner);
         this.unitCreator = new UnitCreator(worldKnowledge, this.player);
         this.minimap = new Minimap(worldKnowledge);
-        worldKnowledge.setBuildingCreator(this.buildingCreator);
+        worldKnowledge.setCreators([this.buildingCreator, this.unitCreator]);
     }
 
     create(game: Phaser.Game) {
