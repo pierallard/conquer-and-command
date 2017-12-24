@@ -18,6 +18,7 @@ export class UserInterface {
         this.buildingCreator = new BuildingCreator(worldKnowledge, this.player, buildingPositionner);
         this.unitCreator = new UnitCreator(worldKnowledge, this.player);
         this.minimap = new Minimap(worldKnowledge);
+        worldKnowledge.setBuildingCreator(this.buildingCreator);
     }
 
     create(game: Phaser.Game) {

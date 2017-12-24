@@ -30,6 +30,28 @@ export class BuildingCreator {
         });
     }
 
+    update() {
+        this.buildingButtons.forEach((buildingButton) => {
+            let foundAll = true;
+            BuildingProperties.getAllowedBuildings(buildingButton.getName()).forEach((buildingName) => {
+                let found = false;
+                this.worldKnowledge.getBuildings().forEach((existingBuilding) => {
+                    if (existingBuilding.constructor.name === buildingName) {
+                        found = true;
+                    }
+                });
+                if (!found) {
+                    foundAll = false;
+                }
+            });
+            if (!foundAll) {
+                buildingButton.hide();
+            } else {
+                buildingButton.show();
+            }
+        });
+    }
+
     build(buildingName: string, cellPosition: PIXI.Point) {
         if (buildingName === 'PowerPlant') {
             let newBuilding = new PowerPlant(cellPosition, this.player);
@@ -58,6 +80,8 @@ class BuildingButton {
     private state: STATE;
     private progress: BuildingButtonProgress;
     private buildingName: string;
+    private button: Phaser.Sprite;
+    private buildingSprite: Phaser.Sprite;
 
     constructor(
         buildingCreator: BuildingCreator,
@@ -69,40 +93,41 @@ class BuildingButton {
         this.state = STATE.AVAILABLE;
         this.buildingName = buildingName;
 
-        let button = new Phaser.Sprite(game, X, top, 'buttons', 0);
-        button.scale.setTo(SCALE, SCALE);
-        button.inputEnabled = true;
-        button.events.onInputDown.add(() => {
+        this.button = new Phaser.Sprite(game, X, top, 'buttons', 0);
+        this.button.scale.setTo(SCALE, SCALE);
+        this.button.inputEnabled = true;
+        this.button.events.onInputDown.add(() => {
             if (this.state === STATE.AVAILABLE) {
                 this.state = STATE.PROGRESS;
-                button.loadTexture(button.key, 1);
+                this.button.loadTexture(this.button.key, 1);
                 const tween = this.progress.startProgress();
                 tween.onComplete.add(() => {
                     this.state = STATE.CONSTRUCTABLE;
-                    button.loadTexture(button.key, 2);
+                    this.button.loadTexture(this.button.key, 2);
                 });
             } else if (this.state === STATE.CONSTRUCTABLE) {
                 this.state = STATE.PROGRESS;
-                button.loadTexture(button.key, 0);
+                this.button.loadTexture(this.button.key, 0);
                 buildingCreator.createPositionner(this.buildingName);
             }
         }, this);
-        group.add(button);
+        group.add(this.button);
 
-        let buildingSprite = new Phaser.Sprite(
+        this.buildingSprite = new Phaser.Sprite(
             game,
             X + WIDTH * SCALE / 2,
             top + HEIGHT * SCALE / 2,
             BuildingProperties.getSpriteKey(buildingName),
             BuildingProperties.getSpriteLayer(buildingName)
         );
-        buildingSprite.scale.setTo(SCALE / 2, SCALE / 2);
-        buildingSprite.anchor.setTo(0.5, 0.7);
-        group.add(buildingSprite);
+        this.buildingSprite.scale.setTo(SCALE / 2, SCALE / 2);
+        this.buildingSprite.anchor.setTo(0.5, 0.7);
+        group.add(this.buildingSprite);
 
         this.progress = new BuildingButtonProgress(game, top);
         group.add(this.progress);
 
+        this.hide();
     }
 
     getName() {
@@ -112,6 +137,18 @@ class BuildingButton {
     reset() {
         this.state = STATE.AVAILABLE;
         this.progress.resetProgress();
+    }
+
+    hide() {
+        this.button.alpha = 0;
+        this.buildingSprite.alpha = 0;
+        this.progress.alpha = 0;
+    }
+
+    show() {
+        this.button.alpha = 1;
+        this.buildingSprite.alpha = 1;
+        this.progress.alpha = 1;
     }
 }
 

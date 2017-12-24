@@ -5,6 +5,7 @@ import {Building} from "./building/Building";
 import {Unit} from "./unit/Unit";
 import {UnitRepository} from "./repository/UnitRepository";
 import {Appear} from "./sprite/Appear";
+import {BuildingCreator} from "./BuildingCreator";
 
 export class WorldKnowledge {
     private game: Phaser.Game;
@@ -12,6 +13,7 @@ export class WorldKnowledge {
     private unitBuildingGroup: Phaser.Group;
     private unitRepository: UnitRepository;
     private buildingRepository: BuildingRepository;
+    private buildingCreator: BuildingCreator;
 
     constructor() {
         this.ground = new Ground();
@@ -69,6 +71,7 @@ export class WorldKnowledge {
                 newBuilding.setVisible(true);
             }, this);
         }
+        this.buildingCreator.update();
     }
 
     getCreatorOf(unit: string) {
@@ -104,5 +107,13 @@ export class WorldKnowledge {
 
     getSelectedUnits() {
         return this.unitRepository.getSelectedUnits();
+    }
+
+    setBuildingCreator(buildingCreator: BuildingCreator) {
+        this.buildingCreator = buildingCreator;
+    }
+
+    getBuildings(): Building[] {
+        return this.buildingRepository.getBuildings();
     }
 }

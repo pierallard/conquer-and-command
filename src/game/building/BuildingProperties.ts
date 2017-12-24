@@ -22,8 +22,8 @@ const DATA = {
             [1, -1],
         ],
         constructable_units: [],
-        allowedBy: [
-            'ConstructionYard'
+        allowed_by: [
+            'ConstructionYard',
         ],
     },
     Barracks: {
@@ -38,8 +38,8 @@ const DATA = {
         constructable_units: [
             'Tank',
         ],
-        allowedBy: [
-            'PowerPlant'
+        allowed_by: [
+            'PowerPlant',
         ],
     },
 };
@@ -61,8 +61,8 @@ const DATA = {
  - advanced guard tower : Artilery2
  */
 export class BuildingProperties {
-    static getCellPositions(unitName: string): PIXI.Point[] {
-        return DATA[unitName].cellPositions.map((position) => {
+    static getCellPositions(buildingName: string): PIXI.Point[] {
+        return DATA[buildingName].cellPositions.map((position) => {
             return new PIXI.Point(position[0], position[1]);
         });
     }
@@ -73,15 +73,19 @@ export class BuildingProperties {
         });
     }
 
-    static getSpriteKey(unitName: string): string {
-        return DATA[unitName].sprite;
+    static getSpriteKey(buildingName: string): string {
+        return DATA[buildingName].sprite;
     }
 
-    static getSpriteLayer(unitName: string): number {
-        return DATA[unitName].sprite_layer;
+    static getSpriteLayer(buildingName: string): number {
+        return DATA[buildingName].sprite_layer;
     }
 
-    static getConstructableUnits(unitName: string): string[] {
-        return DATA[unitName].constructable_units;
+    static getConstructableUnits(buildingName: string): string[] {
+        return DATA[buildingName].constructable_units;
+    }
+
+    static getAllowedBuildings(buildingName: string): string[] {
+        return DATA[buildingName].allowed_by;
     }
 }

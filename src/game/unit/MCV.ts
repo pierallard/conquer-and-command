@@ -42,7 +42,10 @@ export class MCV extends Unit {
 
     private expand() {
         this.expanded = true;
-        this.worldKnowledge.addBuilding(new ConstructionYard(new PIXI.Point(this.cellPosition.x - 1, this.cellPosition.y), this.player), true);
+        this.worldKnowledge.addBuilding(
+            new ConstructionYard(new PIXI.Point(this.cellPosition.x - 1, this.cellPosition.y), this.player),
+            true
+        );
         this.worldKnowledge.removeUnit(this, 1000);
     }
 }
