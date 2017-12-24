@@ -6,9 +6,11 @@ export class Ground {
     private obstacles: PIXI.Point[] = [];
     private map: Phaser.Tilemap;
 
-    constructor(game: Phaser.Game) {
+    constructor() {
+    }
+
+    create(game: Phaser.Game) {
         this.map = game.add.tilemap('basicmap');
-        // this.map = new Phaser.Tilemap(game, 'basicmap');
         this.map.addTilesetImage('GrasClif', 'GrasClif');
         this.map.addTilesetImage('GrssMisc', 'GrssMisc');
         let layer = this.map.createLayer('layer');

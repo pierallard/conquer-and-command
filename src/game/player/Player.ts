@@ -1,58 +1,29 @@
-import {Ground} from "../map/Ground";
-import {UnitRepository} from "../repository/UnitRepository";
 import {Unit} from "../unit/Unit";
-import {BuildingRepository} from "../repository/BuildingRepository";
-import {Base} from "../building/Base";
+import {WorldKnowledge} from "../WorldKnowledge";
 
 export class Player {
-    private ground: Ground;
-    private unitRepository: UnitRepository;
-    private buildingRepository: BuildingRepository;
+    private worldKnowledge: WorldKnowledge;
     private color: number;
     private id: number;
 
-    constructor(
-        id: number,
-        ground: Ground,
-        unitRepository: UnitRepository,
-        buildingRepository: BuildingRepository,
-        color: number
-    ) {
+    constructor(worldKnowledge: WorldKnowledge, id: number, color: number) {
+        this.worldKnowledge = worldKnowledge;
         this.id = id;
-        this.ground = ground;
-        this.unitRepository = unitRepository;
-        this.buildingRepository = buildingRepository;
         this.color = color;
     }
 
+    // TODO Remove this method
     public isPositionAccessible(position: PIXI.Point): boolean {
-        return this.ground.isCellAccessible(position) &&
-            this.unitRepository.isCellNotOccupied(position) &&
-            this.buildingRepository.isCellNotOccupied(position);
+        return this.worldKnowledge.isCellAccessible(position);
     };
 
-    /**
-     * @deprecated
-     */
-    getUnitRepository(): UnitRepository {
-        return this.unitRepository;
+    getEnemyUnits(): Unit[] {
+        return this.worldKnowledge.getEnemyUnits(this);
     }
 
-    getEnnemyUnits(): Unit[] {
-        return this.unitRepository.getEnnemyUnits(this);
-    }
-
-    /**
-     * @deprecated
-     */
-    getBuildingRepository(): BuildingRepository {
-        return this.buildingRepository;
-    }
-
+    // TODO No player needed ?
     getBases() {
-        return this.buildingRepository.getBuildings().filter((building) => {
-            return building instanceof Base;
-        });
+        return this.worldKnowledge.getPlayerBases();
     }
 
     getColor(): number {

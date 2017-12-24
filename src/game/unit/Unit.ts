@@ -1,4 +1,3 @@
-import {Cell} from "../Cell";
 import {AStar, Path} from "../AStar";
 import {Player} from "../player/Player";
 import {State} from "../state/State";
@@ -9,6 +8,7 @@ import {MoveAttack} from "../state/MoveAttack";
 import {UnitSprite} from "../sprite/UnitSprite";
 import {Distance} from "../Distance";
 import {UnitProperties} from "./UnitProperties";
+import {WorldKnowledge} from "../WorldKnowledge";
 
 export abstract class Unit {
     protected life: number;
@@ -16,24 +16,26 @@ export abstract class Unit {
     protected unitSprite: UnitSprite;
     protected state: State;
     protected player: Player;
+    protected worldKnowledge: WorldKnowledge;
     private pathCache: Path;
     private goalCache: PIXI.Point;
     private cellPosition: PIXI.Point;
     private isFreezed: boolean = false;
     private selected: boolean = false;
+    private key: string;
+    private timerEvents: Phaser.Timer;
 
-    constructor(player: Player, x: number, y: number, group: Phaser.Group, key: string) {
-        this.unitSprite = new UnitSprite(
-            player.getUnitRepository().play.game,
-            Cell.cellToReal(Cell.realToCell(x)),
-            Cell.cellToReal(Cell.realToCell(y)),
-            group,
-            key
-        );
-
+    constructor(worldKnowledge: WorldKnowledge, cellPosition: PIXI.Point, player: Player, key: string) {
+        this.worldKnowledge = worldKnowledge;
+        this.cellPosition = cellPosition;
         this.player = player;
-        this.cellPosition = new PIXI.Point(Cell.realToCell(x), Cell.realToCell(y));
         this.state = new Stand(this);
+        this.key = key;
+    }
+
+    create(game: Phaser.Game, group: Phaser.Group) {
+        this.unitSprite = new UnitSprite(game, group, this.cellPosition, this.key);
+        this.timerEvents = game.time.events;
     }
 
     update(): void {
@@ -73,14 +75,14 @@ export abstract class Unit {
         this.life -= life;
         if (!this.isAlive()) {
             this.unitSprite.doDestroy();
-            this.player.getUnitRepository().removeSprite(this);
+            this.worldKnowledge.removeUnit(this);
         }
 
         this.unitSprite.updateLife(this.life, this.maxLife);
     }
 
     getClosestShootable(): Unit {
-        const enemies = this.player.getEnnemyUnits();
+        const enemies = this.player.getEnemyUnits();
         let minDistance = null;
         let closest = null;
         for (let i = 0; i < enemies.length; i++) {
@@ -125,7 +127,10 @@ export abstract class Unit {
 
         if (nextStep) {
             this.cellPosition = nextStep;
-            this.unitSprite.doMove(nextStep, UnitProperties.getSlownessTime(this.constructor.name) * Phaser.Timer.SECOND);
+            this.unitSprite.doMove(
+                nextStep,
+                UnitProperties.getSlownessTime(this.constructor.name) * Phaser.Timer.SECOND
+            );
             this.freeze(UnitProperties.getSlownessTime(this.constructor.name) * Phaser.Timer.SECOND);
         }
     }
@@ -136,7 +141,7 @@ export abstract class Unit {
     }
 
     updateStateAfterclick(cell: PIXI.Point) {
-        const unit = this.player.getUnitRepository().unitAt(cell);
+        const unit = this.worldKnowledge.getUnitAt(cell);
         if (null !== unit) {
             if (this.getPlayer() !== unit.getPlayer()) {
                 this.state = new Attack(this, unit);
@@ -154,9 +159,8 @@ export abstract class Unit {
 
     protected freeze(time: number) {
         this.isFreezed = true;
-        this.player.getUnitRepository().play.game.time.events.add(time, () => {
+        this.timerEvents.add(time, () => {
             this.isFreezed = false;
         }, this);
     }
-
 }

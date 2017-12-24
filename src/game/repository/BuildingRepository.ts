@@ -1,37 +1,11 @@
-import {Base} from "../building/Base";
-import Play from "../game_state/Play";
-import {Player} from "../player/Player";
 import {Building} from "../building/Building";
-import {CubeSet} from "../building/CubeSet";
-import {Power} from "../building/Power";
 import {BuildingProperties} from "../building/BuildingProperties";
 
 export class BuildingRepository {
-    private play: Play;
     private buildings: Building[];
-    private group: Phaser.Group;
 
-    constructor(play: Play, group: Phaser.Group) {
-        this.play = play;
-        this.group = group;
+    constructor() {
         this.buildings = [];
-    }
-
-    generateRandomBuildings(players: Player[]) {
-        this.add(new Base(this.play.game, 10, 5, this.group, players[0]));
-        this.add(new Power(this.play.game, 10, 10, this.group, players[0]));
-        this.add(new CubeSet(this.play.game, [
-                new PIXI.Point(9, 18),
-                new PIXI.Point(10, 18),
-                new PIXI.Point(11, 18),
-                new PIXI.Point(12, 18),
-                new PIXI.Point(13, 17),
-            ], this.group)
-        );
-    }
-
-    getGroup(): Phaser.Group {
-        return this.group;
     }
 
     add(building: Building) {
