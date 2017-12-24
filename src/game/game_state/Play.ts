@@ -31,7 +31,7 @@ export default class Play extends Phaser.State {
             new Player(this.worldKnowledge, 0, 0x00ff00),
             new Player(this.worldKnowledge, 1, 0xff00ff),
         ];
-        this.selector = new Selector(this.worldKnowledge.getUnitRepository(), this.players[0]);
+        this.selector = new Selector(this.worldKnowledge, this.players[0]);
         this.buildingPositionner = new BuildingPositionner(this.worldKnowledge);
         this.userInterface = new UserInterface(this.worldKnowledge, this.players[0], this.buildingPositionner);
     }

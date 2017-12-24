@@ -1,11 +1,11 @@
-import {UnitRepository} from "./repository/UnitRepository";
 import {Player} from "./player/Player";
 import {Cell} from "./Cell";
+import {WorldKnowledge} from "./WorldKnowledge";
 
 export class Selector {
     private isDoubleClick: boolean;
     private corner: PIXI.Point = null;
-    private unitRepository: UnitRepository;
+    private worldKnowledge: WorldKnowledge;
     private player: Player;
     private timerDoubleClick: Phaser.TimerEvent;
     private graphics: Phaser.Graphics;
@@ -17,8 +17,8 @@ export class Selector {
     private gameHeight: number;
     private timeEvents: Phaser.Timer;
 
-    constructor(unitRepository: UnitRepository, player: Player) {
-        this.unitRepository = unitRepository;
+    constructor(worldKnowledge: WorldKnowledge, player: Player) {
+        this.worldKnowledge = worldKnowledge;
         this.player = player;
     }
 
@@ -54,7 +54,7 @@ export class Selector {
 
         if (this.corner !== null && this.leftButton.isUp) {
             if (this.corner.x === this.getMousePointer().x && this.corner.y === this.getMousePointer().y) {
-                let unitUnderPointer = this.unitRepository.unitAt(new PIXI.Point(
+                let unitUnderPointer = this.worldKnowledge.getUnitAt(new PIXI.Point(
                     Cell.realToCell(this.corner.x),
                     Cell.realToCell(this.corner.y)
                 ));
@@ -71,7 +71,7 @@ export class Selector {
                         unitUnderPointer.constructor
                     );
                 } else {
-                    this.unitRepository.getUnits().forEach((unit) => {
+                    this.worldKnowledge.getUnits().forEach((unit) => {
                         unit.setSelected(unit === unitUnderPointer);
                     });
                 }
@@ -92,7 +92,7 @@ export class Selector {
         }
 
         if (this.rightButton.isDown) {
-            this.unitRepository.getSelectedUnits().forEach((source) => {
+            this.worldKnowledge.getSelectedUnits().forEach((source) => {
                 source.updateStateAfterclick(new PIXI.Point(
                     Cell.realToCell(this.getMousePointer().x),
                     Cell.realToCell(this.getMousePointer().y)
@@ -119,7 +119,7 @@ export class Selector {
         const top = Math.min(corner.y, mousePointer.y);
         const bottom = Math.max(corner.y, mousePointer.y);
 
-        this.unitRepository.getUnits().forEach((unit) => {
+        this.worldKnowledge.getUnits().forEach((unit) => {
             let isInside = false;
             if (unit.getPlayer() === this.player && (null === constructor || unit.constructor === constructor)) {
                 isInside = unit.isInside(left, right, top, bottom);

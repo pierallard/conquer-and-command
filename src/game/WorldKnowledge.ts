@@ -1,9 +1,9 @@
 import {Ground} from "./map/Ground";
-import {UnitRepository} from "./repository/UnitRepository";
 import {BuildingRepository} from "./repository/BuildingRepository";
 import {Player} from "./player/Player";
 import {Building} from "./building/Building";
 import {Unit} from "./unit/Unit";
+import {UnitRepository} from "./repository/UnitRepository";
 
 export class WorldKnowledge {
     private game: Phaser.Game;
@@ -49,11 +49,6 @@ export class WorldKnowledge {
         });
     }
 
-    getUnitRepository() {
-        return this.unitRepository;
-    }
-
-    // TODO Deop these methods
     getGroundWidth() {
         return this.ground.getGroundWidth();
     }
@@ -90,5 +85,9 @@ export class WorldKnowledge {
 
     getUnits() {
         return this.unitRepository.getUnits();
+    }
+
+    getSelectedUnits() {
+        return this.unitRepository.getSelectedUnits();
     }
 }
