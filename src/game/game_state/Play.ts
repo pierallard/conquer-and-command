@@ -42,8 +42,8 @@ export default class Play extends Phaser.State {
     public create() {
         this.worldKnowledge.create(this.game);
         this.selector.create(this.game);
-        this.userInterface.create(this.game);
         this.buildingPositionner.create(this.game);
+        this.userInterface.create(this.game);
 
         this.world.setBounds(0, 0, this.worldKnowledge.getGroundWidth(), this.worldKnowledge.getGroundHeight());
 

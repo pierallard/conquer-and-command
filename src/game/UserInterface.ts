@@ -6,6 +6,8 @@ import {Minimap} from "./map/Minimap";
 import {Player} from "./player/Player";
 import {BuildingPositionner} from "./BuildingPositionner";
 
+export const INTERFACE_WIDTH = 160;
+
 export class UserInterface {
     private buildingCreator: BuildingCreator;
     private interfaceGroup: Phaser.Group;
