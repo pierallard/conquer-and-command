@@ -4,6 +4,7 @@ import {PowerPlant} from "./building/PowerPlant";
 import {Player} from "./player/Player";
 import {BuildingProperties} from "./building/BuildingProperties";
 import {WorldKnowledge} from "./WorldKnowledge";
+import {Barracks} from "./building/Barracks";
 
 const X = 1202 - 66;
 const WIDTH = 33;
@@ -53,9 +54,17 @@ export class BuildingCreator {
     }
 
     build(buildingName: string, cellPosition: PIXI.Point) {
-        if (buildingName === 'PowerPlant') {
-            let newBuilding = new PowerPlant(cellPosition, this.player);
-            this.worldKnowledge.addBuilding(newBuilding);
+        switch (buildingName) {
+            case 'PowerPlant':
+                let powerPlant = new PowerPlant(cellPosition, this.player);
+                this.worldKnowledge.addBuilding(powerPlant, true);
+                break;
+            case 'Barracks':
+                let barracks = new Barracks(cellPosition, this.player);
+                this.worldKnowledge.addBuilding(barracks, true);
+                break;
+            default:
+                throw "Unable to build " + buildingName;
         }
 
         this.buildingButtons.forEach((buildingButton) => {

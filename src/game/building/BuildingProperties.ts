@@ -29,6 +29,7 @@ const DATA = {
     Barracks: {
         constructable: true,
         sprite: 'Module',
+        sprite_layer: 0,
         cellPositions: [
             [0, 0],
             [1, 0],
