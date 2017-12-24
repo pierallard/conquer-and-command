@@ -5,7 +5,7 @@ import {AbstractCreator} from "./AbstractCreator";
 import {Harvester} from "../unit/Harvester";
 import {Tank} from "../unit/Tank";
 import {MCV} from "../unit/MCV";
-import {AlternativePosition} from "../AlternativePosition";
+import {AlternativePosition} from "../computing/AlternativePosition";
 
 const X = 1202;
 

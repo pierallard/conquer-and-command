@@ -4,6 +4,8 @@ import {WorldKnowledge} from "../WorldKnowledge";
 import {UserInterface} from "../UserInterface";
 import {BuildingPositionner} from "../BuildingPositionner";
 import {MCV} from "../unit/MCV";
+import {HumanPlayer} from "../player/HumanPlayer";
+import {ComputerPlayer} from "../player/ComputerPlayer";
 
 export const SCALE = 2;
 export const MOVE = 3 * SCALE;
@@ -29,8 +31,8 @@ export default class Play extends Phaser.State {
 
         this.worldKnowledge = new WorldKnowledge();
         this.players = [
-            new Player(this.worldKnowledge, 0, 0x00ff00),
-            new Player(this.worldKnowledge, 1, 0xff00ff),
+            new HumanPlayer(this.worldKnowledge, 0, 0x00ff00),
+            new ComputerPlayer(this.worldKnowledge, 1, 0xff00ff),
         ];
         this.selector = new Selector(this.worldKnowledge, this.players[0]);
         this.buildingPositionner = new BuildingPositionner(this.worldKnowledge);

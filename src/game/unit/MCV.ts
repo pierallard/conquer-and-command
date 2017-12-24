@@ -30,12 +30,12 @@ export class MCV extends Unit {
                     this.expand();
                 }
                 if (this.getPlayer() !== unit.getPlayer()) {
-                    this.state = new MoveTo(this, unit.getCellPositions()[0]);
+                    this.state = new MoveTo(this.worldKnowledge, this, unit.getCellPositions()[0]);
                 } else {
-                    this.state = new Follow(this, unit);
+                    this.state = new Follow(this.worldKnowledge, this, unit);
                 }
             } else {
-                this.state = new MoveTo(this, cell);
+                this.state = new MoveTo(this.worldKnowledge, this, cell);
             }
         }
     }

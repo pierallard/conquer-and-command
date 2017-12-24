@@ -6,7 +6,7 @@ import {MoveAttack} from "../state/MoveAttack";
 import {Harvest} from "../state/Harvest";
 import {Cube} from "../building/Cube";
 import {ConstructionYard} from "../building/ConstructionYard";
-import {Distance} from "../Distance";
+import {Distance} from "../computing/Distance";
 import {CubeSet} from "../building/CubeSet";
 import {UnitProperties} from "./UnitProperties";
 import {WorldKnowledge} from "../WorldKnowledge";
@@ -30,16 +30,16 @@ export class Harvester extends Unit {
         const unit = this.worldKnowledge.getUnitAt(cell);
         if (null !== unit) {
             if (this.getPlayer() !== unit.getPlayer()) {
-                this.state = new Attack(this, unit);
+                this.state = new Attack(this.worldKnowledge, this, unit);
             } else {
-                this.state = new Follow(this, unit);
+                this.state = new Follow(this.worldKnowledge, this, unit);
             }
         } else {
             const building = this.worldKnowledge.getBuildingAt(cell);
             if (building && building instanceof CubeSet) {
-                this.state = new Harvest(this, (<CubeSet> building));
+                this.state = new Harvest(this.worldKnowledge, this, (<CubeSet> building));
             } else {
-                this.state = new MoveAttack(this, cell);
+                this.state = new MoveAttack(this.worldKnowledge, this, cell);
             }
         }
     }

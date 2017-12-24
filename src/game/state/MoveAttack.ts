@@ -1,13 +1,16 @@
 import {State} from "./State";
 import {Unit} from "../unit/Unit";
 import {Stand} from "./Stand";
-import {AlternativePosition} from "../AlternativePosition";
+import {AlternativePosition} from "../computing/AlternativePosition";
+import {WorldKnowledge} from "../WorldKnowledge";
 
 export class MoveAttack implements State {
+    private worldKnowledge: WorldKnowledge;
     private unit: Unit;
     private goal: PIXI.Point;
 
-    constructor(unit: Unit, goal: PIXI.Point) {
+    constructor(worldKnowledge: WorldKnowledge, unit: Unit, goal: PIXI.Point) {
+        this.worldKnowledge = worldKnowledge;
         this.unit = unit;
         this.goal = goal;
     }
@@ -33,7 +36,7 @@ export class MoveAttack implements State {
         return AlternativePosition.isArrived(
             this.goal,
             this.unit.getCellPositions()[0],
-            this.unit.getPlayer().isPositionAccessible.bind(this.unit.getPlayer())
+            this.worldKnowledge.isCellAccessible.bind(this.worldKnowledge)
         );
     }
 }

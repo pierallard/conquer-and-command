@@ -1,4 +1,4 @@
-import {Cell} from "../Cell";
+import {Cell} from "../computing/Cell";
 import {ConstructableBuilding} from "./ConstructableBuilding";
 import {Player} from "../player/Player";
 import {ConstructionYardSprite} from "../sprite/ConstructionYardSprite";

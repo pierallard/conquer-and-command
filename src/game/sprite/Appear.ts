@@ -1,4 +1,4 @@
-import {Cell} from "../Cell";
+import {Cell} from "../computing/Cell";
 import {SCALE} from "../game_state/Play";
 
 const FRAME_RATE = 20;

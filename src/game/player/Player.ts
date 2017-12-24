@@ -1,7 +1,7 @@
 import {Unit} from "../unit/Unit";
 import {WorldKnowledge} from "../WorldKnowledge";
 
-export class Player {
+export abstract class Player {
     private worldKnowledge: WorldKnowledge;
     private color: number;
     private id: number;
@@ -12,10 +12,10 @@ export class Player {
         this.color = color;
     }
 
-    // TODO Remove this method
-    public isPositionAccessible(position: PIXI.Point): boolean {
-        return this.worldKnowledge.isCellAccessible(position);
-    };
+    // // TODO Remove this method
+    // public isPositionAccessible(position: PIXI.Point): boolean {
+    //     return this.worldKnowledge.isCellAccessible(position);
+    // };
 
     getEnemyUnits(): Unit[] {
         return this.worldKnowledge.getEnemyUnits(this);

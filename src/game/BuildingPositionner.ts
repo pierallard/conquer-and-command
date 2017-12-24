@@ -1,5 +1,5 @@
 import {SCALE} from "./game_state/Play";
-import {Cell} from "./Cell";
+import {Cell} from "./computing/Cell";
 import {BuildingCreator} from "./creator/BuildingCreator";
 import {BuildingProperties} from "./building/BuildingProperties";
 import {WorldKnowledge} from "./WorldKnowledge";

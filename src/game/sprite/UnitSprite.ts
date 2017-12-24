@@ -1,7 +1,7 @@
 import {SCALE} from "../game_state/Play";
 import {Explosion} from "./Explosion";
 import {Shoot} from "./Shoot";
-import {Cell} from "../Cell";
+import {Cell} from "../computing/Cell";
 import {SelectRectangle} from "./SelectRectangle";
 import {LifeRectangle} from "./LifeRectangle";
 

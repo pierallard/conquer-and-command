@@ -1,4 +1,4 @@
-import {Cell} from "../Cell";
+import {Cell} from "../computing/Cell";
 import {SCALE} from "../game_state/Play";
 import {GROUND_SIZE} from "../map/Ground";
 

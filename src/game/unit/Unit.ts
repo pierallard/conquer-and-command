@@ -1,4 +1,4 @@
-import {AStar, Path} from "../AStar";
+import {AStar, Path} from "../computing/AStar";
 import {Player} from "../player/Player";
 import {State} from "../state/State";
 import {Stand} from "../state/Stand";
@@ -6,7 +6,7 @@ import {Attack} from "../state/Attack";
 import {Follow} from "../state/Follow";
 import {MoveAttack} from "../state/MoveAttack";
 import {UnitSprite} from "../sprite/UnitSprite";
-import {Distance} from "../Distance";
+import {Distance} from "../computing/Distance";
 import {UnitProperties} from "./UnitProperties";
 import {WorldKnowledge} from "../WorldKnowledge";
 
@@ -108,7 +108,7 @@ export abstract class Unit {
         }
         let nextStep = null;
         if (this.pathCache) {
-            if (this.pathCache.isStillAvailable(this.getPlayer().isPositionAccessible.bind(this.getPlayer()))) {
+            if (this.pathCache.isStillAvailable(this.worldKnowledge.isCellAccessible.bind(this.worldKnowledge))) {
                 nextStep = this.pathCache.splice();
             }
         }
@@ -116,7 +116,7 @@ export abstract class Unit {
             const newPath = AStar.getPath(
                 this.cellPosition,
                 goal,
-                this.getPlayer().isPositionAccessible.bind(this.getPlayer())
+                this.worldKnowledge.isCellAccessible.bind(this.worldKnowledge)
             );
             if (null !== newPath) {
                 this.pathCache = newPath;
@@ -144,17 +144,21 @@ export abstract class Unit {
         const unit = this.worldKnowledge.getUnitAt(cell);
         if (null !== unit) {
             if (this.getPlayer() !== unit.getPlayer()) {
-                this.state = new Attack(this, unit);
+                this.state = new Attack(this.worldKnowledge, this, unit);
             } else {
-                this.state = new Follow(this, unit);
+                this.state = new Follow(this.worldKnowledge, this, unit);
             }
         } else {
-            this.state = new MoveAttack(this, cell);
+            this.state = new MoveAttack(this.worldKnowledge, this, cell);
         }
     }
 
     isInside(left: number, right: number, top: number, bottom: number): boolean {
         return this.unitSprite.isInside(left, right, top, bottom);
+    }
+
+    destroy() {
+        this.unitSprite.destroy(true);
     }
 
     protected freeze(time: number) {
@@ -164,7 +168,4 @@ export abstract class Unit {
         }, this);
     }
 
-    destroy() {
-        this.unitSprite.destroy(true);
-    }
 }

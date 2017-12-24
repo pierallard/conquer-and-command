@@ -1,5 +1,5 @@
 import {Player} from "./player/Player";
-import {Cell} from "./Cell";
+import {Cell} from "./computing/Cell";
 import {WorldKnowledge} from "./WorldKnowledge";
 
 export class Selector {
