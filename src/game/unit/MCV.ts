@@ -21,13 +21,17 @@ export class MCV extends Unit {
         this.life = this.maxLife = UnitProperties.getLife(MCV.prototype.constructor.name);
     }
 
+    orderExpand() {
+        this.state = new Stand(this);
+        this.expand();
+    }
+
     updateStateAfterclick(cell: PIXI.Point) {
         if (!this.expanded) {
             const unit = this.worldKnowledge.getUnitAt(cell);
             if (null !== unit) {
                 if (unit === this) {
-                    this.state = new Stand(this);
-                    this.expand();
+                    this.orderExpand();
                 }
                 if (this.getPlayer() !== unit.getPlayer()) {
                     this.state = new MoveTo(this.worldKnowledge, this, unit.getCellPositions()[0]);
@@ -43,7 +47,11 @@ export class MCV extends Unit {
     private expand() {
         this.expanded = true;
         this.worldKnowledge.addBuilding(
-            new ConstructionYard(new PIXI.Point(this.cellPosition.x - 1, this.cellPosition.y), this.player),
+            new ConstructionYard(
+                this.worldKnowledge,
+                new PIXI.Point(this.cellPosition.x - 1, this.cellPosition.y),
+                this.player
+            ),
             true
         );
         this.worldKnowledge.removeUnit(this, 1000);

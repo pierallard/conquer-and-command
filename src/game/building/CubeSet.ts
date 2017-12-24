@@ -1,5 +1,6 @@
 import {Cube} from "./Cube";
 import {Building} from "./Building";
+import {Player} from "../player/Player";
 
 export class CubeSet implements Building {
     private cubes: Cube[];
@@ -39,6 +40,16 @@ export class CubeSet implements Building {
     }
 
     setVisible(value: boolean) {
+    }
+
+    getPlayer(): Player {
+        return null;
+    }
+
+    lostLife(life: number): void {
+    }
+
+    destroy(): void {
     }
 
     private checkEmptyCubes() {

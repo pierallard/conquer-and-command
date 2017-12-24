@@ -35,14 +35,17 @@ export class BuildingRepository {
         return this.buildings;
     }
 
-    getCreatorOf(unit: string): Building {
-        for (let i = 0; i < this.buildings.length; i++) {
-            let building = this.buildings[i];
-            if (BuildingProperties.getConstructableUnits(building.constructor.name).indexOf(unit) > -1) {
-                return building;
-            }
-        }
+    getCreatorOf(unit: string): Building[] {
+        return this.buildings.filter((building) => {
+            return (BuildingProperties.getConstructableUnits(building.constructor.name).indexOf(unit) > -1);
+        });
+    }
 
-        return null;
+    removeBuilding(building: Building) {
+        building.destroy();
+        const index = this.buildings.indexOf(building);
+        if (index > -1) {
+            this.buildings.splice(index, 1);
+        }
     }
 }

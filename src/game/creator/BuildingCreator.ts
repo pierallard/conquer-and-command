@@ -36,11 +36,11 @@ export class BuildingCreator extends AbstractCreator {
     build(buildingName: string, cellPosition: PIXI.Point) {
         switch (buildingName) {
             case 'PowerPlant':
-                let powerPlant = new PowerPlant(cellPosition, this.player);
+                let powerPlant = new PowerPlant(this.worldKnowledge, cellPosition, this.player);
                 this.worldKnowledge.addBuilding(powerPlant, true);
                 break;
             case 'Barracks':
-                let barracks = new Barracks(cellPosition, this.player);
+                let barracks = new Barracks(this.worldKnowledge, cellPosition, this.player);
                 this.worldKnowledge.addBuilding(barracks, true);
                 break;
             default:

@@ -9,6 +9,7 @@ import {UnitSprite} from "../sprite/UnitSprite";
 import {Distance} from "../computing/Distance";
 import {UnitProperties} from "./UnitProperties";
 import {WorldKnowledge} from "../WorldKnowledge";
+import {Building} from "../building/Building";
 
 export abstract class Unit {
     protected life: number;
@@ -65,7 +66,7 @@ export abstract class Unit {
         return this.selected;
     }
 
-    shoot(ennemy: Unit): void {
+    shoot(ennemy: Unit|Building): void {
         this.unitSprite.doShoot(ennemy.getCellPositions()[0]);
         ennemy.lostLife(10);
         this.freeze(UnitProperties.getShootTime(this.constructor.name) * Phaser.Timer.SECOND);
@@ -81,12 +82,12 @@ export abstract class Unit {
         this.unitSprite.updateLife(this.life, this.maxLife);
     }
 
-    getClosestShootable(): Unit {
-        const enemies = this.player.getEnemyUnits();
+    getClosestShootable(): Unit|Building {
+        const enemies = this.worldKnowledge.getEnemies(this.player);
         let minDistance = null;
         let closest = null;
         for (let i = 0; i < enemies.length; i++) {
-            const enemy = (<Unit> enemies[i]);
+            const enemy = (<Unit|Building> enemies[i]);
             if (enemy !== this) {
                 const distance = Distance.to(this.cellPosition, enemy.getCellPositions());
                 if (distance <= this.getShootDistance()) {

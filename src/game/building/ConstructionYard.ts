@@ -2,12 +2,13 @@ import {Cell} from "../computing/Cell";
 import {ConstructableBuilding} from "./ConstructableBuilding";
 import {Player} from "../player/Player";
 import {ConstructionYardSprite} from "../sprite/ConstructionYardSprite";
+import {WorldKnowledge} from "../WorldKnowledge";
 
 export class ConstructionYard extends ConstructableBuilding {
     private minerals: number = 0;
 
-    constructor(cellPosition: PIXI.Point, player: Player) {
-        super(cellPosition, player);
+    constructor(worldKnowledge: WorldKnowledge, cellPosition: PIXI.Point, player: Player) {
+        super(worldKnowledge, cellPosition, player);
     }
 
     create(game: Phaser.Game, group: Phaser.Group) {

@@ -42,10 +42,6 @@ export class WorldKnowledge {
             this.buildingRepository.isCellNotOccupied(position);
     }
 
-    getEnemyUnits(player: Player) {
-        return this.unitRepository.getEnemyUnits(player);
-    }
-
     getPlayerConstructionYards() {
         return this.buildingRepository.getBuildings().filter((building) => {
             return building.constructor.name === 'ConstructionYard';
@@ -111,11 +107,47 @@ export class WorldKnowledge {
         this.creators = creators;
     }
 
-    getBuildings(): Building[] {
-        return this.buildingRepository.getBuildings();
+    getPlayerBuildings(player: Player): Building[] {
+        return this.buildingRepository.getBuildings().filter((building) => {
+            return building.getPlayer() === player;
+        });
+    }
+
+    getEnemyBuildings(player: Player): Building[] {
+        return this.buildingRepository.getBuildings().filter((building) => {
+            return building.getPlayer() !== null && building.getPlayer() !== player;
+        });
+    }
+
+    getPlayerUnits(player: Player): Unit[] {
+        return this.unitRepository.getUnits().filter((unit) => {
+            return unit.getPlayer() === player;
+        });
+    }
+
+    getEnemyUnits(player: Player): Unit[] {
+        return this.unitRepository.getEnemyUnits(player);
     }
 
     getCreatorOf(buildingName: string, player: Player) {
-        return this.buildingRepository.getCreatorOf(buildingName)
+        return this.buildingRepository.getCreatorOf(buildingName).filter((building) => {
+            return building.getPlayer() === player;
+        })[0];
+    }
+
+    getEnemies(player: Player): (Unit|Building)[] {
+        let result = [];
+        this.getEnemyUnits(player).forEach((unit) => {
+            result.push(unit);
+        });
+        this.getEnemyBuildings(player).forEach((building) => {
+            result.push(building);
+        });
+
+        return result;
+    }
+
+    removeBuilding(building: Building) {
+        this.buildingRepository.removeBuilding(building);
     }
 }

@@ -50,7 +50,7 @@ export abstract class AbstractCreator {
             let foundAll = true;
             this.getAllowedItems(button.getName()).forEach((itemName) => {
                 let found = false;
-                this.worldKnowledge.getBuildings().forEach((existingBuilding) => {
+                this.worldKnowledge.getPlayerBuildings(this.player).forEach((existingBuilding) => {
                     if (existingBuilding.constructor.name === itemName) {
                         found = true;
                     }

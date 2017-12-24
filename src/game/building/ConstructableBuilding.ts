@@ -2,13 +2,17 @@ import {Building} from "./Building";
 import {Player} from "../player/Player";
 import {BuildingProperties} from "./BuildingProperties";
 import {BuildingSprite} from "../sprite/BuildingSprite";
+import {WorldKnowledge} from "../WorldKnowledge";
 
 export abstract class ConstructableBuilding implements Building {
     protected player: Player;
     protected cellPosition: PIXI.Point;
     protected sprite: BuildingSprite;
+    protected life: number = 100;
+    private worldKnowledge: WorldKnowledge;
 
-    constructor(cellPosition: PIXI.Point, player: Player) {
+    constructor(worldKnowledge: WorldKnowledge, cellPosition: PIXI.Point, player: Player) {
+        this.worldKnowledge = worldKnowledge;
         this.cellPosition = cellPosition;
         this.player = player;
     }
@@ -24,4 +28,24 @@ export abstract class ConstructableBuilding implements Building {
             return new PIXI.Point(position.x + this.cellPosition.x, position.y + this.cellPosition.y);
         });
     };
+
+    getPlayer(): Player {
+        return this.player;
+    }
+
+    private isAlive(): boolean {
+        return this.life > 0;
+    }
+
+    destroy(): void {
+        this.sprite.doDestroy();
+    }
+
+    lostLife(life: number) {
+        this.life -= life;
+        if (!this.isAlive()) {
+            this.sprite.doDestroy();
+            this.worldKnowledge.removeBuilding(this);
+        }
+    }
 }
