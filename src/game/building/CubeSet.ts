@@ -38,6 +38,9 @@ export class CubeSet implements Building {
         return this.cubes;
     }
 
+    setVisible(value: boolean) {
+    }
+
     private checkEmptyCubes() {
         this.cubes = this.cubes.filter((cube) => {
             return !cube.isEmpty();

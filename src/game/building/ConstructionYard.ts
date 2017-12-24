@@ -15,7 +15,7 @@ export class ConstructionYard extends ConstructableBuilding {
             game,
             Cell.cellToReal(this.cellPosition.x),
             Cell.cellToReal(this.cellPosition.y),
-            'ConstructionYard'
+            'Base'
         );
         group.add(this.sprite);
     }

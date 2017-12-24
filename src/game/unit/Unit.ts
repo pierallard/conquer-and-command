@@ -163,4 +163,8 @@ export abstract class Unit {
             this.isFreezed = false;
         }, this);
     }
+
+    destroy() {
+        this.unitSprite.destroy(true);
+    }
 }

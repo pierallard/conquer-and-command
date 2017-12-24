@@ -15,6 +15,10 @@ export abstract class ConstructableBuilding implements Building {
 
     abstract create(game: Phaser.Game, group: Phaser.Group): void;
 
+    setVisible(value: boolean) {
+        this.sprite.alpha = value ? 1 : 0;
+    }
+
     getCellPositions(): PIXI.Point[] {
         return BuildingProperties.getCellPositions(this.constructor.name).map((position) => {
             return new PIXI.Point(position.x + this.cellPosition.x, position.y + this.cellPosition.y);

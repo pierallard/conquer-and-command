@@ -17,6 +17,7 @@ export class UnitRepository {
     }
 
     removeUnit(movedSprite: Unit) {
+        movedSprite.destroy();
         const index = this.units.indexOf(movedSprite);
         if (index > -1) {
             this.units.splice(index, 1);

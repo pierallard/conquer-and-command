@@ -4,6 +4,7 @@ import {Player} from "./player/Player";
 import {Building} from "./building/Building";
 import {Unit} from "./unit/Unit";
 import {UnitRepository} from "./repository/UnitRepository";
+import {Appear} from "./sprite/Appear";
 
 export class WorldKnowledge {
     private game: Phaser.Game;
@@ -57,9 +58,17 @@ export class WorldKnowledge {
         return this.ground.getGroundHeight();
     }
 
-    addBuilding(newBuilding: Building) {
+    addBuilding(newBuilding: Building, appear: boolean = false) {
         this.buildingRepository.add(newBuilding);
         newBuilding.create(this.game, this.unitBuildingGroup);
+        if (appear) {
+            newBuilding.setVisible(false);
+            let appearSprite = new Appear(newBuilding.getCellPositions()[0]);
+            appearSprite.create(this.game, this.unitBuildingGroup);
+            this.game.time.events.add(Phaser.Timer.SECOND * 2, () => {
+                newBuilding.setVisible(true);
+            }, this);
+        }
     }
 
     getCreatorOf(unit: string) {
@@ -71,8 +80,14 @@ export class WorldKnowledge {
         newUnit.create(this.game, this.unitBuildingGroup);
     }
 
-    removeUnit(unit: Unit) {
-        this.unitRepository.removeUnit(unit);
+    removeUnit(unit: Unit, delay: number = 0) {
+        if (delay === 0) {
+            this.unitRepository.removeUnit(unit);
+        } else {
+            this.game.time.events.add(delay, () => {
+                this.unitRepository.removeUnit(unit);
+            });
+        }
     }
 
     getUnitAt(cell: PIXI.Point) {
