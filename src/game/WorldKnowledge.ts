@@ -6,6 +6,7 @@ import {UnitRepository} from "./repository/UnitRepository";
 import {Appear} from "./sprite/Appear";
 import {AbstractCreator} from "./creator/AbstractCreator";
 import {GeneratedGround} from "./map/GeneratedGround";
+import {Shootable} from "./Shootable";
 
 export class WorldKnowledge {
     private game: Phaser.Game;
@@ -131,7 +132,7 @@ export class WorldKnowledge {
         })[0];
     }
 
-    getEnemies(player: Player): (Unit|Building)[] {
+    getEnemies(player: Player): (Shootable)[] {
         let result = [];
         this.getEnemyUnits(player).forEach((unit) => {
             result.push(unit);

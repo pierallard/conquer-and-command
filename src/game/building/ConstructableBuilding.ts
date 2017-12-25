@@ -3,8 +3,10 @@ import {Player} from "../player/Player";
 import {BuildingProperties} from "./BuildingProperties";
 import {BuildingSprite} from "../sprite/BuildingSprite";
 import {WorldKnowledge} from "../WorldKnowledge";
+import {Shootable} from "../Shootable";
+import {Positionnable} from "../Positionnable";
 
-export abstract class ConstructableBuilding implements Building {
+export abstract class ConstructableBuilding implements Building, Shootable, Positionnable {
     protected player: Player;
     protected cellPosition: PIXI.Point;
     protected sprite: BuildingSprite;
@@ -33,10 +35,6 @@ export abstract class ConstructableBuilding implements Building {
         return this.player;
     }
 
-    private isAlive(): boolean {
-        return this.life > 0;
-    }
-
     destroy(): void {
         this.sprite.doDestroy();
     }
@@ -47,5 +45,9 @@ export abstract class ConstructableBuilding implements Building {
             this.sprite.doDestroy();
             this.worldKnowledge.removeBuilding(this);
         }
+    }
+
+    private isAlive(): boolean {
+        return this.life > 0;
     }
 }
