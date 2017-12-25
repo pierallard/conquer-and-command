@@ -31,8 +31,13 @@ export class BuildingRepository {
         return null;
     }
 
-    getBuildings() {
-        return this.buildings;
+    getBuildings(type: string = null) {
+        if (type === null) {
+            return this.buildings;
+        }
+        return this.buildings.filter((building) => {
+            return building.constructor.name === type;
+        });
     }
 
     getCreatorOf(unit: string): Building[] {

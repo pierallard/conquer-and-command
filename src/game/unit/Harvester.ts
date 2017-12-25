@@ -45,7 +45,10 @@ export class Harvester extends Unit {
     }
 
     getClosestBase() {
-        return Distance.getClosest(this.getCellPositions()[0], this.player.getConstructionYards());
+        return Distance.getClosest(
+            this.getCellPositions()[0],
+            this.worldKnowledge.getPlayerBuildings(this.player, 'ConstructionYard')
+        );
     }
 
     getClosestCube(cubeSet: CubeSet) {

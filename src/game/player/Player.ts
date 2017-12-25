@@ -1,4 +1,3 @@
-import {Unit} from "../unit/Unit";
 import {WorldKnowledge} from "../WorldKnowledge";
 
 export abstract class Player {
@@ -10,11 +9,6 @@ export abstract class Player {
         this.worldKnowledge = worldKnowledge;
         this.id = id;
         this.color = color;
-    }
-
-    // TODO No player needed ?
-    getConstructionYards() {
-        return this.worldKnowledge.getPlayerConstructionYards();
     }
 
     getColor(): number {

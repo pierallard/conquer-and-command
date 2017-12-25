@@ -12,8 +12,13 @@ export class UnitRepository {
         this.units.push(unit);
     }
 
-    getUnits(): Unit[] {
-        return this.units;
+    getUnits(type: string = null): Unit[] {
+        if (null === type) {
+            return this.units;
+        }
+        return this.units.filter((unit) => {
+            return unit.constructor.name === type;
+        });
     }
 
     removeUnit(movedSprite: Unit) {
@@ -44,12 +49,6 @@ export class UnitRepository {
         }
 
         return null;
-    }
-
-    getEnemyUnits(player: Player): Unit[] {
-        return this.units.filter((unit) => {
-            return unit.getPlayer() !== player;
-        });
     }
 
     getSelectedUnits() {

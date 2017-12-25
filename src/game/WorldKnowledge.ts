@@ -42,12 +42,6 @@ export class WorldKnowledge {
             this.buildingRepository.isCellNotOccupied(position);
     }
 
-    getPlayerConstructionYards() {
-        return this.buildingRepository.getBuildings().filter((building) => {
-            return building.constructor.name === 'ConstructionYard';
-        });
-    }
-
     getGroundWidth() {
         return this.ground.getGroundWidth();
     }
@@ -107,26 +101,28 @@ export class WorldKnowledge {
         this.creators = creators;
     }
 
-    getPlayerBuildings(player: Player): Building[] {
-        return this.buildingRepository.getBuildings().filter((building) => {
+    getPlayerBuildings(player: Player, type: string = null): Building[] {
+        return this.buildingRepository.getBuildings(type).filter((building) => {
             return building.getPlayer() === player;
         });
     }
 
-    getEnemyBuildings(player: Player): Building[] {
-        return this.buildingRepository.getBuildings().filter((building) => {
+    getEnemyBuildings(player: Player, type: string = null): Building[] {
+        return this.buildingRepository.getBuildings(type).filter((building) => {
             return building.getPlayer() !== null && building.getPlayer() !== player;
         });
     }
 
-    getPlayerUnits(player: Player): Unit[] {
-        return this.unitRepository.getUnits().filter((unit) => {
+    getPlayerUnits(player: Player, type: string = null): Unit[] {
+        return this.unitRepository.getUnits(type).filter((unit) => {
             return unit.getPlayer() === player;
         });
     }
 
-    getEnemyUnits(player: Player): Unit[] {
-        return this.unitRepository.getEnemyUnits(player);
+    getEnemyUnits(player: Player, type: string = null): Unit[] {
+        return this.unitRepository.getUnits(type).filter((unit) => {
+            return unit.getPlayer() !== null && unit.getPlayer() !== player;
+        })
     }
 
     getCreatorOf(buildingName: string, player: Player) {
