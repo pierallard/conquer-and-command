@@ -35,7 +35,7 @@ export class UserInterface {
         this.interfaceGroup.fixedToCamera = true;
 
         let interfaceSprite = new Phaser.Sprite(game, 0, 0, 'interface');
-        interfaceSprite.scale.setTo(SCALE);
+        interfaceSprite.scale.setTo(2);
         this.interfaceGroup.add(interfaceSprite);
 
         this.UIUnitCreator.create(game, this.interfaceGroup, this.player.getUnitCreator());

@@ -1,13 +1,11 @@
-import {Selector} from "../interface/Selector";
 import {Player} from "../player/Player";
 import {WorldKnowledge} from "../map/WorldKnowledge";
 import {UserInterface} from "../interface/UserInterface";
-import {BuildingPositionner} from "../interface/BuildingPositionner";
 import {MCV} from "../unit/MCV";
 import {HumanPlayer} from "../player/HumanPlayer";
 import {ComputerPlayer} from "../player/ComputerPlayer";
 
-export const SCALE = 2;
+export const SCALE = 0.5;
 export const MOVE = 3 * SCALE;
 export const PANEL_WIDTH = 80;
 

@@ -24,10 +24,10 @@ export class Minimap {
         map.addTilesetImage('GrasClif', 'GrasClif');
         map.addTilesetImage('GrssMisc', 'GrssMisc');
         this.layer = map.createLayer('layer');
-        let scale = SIZE / Math.max(map.widthInPixels, map.heightInPixels) * SCALE;
+        let scale = SIZE / Math.max(map.widthInPixels, map.heightInPixels) * 2;
         this.layer.scale.setTo(scale, scale);
         this.layer.fixedToCamera = true;
-        this.layer.cameraOffset.setTo(X * SCALE, Y * SCALE);
+        this.layer.cameraOffset.setTo(X * 2, Y * 2);
         this.layer.scrollFactorX = 0;
         this.layer.scrollFactorY = 0;
         game.add.existing(this.layer);
@@ -35,7 +35,7 @@ export class Minimap {
         let scale2 = SIZE / Math.max(map.width, map.height) * SCALE;
         this.graphics = new Phaser.Graphics(game);
         this.graphics.scale.set(scale2, scale2);
-        this.graphics.position.setTo(X * SCALE, Y * SCALE);
+        this.graphics.position.setTo(X * 2, Y * 2);
         this.graphics.fixedToCamera = true;
         game.add.existing(this.graphics);
     }
