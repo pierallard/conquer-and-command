@@ -31,7 +31,7 @@ export class CommandCenter {
     }
 
     productBuilding(buildingName: string) {
-        if (this.buildingCreator.isAllowed(buildingName)) {
+        if (this.buildingCreator.isAllowed(buildingName) && !this.buildingCreator.isProducing(buildingName)) {
             this.buildingCreator.runProduction(buildingName);
         }
     }
@@ -56,7 +56,7 @@ export class CommandCenter {
     }
 
     productUnit(unitName: string) {
-        if (this.unitCreator.isAllowed(unitName)) {
+        if (this.unitCreator.isAllowed(unitName) && !this.unitCreator.isProducing(unitName)) {
             this.unitCreator.runProduction(unitName);
         }
     }

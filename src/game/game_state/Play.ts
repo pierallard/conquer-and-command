@@ -57,6 +57,13 @@ export default class Play extends Phaser.State {
         this.worldKnowledge.addUnit(new MCV(this.worldKnowledge, new PIXI.Point(5, 5), this.players[0]));
         this.worldKnowledge.addUnit(new MCV(this.worldKnowledge, new PIXI.Point(35, 35), this.players[1]));
 
+        this.players.filter((player) => {
+            if (player.constructor.name === 'ComputerPlayer') {
+                (<ComputerPlayer> player).getUnitCreator().create(this.game);
+                (<ComputerPlayer> player).getBuildingCreator().create(this.game);
+            }
+        });
+
         this.game.time.events.loop(5000, () => {
             this.players.filter((player) => {
                 if (player.constructor.name === 'ComputerPlayer') {

@@ -17,7 +17,7 @@ export abstract class AbstractCreator {
 
     abstract getRequiredBuildings(itemName: string): string[];
 
-    create(game: Phaser.Game, uiCreator: AbstractUICreator) {
+    create(game: Phaser.Game, uiCreator: AbstractUICreator = null) {
         this.timerEvent = game.time.events;
         this.uiCreator = uiCreator;
     }

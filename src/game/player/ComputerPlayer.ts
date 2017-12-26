@@ -11,31 +11,27 @@ export class ComputerPlayer extends Player {
             this.order().expand((<MCV> unit));
         });
 
-        /**
-         * Le AbstractCreator est beaucoup trop UI-based.
-         * Il faudrait le découper pour avoir une partie UI et une partie back.
-         */
-
         // Check if there is Power Plant
         if (this.worldKnowledge.getPlayerBuildings(this, 'PowerPlant').length === 0) {
-            // this.order().askBuilding('PowerPlant');
-            // this.order().createBuilding('PowerPlant', this.getRandomCellNearBase());
-            let powerPlant = new PowerPlant(this.worldKnowledge, this.getRandomCellNearBase(), this);
-            this.worldKnowledge.addBuilding(powerPlant, true);
+            if (this.order().getBuildingCreator().isProduced('PowerPlant')) {
+                this.order().createBuilding('PowerPlant', this.getRandomCellNearBase());
+            } else {
+                this.order().productBuilding('PowerPlant');
+            }
         }
 
         // Check if there is Barracks
-        if (this.worldKnowledge.getPlayerBuildings(this).filter((building) => {
-                return building.constructor.name === 'Barracks';
-            }).length === 0) {
-            let barracks = new Barracks(this.worldKnowledge, this.getRandomCellNearBase(), this);
-            this.worldKnowledge.addBuilding(barracks, true);
+        if (this.worldKnowledge.getPlayerBuildings(this, 'Barracks').length === 0) {
+            if (this.order().getBuildingCreator().isProduced('Barracks')) {
+                this.order().createBuilding('Barracks', this.getRandomCellNearBase());
+            } else {
+                this.order().productBuilding('Barracks');
+            }
         } else {
-            // Construct units
-            let tank = new Tank(this.worldKnowledge, this.getRandomCellNearBase(), this);
-            this.worldKnowledge.addUnit(tank);
+            this.order().productUnit('Tank');
         }
 
+        // Attack
         this.worldKnowledge.getPlayerUnits(this, 'Tank').forEach((unit) => {
             this.order().orderMoveAttack(unit, new PIXI.Point(0, 0));
         });
