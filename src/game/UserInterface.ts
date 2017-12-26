@@ -5,6 +5,7 @@ import {BuildingCreator} from "./creator/BuildingCreator";
 import {Minimap} from "./map/Minimap";
 import {Player} from "./player/Player";
 import {BuildingPositionner} from "./BuildingPositionner";
+import {Selector} from "./Selector";
 
 export const INTERFACE_WIDTH = 160;
 
@@ -14,16 +15,23 @@ export class UserInterface {
     private unitCreator: UnitCreator;
     private minimap: Minimap;
     private player: Player;
+    private selector: Selector;
+    private buildingPositionner: BuildingPositionner;
 
-    constructor(worldKnowledge: WorldKnowledge, player: Player, buildingPositionner: BuildingPositionner) {
+    constructor(worldKnowledge: WorldKnowledge, player: Player) {
         this.player = player;
-        this.buildingCreator = new BuildingCreator(worldKnowledge, this.player, buildingPositionner);
+        this.selector = new Selector(worldKnowledge, player);
+        this.buildingPositionner = new BuildingPositionner(worldKnowledge);
+        this.buildingCreator = new BuildingCreator(worldKnowledge, this.player, this.buildingPositionner);
         this.unitCreator = new UnitCreator(worldKnowledge, this.player);
         this.minimap = new Minimap(worldKnowledge);
         worldKnowledge.setCreators([this.buildingCreator, this.unitCreator]);
     }
 
     create(game: Phaser.Game) {
+        this.buildingPositionner.create(game);
+        this.selector.create(game);
+
         this.interfaceGroup = game.add.group();
         this.interfaceGroup.fixedToCamera = true;
 
@@ -37,6 +45,7 @@ export class UserInterface {
     }
 
     update() {
+        this.selector.update();
         this.minimap.update();
     }
 }
