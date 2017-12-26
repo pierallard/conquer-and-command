@@ -8,7 +8,7 @@ export class ComputerPlayer extends Player {
     update() {
         // Check if MCV to open
         this.worldKnowledge.getPlayerUnits(this, 'MCV').forEach((unit) => {
-            (<MCV> unit).orderExpand();
+            this.order().expand((<MCV> unit));
         });
 
         /**
@@ -17,9 +17,9 @@ export class ComputerPlayer extends Player {
          */
 
         // Check if there is Power Plant
-        if (this.worldKnowledge.getPlayerBuildings(this).filter((building) => {
-                return building.constructor.name === 'PowerPlant';
-            }).length === 0) {
+        if (this.worldKnowledge.getPlayerBuildings(this, 'PowerPlant').length === 0) {
+            // this.order().askBuilding('PowerPlant');
+            // this.order().createBuilding('PowerPlant', this.getRandomCellNearBase());
             let powerPlant = new PowerPlant(this.worldKnowledge, this.getRandomCellNearBase(), this);
             this.worldKnowledge.addBuilding(powerPlant, true);
         }
@@ -37,7 +37,7 @@ export class ComputerPlayer extends Player {
         }
 
         this.worldKnowledge.getPlayerUnits(this, 'Tank').forEach((unit) => {
-            (<Tank> unit).orderMoveAttack(new PIXI.Point(0, 0));
+            this.order().orderMoveAttack(unit, new PIXI.Point(0, 0));
         });
     }
 
@@ -48,5 +48,4 @@ export class ComputerPlayer extends Player {
             cellPos.y + (2 + Math.floor(Math.random() * 3)) * (Math.random() > 0.5 ? -1 : 1)
         );
     }
-
 }

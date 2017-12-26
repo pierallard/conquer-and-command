@@ -15,8 +15,4 @@ export class Tank extends Unit {
 
         this.life = this.maxLife = UnitProperties.getLife(Tank.prototype.constructor.name);
     }
-
-    orderMoveAttack(goal: PIXI.Point): void {
-        this.state = new MoveAttack(this.worldKnowledge, this, goal);
-    }
 }

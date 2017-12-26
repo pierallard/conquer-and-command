@@ -163,6 +163,10 @@ export abstract class Unit implements Shootable, Positionnable {
         this.unitSprite.destroy(true);
     }
 
+    orderMoveAttack(goal: PIXI.Point): void {
+        this.state = new MoveAttack(this.worldKnowledge, this, goal);
+    }
+
     protected freeze(time: number) {
         this.isFreezed = true;
         this.timerEvents.add(time, () => {
