@@ -1,18 +1,18 @@
 import {SCALE} from "./game_state/Play";
-import {UIUnitCreator} from "./creator/UnitCreator";
 import {WorldKnowledge} from "./WorldKnowledge";
 import {UIBuildingCreator} from "./creator/UIBuildingCreator";
 import {Minimap} from "./map/Minimap";
 import {Player} from "./player/Player";
 import {BuildingPositionner} from "./BuildingPositionner";
 import {Selector} from "./Selector";
+import {UIUnitCreator} from "./creator/UIUnitCreator";
 
 export const INTERFACE_WIDTH = 160;
 
 export class UserInterface {
-    private buildingCreator: UIBuildingCreator;
+    private UIBuildingCreator: UIBuildingCreator;
+    private UIUnitCreator: UIUnitCreator;
     private interfaceGroup: Phaser.Group;
-    private unitCreator: UIUnitCreator;
     private minimap: Minimap;
     private player: Player;
     private selector: Selector;
@@ -21,11 +21,10 @@ export class UserInterface {
     constructor(worldKnowledge: WorldKnowledge, player: Player) {
         this.player = player;
         this.selector = new Selector(worldKnowledge, player);
-        this.buildingPositionner = new BuildingPositionner(worldKnowledge);
-        this.buildingCreator = new UIBuildingCreator(worldKnowledge, this.player, this.buildingPositionner);
-        this.unitCreator = new UIUnitCreator(worldKnowledge, this.player);
+        this.buildingPositionner = new BuildingPositionner(worldKnowledge, this.player);
+        this.UIBuildingCreator = new UIBuildingCreator(worldKnowledge, this.player, this.buildingPositionner);
+        this.UIUnitCreator = new UIUnitCreator(worldKnowledge, this.player);
         this.minimap = new Minimap(worldKnowledge);
-        worldKnowledge.setCreators([this.buildingCreator, this.unitCreator]);
     }
 
     create(game: Phaser.Game) {
@@ -39,8 +38,8 @@ export class UserInterface {
         interfaceSprite.scale.setTo(SCALE);
         this.interfaceGroup.add(interfaceSprite);
 
-        this.unitCreator.create(game, this.interfaceGroup);
-        this.buildingCreator.create(game, this.interfaceGroup);
+        this.UIUnitCreator.create(game, this.interfaceGroup, this.player.getUnitCreator());
+        this.UIBuildingCreator.create(game, this.interfaceGroup, this.player.getBuildingCreator());
         this.minimap.create(game);
     }
 

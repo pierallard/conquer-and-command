@@ -12,6 +12,7 @@ const DATA = {
         slowness: 0.4,
         shoot: 0.5,
         allowed_by: ['WeaponsFactory', 'TiberiumRefinery'],
+        construction_time: 2,
     },
     Tank: {
         life: 500,
@@ -21,6 +22,7 @@ const DATA = {
         slowness: 0.25,
         shoot: 0.5,
         allowed_by: ['Barracks'],
+        construction_time: 2,
     },
     MCV: {
         life: 1000,
@@ -29,6 +31,7 @@ const DATA = {
         sprite_layer: 6,
         slowness: 0.8,
         allowed_by: ['WeaponsFactory', 'AdvancedCommandCenter'],
+        construction_time: 2,
     }
 };
 
@@ -57,7 +60,7 @@ export class UnitProperties {
         return DATA[unitName].slowness;
     }
 
-    static getAllowedBuildings(unitName: string): string[] {
+    static getRequiredBuildings(unitName: string): string[] {
         return DATA[unitName].allowed_by;
     }
 
@@ -65,7 +68,11 @@ export class UnitProperties {
         return Object.keys(DATA);
     }
 
-    static getSpriteLayer(buildingName: string): number {
-        return DATA[buildingName].sprite_layer;
+    static getSpriteLayer(unitName: string): number {
+        return DATA[unitName].sprite_layer;
+    }
+
+    static getConstructionTime(unitName: string): number {
+        return DATA[unitName].construction_time;
     }
 }

@@ -22,9 +22,10 @@ const DATA = {
             [1, -1],
         ],
         constructable_units: [],
-        allowed_by: [
+        requireds: [
             'ConstructionYard',
         ],
+        construction_time: 2,
     },
     Barracks: {
         constructable: true,
@@ -39,9 +40,10 @@ const DATA = {
         constructable_units: [
             'Tank',
         ],
-        allowed_by: [
+        requireds: [
             'PowerPlant',
         ],
+        construction_time: 2,
     },
 };
 
@@ -86,7 +88,11 @@ export class BuildingProperties {
         return DATA[buildingName].constructable_units;
     }
 
-    static getAllowedBuildings(buildingName: string): string[] {
-        return DATA[buildingName].allowed_by;
+    static getRequiredBuildings(buildingName: string): string[] {
+        return DATA[buildingName].requireds;
+    }
+
+    static getConstructionTime(buildingName: string) {
+        return DATA[buildingName].construction_time;
     }
 }

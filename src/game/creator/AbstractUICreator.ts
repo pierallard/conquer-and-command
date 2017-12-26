@@ -1,6 +1,8 @@
 import {Player} from "../player/Player";
 import {WorldKnowledge} from "../WorldKnowledge";
 import {SCALE} from "../game_state/Play";
+import {AbstractCreator} from "./AbstractCreator";
+import {BuildingProperties} from "../building/BuildingProperties";
 
 const WIDTH = 33;
 const HEIGHT = 36;
@@ -22,13 +24,17 @@ export abstract class AbstractUICreator {
 
     abstract getAllowedItems(name: string): string[];
 
-    abstract construct(itemName: string);
-
     abstract getSpriteKey(itemName: string): string;
 
     abstract getSpriteLayer(itemName: string): number;
 
-    create(game: Phaser.Game, group: Phaser.Group) {
+    abstract onClickFunction(itemName: string);
+
+    abstract onProductFinish(itemName: string);
+
+    abstract getConstructionTime(itemName: string): number;
+
+    create(game: Phaser.Game, group: Phaser.Group, creator: AbstractCreator) {
         let top = 250;
         this.getConstructableItems().forEach((item) => {
             this.buttons.push(new CreationButton(
@@ -39,56 +45,59 @@ export abstract class AbstractUICreator {
                 group,
                 this.x,
                 this.getSpriteKey(item),
-                this.getSpriteLayer(item)
+                this.getSpriteLayer(item),
+                this.onClickFunction,
+                this.onProductFinish
             ));
             top += HEIGHT * SCALE;
         });
+        creator.create(game, this);
     }
 
-    update() {
+    updateAlloweds(allowedItems: string[]) {
         this.buttons.forEach((button) => {
-            let foundAll = true;
-            this.getAllowedItems(button.getName()).forEach((itemName) => {
-                let found = false;
-                this.worldKnowledge.getPlayerBuildings(this.player).forEach((existingBuilding) => {
-                    if (existingBuilding.constructor.name === itemName) {
-                        found = true;
-                    }
-                });
-                if (!found) {
-                    foundAll = false;
-                }
-            });
-            if (!foundAll) {
-                button.hide();
-            } else {
+            if (allowedItems.indexOf(button.getName()) > -1) {
                 button.show();
+            } else {
+                button.hide();
             }
         });
     }
 
     resetButton(itemName: string) {
-        this.buttons.forEach((button) => {
-            if (button.getName() === itemName) {
-                button.reset();
-            }
-        });
+        this.getButton(itemName).reset();
     }
 
-}
+    setPendingButton(itemName: string) {
+        this.getButton(itemName).setPending();
+    }
 
-enum STATE {
-    AVAILABLE,
-    PROGRESS,
-    CONSTRUCTABLE
+    private getButton(itemName: string): CreationButton {
+        for (let i = 0; i < this.buttons.length; i++) {
+            if (this.buttons[i].getName() === itemName) {
+                return this.buttons[i];
+            }
+        }
+
+        return null;
+    }
+
+    runProduction(itemName: string) {
+        this.getButton(itemName).runProduction(this.getConstructionTime(itemName));
+    }
+
+    getPlayer(): Player {
+        return this.player;
+    }
 }
 
 class CreationButton {
-    private state: STATE;
     private progress: CreationButtonProgress;
     private itemName: string;
     private button: Phaser.Sprite;
     private itemSprite: Phaser.Sprite;
+    private onProductFinished: any;
+    private creator: AbstractUICreator;
 
     constructor(
         creator: AbstractUICreator,
@@ -98,29 +107,20 @@ class CreationButton {
         group: Phaser.Group,
         x: number,
         spriteKey: string,
-        spriteLayer: number
+        spriteLayer: number,
+        onClickFunction: any,
+        onProductFinished: any
     ) {
-        this.state = STATE.AVAILABLE;
         this.itemName = itemName;
+        this.onProductFinished = onProductFinished;
+        this.creator = creator;
 
         this.button = new Phaser.Sprite(game, x, top, 'buttons', 0);
         this.button.scale.setTo(SCALE, SCALE);
         this.button.inputEnabled = true;
         this.button.events.onInputDown.add(() => {
-            if (this.state === STATE.AVAILABLE) {
-                this.state = STATE.PROGRESS;
-                this.button.loadTexture(this.button.key, 1);
-                const tween = this.progress.startProgress();
-                tween.onComplete.add(() => {
-                    this.state = STATE.CONSTRUCTABLE;
-                    this.button.loadTexture(this.button.key, 2);
-                });
-            } else if (this.state === STATE.CONSTRUCTABLE) {
-                this.state = STATE.PROGRESS;
-                this.button.loadTexture(this.button.key, 0);
-                creator.construct(this.itemName);
-            }
-        }, this);
+            onClickFunction.bind(creator)(this.itemName);
+        }, creator);
         group.add(this.button);
 
         this.itemSprite = new Phaser.Sprite(
@@ -140,13 +140,25 @@ class CreationButton {
         this.hide();
     }
 
+    runProduction(constructionTime) {
+        this.button.loadTexture(this.button.key, 1);
+        const tween = this.progress.startProgress(constructionTime * Phaser.Timer.SECOND);
+        tween.onComplete.add(() => {
+            this.onProductFinished.bind(this.creator)(this.itemName);
+        }, this.creator);
+    }
+
     getName() {
         return this.itemName;
     }
 
     reset() {
-        this.state = STATE.AVAILABLE;
         this.progress.resetProgress();
+        this.button.loadTexture(this.button.key, 0);
+    }
+
+    setPending() {
+        this.button.loadTexture(this.button.key, 2);
     }
 
     hide() {
@@ -181,8 +193,8 @@ class CreationButtonProgress extends Phaser.Sprite {
         this.crop(this.myCropRect, false);
     }
 
-    startProgress(): Phaser.Tween {
-        return this.game.add.tween(this.cropRect).to({ width: WIDTH }, 2000, "Linear", true);
+    startProgress(time: number): Phaser.Tween {
+        return this.game.add.tween(this.cropRect).to({ width: WIDTH }, time, "Linear", true);
     }
 
     resetProgress() {

@@ -1,5 +1,7 @@
 import {WorldKnowledge} from "../WorldKnowledge";
 import {CommandCenter} from "./CommandCenter";
+import {BuildingCreator} from "../creator/BuildingCreator";
+import {UnitCreator} from "../creator/UnitCreator";
 
 export abstract class Player {
     protected worldKnowledge: WorldKnowledge;
@@ -24,5 +26,17 @@ export abstract class Player {
 
     order() {
         return this.commandCenter;
+    }
+
+    getBuildingCreator(): BuildingCreator {
+        return this.commandCenter.getBuildingCreator();
+    }
+
+    getUnitCreator(): UnitCreator {
+        return this.commandCenter.getUnitCreator();
+    }
+
+    updateAllowedUnitsAndBuildings() {
+        this.commandCenter.updateAllowedUnitsAndBuildings();
     }
 }

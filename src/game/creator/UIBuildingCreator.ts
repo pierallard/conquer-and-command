@@ -3,8 +3,6 @@ import {WorldKnowledge} from "../WorldKnowledge";
 import {Player} from "../player/Player";
 import {BuildingPositionner} from "../BuildingPositionner";
 import {BuildingProperties} from "../building/BuildingProperties";
-import {PowerPlant} from "../building/PowerPlant";
-import {Barracks} from "../building/Barracks";
 
 const X = 1202 - 66;
 
@@ -22,7 +20,7 @@ export class UIBuildingCreator extends AbstractUICreator {
     }
 
     getAllowedItems(name: string): string[] {
-        return BuildingProperties.getAllowedBuildings(name);
+        return BuildingProperties.getRequiredBuildings(name);
     }
 
     getSpriteKey(itemName: string): string {
@@ -33,24 +31,21 @@ export class UIBuildingCreator extends AbstractUICreator {
         return BuildingProperties.getSpriteLayer(itemName);
     }
 
-    build(buildingName: string, cellPosition: PIXI.Point) {
-        switch (buildingName) {
-            case 'PowerPlant':
-                let powerPlant = new PowerPlant(this.worldKnowledge, cellPosition, this.player);
-                this.worldKnowledge.addBuilding(powerPlant, true);
-                break;
-            case 'Barracks':
-                let barracks = new Barracks(this.worldKnowledge, cellPosition, this.player);
-                this.worldKnowledge.addBuilding(barracks, true);
-                break;
-            default:
-                throw "Unable to build building " + buildingName;
-        }
-
-        this.resetButton(buildingName);
+    getConstructionTime(itemName: string): number {
+        return BuildingProperties.getConstructionTime(itemName)
     }
 
-    construct(buildingName: string) {
-        this.buildingPositionner.activate(this, buildingName);
+    onProductFinish(itemName: string) {
+        return this.setPendingButton(itemName);
+    }
+
+    onClickFunction(itemName: string) {
+        if (this.player.order().getBuildingCreator().isProduced(itemName)) {
+            this.buildingPositionner.activate(this.player.order().getBuildingCreator(), itemName);
+        } else if (this.player.order().getBuildingCreator().isProducing(itemName)) {
+            // Do nothing
+        } else if (this.player.order().getBuildingCreator().isAllowed(itemName)) {
+            this.player.order().productBuilding(itemName);
+        }
     }
 }

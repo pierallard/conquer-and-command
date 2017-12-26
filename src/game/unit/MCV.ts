@@ -55,5 +55,6 @@ export class MCV extends Unit {
             true
         );
         this.worldKnowledge.removeUnit(this, 1000);
+        this.player.updateAllowedUnitsAndBuildings();
     }
 }
