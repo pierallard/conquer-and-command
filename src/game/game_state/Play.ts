@@ -12,7 +12,6 @@ export const MOVE = 3 * SCALE;
 export const PANEL_WIDTH = 80;
 
 export default class Play extends Phaser.State {
-    private selector: Selector;
     private players: Player[];
     private upKey: Phaser.Key;
     private downKey: Phaser.Key;
@@ -24,7 +23,6 @@ export default class Play extends Phaser.State {
     private dKey: Phaser.Key;
     private worldKnowledge: WorldKnowledge;
     private userInterface: UserInterface;
-    private buildingPositionner: BuildingPositionner;
 
     constructor() {
         super();
@@ -34,19 +32,15 @@ export default class Play extends Phaser.State {
             new HumanPlayer(this.worldKnowledge, 0, 0x00ff00),
             new ComputerPlayer(this.worldKnowledge, 1, 0xff00ff),
         ];
-        this.selector = new Selector(this.worldKnowledge, this.players[0]);
-        this.buildingPositionner = new BuildingPositionner(this.worldKnowledge);
-        this.userInterface = new UserInterface(this.worldKnowledge, this.players[0], this.buildingPositionner);
+
+        this.userInterface = new UserInterface(this.worldKnowledge, this.players[0]);
     }
 
     public create() {
         this.worldKnowledge.create(this.game);
-        this.selector.create(this.game);
-        this.buildingPositionner.create(this.game);
         this.userInterface.create(this.game);
 
         this.world.setBounds(0, 0, this.worldKnowledge.getGroundWidth(), this.worldKnowledge.getGroundHeight());
-
         this.game.camera.bounds.setTo(
             0,
             0,
@@ -63,6 +57,13 @@ export default class Play extends Phaser.State {
         this.worldKnowledge.addUnit(new MCV(this.worldKnowledge, new PIXI.Point(5, 5), this.players[0]));
         this.worldKnowledge.addUnit(new MCV(this.worldKnowledge, new PIXI.Point(35, 35), this.players[1]));
 
+        this.players.filter((player) => {
+            if (player.constructor.name === 'ComputerPlayer') {
+                (<ComputerPlayer> player).getUnitCreator().create(this.game);
+                (<ComputerPlayer> player).getBuildingCreator().create(this.game);
+            }
+        });
+
         this.game.time.events.loop(5000, () => {
             this.players.filter((player) => {
                 if (player.constructor.name === 'ComputerPlayer') {
@@ -75,8 +76,6 @@ export default class Play extends Phaser.State {
     update() {
         this.worldKnowledge.update();
         this.userInterface.update();
-        this.selector.update();
-
 
         if (this.upKey.isDown || this.zKey.isDown) {
             this.game.camera.setPosition(this.game.camera.position.x, this.game.camera.position.y - MOVE);

@@ -1,56 +1,73 @@
-import {AbstractCreator} from "./AbstractCreator";
+import {BuildingProperties} from "../building/BuildingProperties";
 import {WorldKnowledge} from "../WorldKnowledge";
 import {Player} from "../player/Player";
-import {BuildingPositionner} from "../BuildingPositionner";
-import {BuildingProperties} from "../building/BuildingProperties";
 import {PowerPlant} from "../building/PowerPlant";
 import {Barracks} from "../building/Barracks";
-
-const X = 1202 - 66;
+import {AbstractCreator} from "./AbstractCreator";
 
 export class BuildingCreator extends AbstractCreator {
-    private buildingPositionner: BuildingPositionner;
+    private producedBuildings: string[];
+    private inProductionBuildings: string[];
 
-    constructor(worldKnowledge: WorldKnowledge, player: Player, buildingPositionner: BuildingPositionner) {
-        super(worldKnowledge, player, X);
-
-        this.buildingPositionner = buildingPositionner;
+    constructor(worldKnowledge: WorldKnowledge, player: Player) {
+        super(worldKnowledge, player);
+        this.producedBuildings = [];
+        this.inProductionBuildings = [];
     }
 
-    getConstructableItems(): string[] {
+    getProductables(): string[] {
         return BuildingProperties.getConstructableBuildings();
     }
 
-    getAllowedItems(name: string): string[] {
-        return BuildingProperties.getAllowedBuildings(name);
+    getRequiredBuildings(itemName: string): string[] {
+        return BuildingProperties.getRequiredBuildings(itemName);
     }
 
-    getSpriteKey(itemName: string): string {
-        return BuildingProperties.getSpriteKey(itemName);
+    runProduction(buildingName: string) {
+        this.inProductionBuildings.push(buildingName);
+        this.timerEvent.add(BuildingProperties.getConstructionTime(buildingName) * Phaser.Timer.SECOND, () => {
+            let index = this.inProductionBuildings.indexOf(buildingName);
+            if (index > -1) {
+                this.inProductionBuildings.splice(index, 1);
+            }
+            this.producedBuildings.push(buildingName);
+        });
+
+        if (this.uiCreator !== null) {
+            this.uiCreator.runProduction(buildingName);
+        }
     }
 
-    getSpriteLayer(itemName: string): number {
-        return BuildingProperties.getSpriteLayer(itemName);
+    isProduced(buildingName: string) {
+        return this.producedBuildings.indexOf(buildingName) > -1;
     }
 
-    build(buildingName: string, cellPosition: PIXI.Point) {
+    isProducing(buildingName: string) {
+        return this.inProductionBuildings.indexOf(buildingName) > -1;
+    }
+
+    runCreation(buildingName: string, cell: PIXI.Point) {
         switch (buildingName) {
             case 'PowerPlant':
-                let powerPlant = new PowerPlant(this.worldKnowledge, cellPosition, this.player);
+                let powerPlant = new PowerPlant(this.worldKnowledge, cell, this.player);
                 this.worldKnowledge.addBuilding(powerPlant, true);
                 break;
             case 'Barracks':
-                let barracks = new Barracks(this.worldKnowledge, cellPosition, this.player);
+                let barracks = new Barracks(this.worldKnowledge, cell, this.player);
                 this.worldKnowledge.addBuilding(barracks, true);
                 break;
             default:
                 throw "Unable to build building " + buildingName;
         }
 
-        this.resetButton(buildingName);
-    }
+        this.player.order().updateAllowedUnitsAndBuildings();
+        if (this.uiCreator) {
+            this.uiCreator.resetButton(buildingName);
+        }
 
-    construct(buildingName: string) {
-        this.buildingPositionner.activate(this, buildingName);
+        let index = this.producedBuildings.indexOf(buildingName);
+        if (index > -1) {
+            this.producedBuildings.splice(index, 1);
+        }
     }
 }

@@ -1,18 +1,21 @@
 import {SCALE} from "./game_state/Play";
 import {Cell} from "./computing/Cell";
-import {BuildingCreator} from "./creator/BuildingCreator";
 import {BuildingProperties} from "./building/BuildingProperties";
 import {WorldKnowledge} from "./WorldKnowledge";
 import {GROUND_SIZE} from "./map/Ground";
 import {GAME_WIDTH} from "../app";
 import {INTERFACE_WIDTH} from "./UserInterface";
+import {BuildingCreator} from "./creator/BuildingCreator";
+import {Player} from "./player/Player";
 
 export class BuildingPositionner {
     private graphics: BuildingPositionnerGraphics;
     private worldKnowledge: WorldKnowledge;
+    private player: Player;
 
-    constructor(worldKnowledge: WorldKnowledge) {
+    constructor(worldKnowledge: WorldKnowledge, player: Player) {
         this.worldKnowledge = worldKnowledge;
+        this.player = player;
     }
 
     create(game: Phaser.Game) {
@@ -56,7 +59,7 @@ class BuildingPositionnerGraphics extends Phaser.Graphics {
 
                 const posable = this.isAccessible(cellX, cellY);
                 if (posable && this.game.input.activePointer.leftButton.isDown) {
-                    this.buildingCreator.build(this.buildingName, new PIXI.Point(cellX, cellY));
+                    this.buildingCreator.runCreation(this.buildingName, new PIXI.Point(cellX, cellY));
                     this.deactivate();
                     return;
                 }
