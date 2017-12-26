@@ -1,7 +1,7 @@
 import {SCALE} from "./game_state/Play";
-import {UnitCreator} from "./creator/UnitCreator";
+import {UIUnitCreator} from "./creator/UnitCreator";
 import {WorldKnowledge} from "./WorldKnowledge";
-import {BuildingCreator} from "./creator/BuildingCreator";
+import {UIBuildingCreator} from "./creator/UIBuildingCreator";
 import {Minimap} from "./map/Minimap";
 import {Player} from "./player/Player";
 import {BuildingPositionner} from "./BuildingPositionner";
@@ -10,9 +10,9 @@ import {Selector} from "./Selector";
 export const INTERFACE_WIDTH = 160;
 
 export class UserInterface {
-    private buildingCreator: BuildingCreator;
+    private buildingCreator: UIBuildingCreator;
     private interfaceGroup: Phaser.Group;
-    private unitCreator: UnitCreator;
+    private unitCreator: UIUnitCreator;
     private minimap: Minimap;
     private player: Player;
     private selector: Selector;
@@ -22,8 +22,8 @@ export class UserInterface {
         this.player = player;
         this.selector = new Selector(worldKnowledge, player);
         this.buildingPositionner = new BuildingPositionner(worldKnowledge);
-        this.buildingCreator = new BuildingCreator(worldKnowledge, this.player, this.buildingPositionner);
-        this.unitCreator = new UnitCreator(worldKnowledge, this.player);
+        this.buildingCreator = new UIBuildingCreator(worldKnowledge, this.player, this.buildingPositionner);
+        this.unitCreator = new UIUnitCreator(worldKnowledge, this.player);
         this.minimap = new Minimap(worldKnowledge);
         worldKnowledge.setCreators([this.buildingCreator, this.unitCreator]);
     }

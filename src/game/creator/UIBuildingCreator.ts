@@ -1,4 +1,4 @@
-import {AbstractCreator} from "./AbstractCreator";
+import {AbstractUICreator} from "./AbstractUICreator";
 import {WorldKnowledge} from "../WorldKnowledge";
 import {Player} from "../player/Player";
 import {BuildingPositionner} from "../BuildingPositionner";
@@ -8,7 +8,7 @@ import {Barracks} from "../building/Barracks";
 
 const X = 1202 - 66;
 
-export class BuildingCreator extends AbstractCreator {
+export class UIBuildingCreator extends AbstractUICreator {
     private buildingPositionner: BuildingPositionner;
 
     constructor(worldKnowledge: WorldKnowledge, player: Player, buildingPositionner: BuildingPositionner) {

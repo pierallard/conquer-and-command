@@ -1,6 +1,6 @@
 import {SCALE} from "./game_state/Play";
 import {Cell} from "./computing/Cell";
-import {BuildingCreator} from "./creator/BuildingCreator";
+import {UIBuildingCreator} from "./creator/UIBuildingCreator";
 import {BuildingProperties} from "./building/BuildingProperties";
 import {WorldKnowledge} from "./WorldKnowledge";
 import {GROUND_SIZE} from "./map/Ground";
@@ -19,13 +19,13 @@ export class BuildingPositionner {
         this.graphics = new BuildingPositionnerGraphics(game, this.worldKnowledge);
     }
 
-    activate(buildingCreator: BuildingCreator, buildingName: string) {
+    activate(buildingCreator: UIBuildingCreator, buildingName: string) {
         this.graphics.activate(buildingCreator, buildingName);
     }
 }
 
 class BuildingPositionnerGraphics extends Phaser.Graphics {
-    private buildingCreator: BuildingCreator;
+    private buildingCreator: UIBuildingCreator;
     private buildingName: string = null;
     private worldKnowledge: WorldKnowledge;
 
@@ -38,7 +38,7 @@ class BuildingPositionnerGraphics extends Phaser.Graphics {
         game.add.existing(this);
     }
 
-    activate(buildingCreator: BuildingCreator, buildingName: string) {
+    activate(buildingCreator: UIBuildingCreator, buildingName: string) {
         this.buildingCreator = buildingCreator;
         this.buildingName = buildingName;
     }

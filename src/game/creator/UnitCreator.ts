@@ -1,7 +1,7 @@
 import {WorldKnowledge} from "../WorldKnowledge";
 import {Player} from "../player/Player";
 import {UnitProperties} from "../unit/UnitProperties";
-import {AbstractCreator} from "./AbstractCreator";
+import {AbstractUICreator} from "./AbstractUICreator";
 import {Harvester} from "../unit/Harvester";
 import {Tank} from "../unit/Tank";
 import {MCV} from "../unit/MCV";
@@ -9,7 +9,7 @@ import {AlternativePosition} from "../computing/AlternativePosition";
 
 const X = 1202;
 
-export class UnitCreator extends AbstractCreator {
+export class UIUnitCreator extends AbstractUICreator {
     constructor(worldKnowledge: WorldKnowledge, player: Player) {
         super(worldKnowledge, player, X);
     }

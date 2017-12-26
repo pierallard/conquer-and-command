@@ -5,7 +5,7 @@ import {SCALE} from "../game_state/Play";
 const WIDTH = 33;
 const HEIGHT = 36;
 
-export abstract class AbstractCreator {
+export abstract class AbstractUICreator {
     protected player: Player;
     protected worldKnowledge: WorldKnowledge;
     protected buttons: CreationButton[];
@@ -91,7 +91,7 @@ class CreationButton {
     private itemSprite: Phaser.Sprite;
 
     constructor(
-        creator: AbstractCreator,
+        creator: AbstractUICreator,
         game: Phaser.Game,
         top: number,
         itemName: string,

@@ -4,7 +4,7 @@ import {Building} from "./building/Building";
 import {Unit} from "./unit/Unit";
 import {UnitRepository} from "./repository/UnitRepository";
 import {Appear} from "./sprite/Appear";
-import {AbstractCreator} from "./creator/AbstractCreator";
+import {AbstractUICreator} from "./creator/AbstractUICreator";
 import {GeneratedGround} from "./map/GeneratedGround";
 import {Shootable} from "./Shootable";
 
@@ -14,7 +14,7 @@ export class WorldKnowledge {
     private unitBuildingGroup: Phaser.Group;
     private unitRepository: UnitRepository;
     private buildingRepository: BuildingRepository;
-    private creators: AbstractCreator[];
+    private creators: AbstractUICreator[];
 
     constructor() {
         this.ground = new GeneratedGround();
@@ -98,7 +98,7 @@ export class WorldKnowledge {
         return this.unitRepository.getSelectedUnits();
     }
 
-    setCreators(creators: AbstractCreator[]) {
+    setCreators(creators: AbstractUICreator[]) {
         this.creators = creators;
     }
 
