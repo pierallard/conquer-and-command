@@ -8,7 +8,7 @@ import {MoveAttack} from "../state/MoveAttack";
 import {UnitSprite} from "../sprite/UnitSprite";
 import {Distance} from "../computing/Distance";
 import {UnitProperties} from "./UnitProperties";
-import {WorldKnowledge} from "../WorldKnowledge";
+import {WorldKnowledge} from "../map/WorldKnowledge";
 import {Shootable} from "../Shootable";
 import {Positionnable} from "../Positionnable";
 

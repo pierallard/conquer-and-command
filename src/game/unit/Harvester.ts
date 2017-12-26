@@ -9,7 +9,7 @@ import {ConstructionYard} from "../building/ConstructionYard";
 import {Distance} from "../computing/Distance";
 import {CubeSet} from "../building/CubeSet";
 import {UnitProperties} from "./UnitProperties";
-import {WorldKnowledge} from "../WorldKnowledge";
+import {WorldKnowledge} from "../map/WorldKnowledge";
 
 export class Harvester extends Unit {
     private loading: number;

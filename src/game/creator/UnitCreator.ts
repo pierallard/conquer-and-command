@@ -1,6 +1,6 @@
 import {AbstractCreator} from "./AbstractCreator";
 import {UnitProperties} from "../unit/UnitProperties";
-import {WorldKnowledge} from "../WorldKnowledge";
+import {WorldKnowledge} from "../map/WorldKnowledge";
 import {Player} from "../player/Player";
 import {Harvester} from "../unit/Harvester";
 import {Tank} from "../unit/Tank";

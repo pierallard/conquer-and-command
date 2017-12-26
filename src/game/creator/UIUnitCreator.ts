@@ -1,4 +1,4 @@
-import {WorldKnowledge} from "../WorldKnowledge";
+import {WorldKnowledge} from "../map/WorldKnowledge";
 import {Player} from "../player/Player";
 import {UnitProperties} from "../unit/UnitProperties";
 import {AbstractUICreator} from "./AbstractUICreator";

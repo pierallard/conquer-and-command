@@ -2,7 +2,7 @@ import {State} from "./State";
 import {Stand} from "./Stand";
 import {AlternativePosition} from "../computing/AlternativePosition";
 import {Unit} from "../unit/Unit";
-import {WorldKnowledge} from "../WorldKnowledge";
+import {WorldKnowledge} from "../map/WorldKnowledge";
 
 export class MoveTo implements State {
     private worldKnowledge: WorldKnowledge;

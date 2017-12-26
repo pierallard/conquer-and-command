@@ -1,5 +1,5 @@
 import {BuildingProperties} from "../building/BuildingProperties";
-import {WorldKnowledge} from "../WorldKnowledge";
+import {WorldKnowledge} from "../map/WorldKnowledge";
 import {Player} from "../player/Player";
 import {PowerPlant} from "../building/PowerPlant";
 import {Barracks} from "../building/Barracks";

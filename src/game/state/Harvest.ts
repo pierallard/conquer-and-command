@@ -5,7 +5,7 @@ import {Harvester} from "../unit/Harvester";
 import {ConstructionYard} from "../building/ConstructionYard";
 import {CubeSet} from "../building/CubeSet";
 import {Cube} from "../building/Cube";
-import {WorldKnowledge} from "../WorldKnowledge";
+import {WorldKnowledge} from "../map/WorldKnowledge";
 
 export class Harvest implements State {
     private worldKnowledge: WorldKnowledge;

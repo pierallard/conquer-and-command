@@ -2,7 +2,7 @@ import {Cell} from "../computing/Cell";
 import {Player} from "../player/Player";
 import {ConstructableBuilding} from "./ConstructableBuilding";
 import {PowerPlantSprite} from "../sprite/PowerPlanSprite";
-import {WorldKnowledge} from "../WorldKnowledge";
+import {WorldKnowledge} from "../map/WorldKnowledge";
 
 export class PowerPlant extends ConstructableBuilding {
     constructor(worldKnowledge: WorldKnowledge, cell: PIXI.Point, player: Player) {

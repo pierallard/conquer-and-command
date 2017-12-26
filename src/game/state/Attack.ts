@@ -3,7 +3,7 @@ import {Unit} from "../unit/Unit";
 import {Stand} from "./Stand";
 import {AlternativePosition} from "../computing/AlternativePosition";
 import {Distance} from "../computing/Distance";
-import {WorldKnowledge} from "../WorldKnowledge";
+import {WorldKnowledge} from "../map/WorldKnowledge";
 
 export class Attack implements State {
     private worldKnowledge: WorldKnowledge;

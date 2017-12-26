@@ -1,7 +1,7 @@
 import {AbstractUICreator} from "./AbstractUICreator";
-import {WorldKnowledge} from "../WorldKnowledge";
+import {WorldKnowledge} from "../map/WorldKnowledge";
 import {Player} from "../player/Player";
-import {BuildingPositionner} from "../BuildingPositionner";
+import {BuildingPositionner} from "../interface/BuildingPositionner";
 import {BuildingProperties} from "../building/BuildingProperties";
 
 const X = 1202 - 66;

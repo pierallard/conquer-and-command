@@ -1,11 +1,11 @@
-import {SCALE} from "./game_state/Play";
-import {WorldKnowledge} from "./WorldKnowledge";
-import {UIBuildingCreator} from "./creator/UIBuildingCreator";
-import {Minimap} from "./map/Minimap";
-import {Player} from "./player/Player";
+import {SCALE} from "../game_state/Play";
+import {WorldKnowledge} from "../map/WorldKnowledge";
+import {UIBuildingCreator} from "../creator/UIBuildingCreator";
+import {Minimap} from "../map/Minimap";
+import {Player} from "../player/Player";
 import {BuildingPositionner} from "./BuildingPositionner";
 import {Selector} from "./Selector";
-import {UIUnitCreator} from "./creator/UIUnitCreator";
+import {UIUnitCreator} from "../creator/UIUnitCreator";
 
 export const INTERFACE_WIDTH = 160;
 

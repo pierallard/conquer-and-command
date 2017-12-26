@@ -1,12 +1,12 @@
-import {SCALE} from "./game_state/Play";
-import {Cell} from "./computing/Cell";
-import {BuildingProperties} from "./building/BuildingProperties";
-import {WorldKnowledge} from "./WorldKnowledge";
-import {GROUND_SIZE} from "./map/Ground";
-import {GAME_WIDTH} from "../app";
+import {SCALE} from "../game_state/Play";
+import {Cell} from "../computing/Cell";
+import {BuildingProperties} from "../building/BuildingProperties";
+import {WorldKnowledge} from "../map/WorldKnowledge";
+import {GROUND_SIZE} from "../map/Ground";
+import {GAME_WIDTH} from "../../app";
 import {INTERFACE_WIDTH} from "./UserInterface";
-import {BuildingCreator} from "./creator/BuildingCreator";
-import {Player} from "./player/Player";
+import {BuildingCreator} from "../creator/BuildingCreator";
+import {Player} from "../player/Player";
 
 export class BuildingPositionner {
     private graphics: BuildingPositionnerGraphics;

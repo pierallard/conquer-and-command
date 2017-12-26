@@ -1,5 +1,5 @@
 import {AbstractUICreator} from "./AbstractUICreator";
-import {WorldKnowledge} from "../WorldKnowledge";
+import {WorldKnowledge} from "../map/WorldKnowledge";
 import {Player} from "../player/Player";
 
 export abstract class AbstractCreator {

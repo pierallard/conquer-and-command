@@ -1,4 +1,4 @@
-import {WorldKnowledge} from "../WorldKnowledge";
+import {WorldKnowledge} from "./WorldKnowledge";
 import {SCALE} from "../game_state/Play";
 
 const SIZE = 60;

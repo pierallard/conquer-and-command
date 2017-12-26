@@ -1,7 +1,7 @@
 import {State} from "./State";
 import {Unit} from "../unit/Unit";
 import {AlternativePosition} from "../computing/AlternativePosition";
-import {WorldKnowledge} from "../WorldKnowledge";
+import {WorldKnowledge} from "../map/WorldKnowledge";
 
 export class Follow implements State {
     private worldKnowledge: WorldKnowledge;

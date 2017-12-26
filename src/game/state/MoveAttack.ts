@@ -2,7 +2,7 @@ import {State} from "./State";
 import {Unit} from "../unit/Unit";
 import {Stand} from "./Stand";
 import {AlternativePosition} from "../computing/AlternativePosition";
-import {WorldKnowledge} from "../WorldKnowledge";
+import {WorldKnowledge} from "../map/WorldKnowledge";
 
 export class MoveAttack implements State {
     private worldKnowledge: WorldKnowledge;

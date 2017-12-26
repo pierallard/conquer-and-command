@@ -1,4 +1,4 @@
-import {WorldKnowledge} from "../WorldKnowledge";
+import {WorldKnowledge} from "../map/WorldKnowledge";
 import {CommandCenter} from "./CommandCenter";
 import {BuildingCreator} from "../creator/BuildingCreator";
 import {UnitCreator} from "../creator/UnitCreator";

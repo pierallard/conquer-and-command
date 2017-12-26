@@ -1,5 +1,5 @@
 import {Player} from "../player/Player";
-import {WorldKnowledge} from "../WorldKnowledge";
+import {WorldKnowledge} from "../map/WorldKnowledge";
 import {SCALE} from "../game_state/Play";
 import {AbstractCreator} from "./AbstractCreator";
 import {BuildingProperties} from "../building/BuildingProperties";

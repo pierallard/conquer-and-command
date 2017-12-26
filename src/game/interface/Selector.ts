@@ -1,6 +1,6 @@
-import {Player} from "./player/Player";
-import {Cell} from "./computing/Cell";
-import {WorldKnowledge} from "./WorldKnowledge";
+import {Player} from "../player/Player";
+import {Cell} from "../computing/Cell";
+import {WorldKnowledge} from "../map/WorldKnowledge";
 
 export class Selector {
     private isDoubleClick: boolean;

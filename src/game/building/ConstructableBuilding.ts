@@ -2,7 +2,7 @@ import {Building} from "./Building";
 import {Player} from "../player/Player";
 import {BuildingProperties} from "./BuildingProperties";
 import {BuildingSprite} from "../sprite/BuildingSprite";
-import {WorldKnowledge} from "../WorldKnowledge";
+import {WorldKnowledge} from "../map/WorldKnowledge";
 import {Shootable} from "../Shootable";
 import {Positionnable} from "../Positionnable";
 

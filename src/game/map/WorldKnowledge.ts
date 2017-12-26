@@ -1,11 +1,11 @@
-import {BuildingRepository} from "./repository/BuildingRepository";
-import {Player} from "./player/Player";
-import {Building} from "./building/Building";
-import {Unit} from "./unit/Unit";
-import {UnitRepository} from "./repository/UnitRepository";
-import {Appear} from "./sprite/Appear";
-import {GeneratedGround} from "./map/GeneratedGround";
-import {Shootable} from "./Shootable";
+import {BuildingRepository} from "../repository/BuildingRepository";
+import {Player} from "../player/Player";
+import {Building} from "../building/Building";
+import {Unit} from "../unit/Unit";
+import {UnitRepository} from "../repository/UnitRepository";
+import {Appear} from "../sprite/Appear";
+import {GeneratedGround} from "./GeneratedGround";
+import {Shootable} from "../Shootable";
 
 export class WorldKnowledge {
     private game: Phaser.Game;
