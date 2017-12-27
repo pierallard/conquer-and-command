@@ -138,4 +138,8 @@ export class WorldKnowledge {
     removeBuilding(building: Building) {
         this.buildingRepository.removeBuilding(building);
     }
+
+    getGroundCSV() {
+        return this.ground.getCSV();
+    }
 }

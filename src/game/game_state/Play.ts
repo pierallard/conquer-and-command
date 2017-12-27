@@ -5,7 +5,7 @@ import {MCV} from "../unit/MCV";
 import {HumanPlayer} from "../player/HumanPlayer";
 import {ComputerPlayer} from "../player/ComputerPlayer";
 
-export const SCALE = 0.5;
+export const SCALE = 2;
 export const MOVE = 3 * SCALE;
 export const PANEL_WIDTH = 80;
 

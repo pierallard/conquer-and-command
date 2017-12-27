@@ -17,7 +17,6 @@ export class Ground {
         layer.scale.setTo(SCALE, SCALE);
         game.add.existing(layer);
 
-        console.log(layer.getTileX(0));
         this.initializeObstacles();
     }
 
