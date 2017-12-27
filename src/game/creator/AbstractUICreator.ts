@@ -2,7 +2,6 @@ import {Player} from "../player/Player";
 import {WorldKnowledge} from "../map/WorldKnowledge";
 import {SCALE} from "../game_state/Play";
 import {AbstractCreator} from "./AbstractCreator";
-import {BuildingProperties} from "../building/BuildingProperties";
 
 const WIDTH = 33;
 const HEIGHT = 36;
@@ -21,8 +20,6 @@ export abstract class AbstractUICreator {
     }
 
     abstract getConstructableItems(): string[];
-
-    abstract getAllowedItems(name: string): string[];
 
     abstract getSpriteKey(itemName: string): string;
 
@@ -54,7 +51,7 @@ export abstract class AbstractUICreator {
         creator.create(game, this);
     }
 
-    updateAlloweds(allowedItems: string[]) {
+    updateAllowedItems(allowedItems: string[]) {
         this.buttons.forEach((button) => {
             if (allowedItems.indexOf(button.getName()) > -1) {
                 button.show();
@@ -72,6 +69,14 @@ export abstract class AbstractUICreator {
         this.getButton(itemName).setPending();
     }
 
+    runProduction(itemName: string) {
+        this.getButton(itemName).runProduction(this.getConstructionTime(itemName));
+    }
+
+    getPlayer(): Player {
+        return this.player;
+    }
+
     private getButton(itemName: string): CreationButton {
         for (let i = 0; i < this.buttons.length; i++) {
             if (this.buttons[i].getName() === itemName) {
@@ -80,14 +85,6 @@ export abstract class AbstractUICreator {
         }
 
         return null;
-    }
-
-    runProduction(itemName: string) {
-        this.getButton(itemName).runProduction(this.getConstructionTime(itemName));
-    }
-
-    getPlayer(): Player {
-        return this.player;
     }
 }
 

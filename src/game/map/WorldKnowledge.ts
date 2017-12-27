@@ -114,13 +114,14 @@ export class WorldKnowledge {
     getEnemyUnits(player: Player, type: string = null): Unit[] {
         return this.unitRepository.getUnits(type).filter((unit) => {
             return unit.getPlayer() !== null && unit.getPlayer() !== player;
-        })
+        });
     }
 
-    getCreatorOf(buildingName: string, player: Player) {
-        return this.buildingRepository.getCreatorOf(buildingName).filter((building) => {
+    getCreatorOf(buildingName: string, player: Player): Building {
+        const creators = this.buildingRepository.getCreatorOf(buildingName).filter((building) => {
             return building.getPlayer() === player;
-        })[0];
+        });
+        return creators.length > 0 ? creators[0] : null;
     }
 
     getEnemies(player: Player): (Shootable)[] {

@@ -14,10 +14,6 @@ export class UIUnitCreator extends AbstractUICreator {
         return UnitProperties.getConstructableUnits();
     }
 
-    getAllowedItems(name: string): string[] {
-        return UnitProperties.getRequiredBuildings(name);
-    }
-
     getSpriteKey(itemName: string): string {
         return UnitProperties.getSprite(itemName, this.player.getId());
     }

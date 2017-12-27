@@ -26,7 +26,7 @@ export class Harvester extends Unit {
         this.loading = 0;
     }
 
-    updateStateAfterclick(cell: PIXI.Point) {
+    updateStateAfterClick(cell: PIXI.Point) {
         const unit = this.worldKnowledge.getUnitAt(cell);
         if (null !== unit) {
             if (this.getPlayer() !== unit.getPlayer()) {

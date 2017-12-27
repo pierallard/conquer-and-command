@@ -15,7 +15,7 @@ export class BuildingCreator extends AbstractCreator {
         this.inProductionBuildings = [];
     }
 
-    getProductables(): string[] {
+    getProducibles(): string[] {
         return BuildingProperties.getConstructableBuildings();
     }
 

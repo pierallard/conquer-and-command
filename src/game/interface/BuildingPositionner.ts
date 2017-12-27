@@ -8,8 +8,8 @@ import {INTERFACE_WIDTH} from "./UserInterface";
 import {BuildingCreator} from "../creator/BuildingCreator";
 import {Player} from "../player/Player";
 
-export class BuildingPositionner {
-    private graphics: BuildingPositionnerGraphics;
+export class BuildingPositioner {
+    private graphics: BuildingPositionerGraphics;
     private worldKnowledge: WorldKnowledge;
     private player: Player;
 
@@ -19,7 +19,7 @@ export class BuildingPositionner {
     }
 
     create(game: Phaser.Game) {
-        this.graphics = new BuildingPositionnerGraphics(game, this.worldKnowledge);
+        this.graphics = new BuildingPositionerGraphics(game, this.worldKnowledge);
     }
 
     activate(buildingCreator: BuildingCreator, buildingName: string) {
@@ -27,7 +27,7 @@ export class BuildingPositionner {
     }
 }
 
-class BuildingPositionnerGraphics extends Phaser.Graphics {
+class BuildingPositionerGraphics extends Phaser.Graphics {
     private buildingCreator: BuildingCreator;
     private buildingName: string = null;
     private worldKnowledge: WorldKnowledge;
@@ -57,8 +57,8 @@ class BuildingPositionnerGraphics extends Phaser.Graphics {
                 let cellX = Cell.realToCell(this.game.input.mousePointer.x + this.game.camera.position.x);
                 let cellY = Cell.realToCell(this.game.input.mousePointer.y + this.game.camera.position.y);
 
-                const posable = this.isAccessible(cellX, cellY);
-                if (posable && this.game.input.activePointer.leftButton.isDown) {
+                const allowedToBuild = this.isAccessible(cellX, cellY);
+                if (allowedToBuild && this.game.input.activePointer.leftButton.isDown) {
                     this.buildingCreator.runCreation(this.buildingName, new PIXI.Point(cellX, cellY));
                     this.deactivate();
                     return;
@@ -71,7 +71,7 @@ class BuildingPositionnerGraphics extends Phaser.Graphics {
                     let realCellGapX = Cell.cellToReal(cellGapX) / SCALE;
                     let realCellGapY = Cell.cellToReal(cellGapY) / SCALE;
 
-                    this.lineStyle(1, posable ? 0xffffff : 0xff0000, 0.8);
+                    this.lineStyle(1, allowedToBuild ? 0xffffff : 0xff0000, 0.8);
                     this.moveTo(realCellGapX - GROUND_SIZE / 2, realCellGapY - GROUND_SIZE / 4);
                     this.lineTo(realCellGapX - GROUND_SIZE / 4, realCellGapY - GROUND_SIZE / 2);
 

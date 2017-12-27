@@ -1,8 +1,5 @@
 import {Player} from "./Player";
 import {MCV} from "../unit/MCV";
-import {PowerPlant} from "../building/PowerPlant";
-import {Barracks} from "../building/Barracks";
-import {Tank} from "../unit/Tank";
 
 export class ComputerPlayer extends Player {
     update() {

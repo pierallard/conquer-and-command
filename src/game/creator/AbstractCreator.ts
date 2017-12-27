@@ -13,7 +13,7 @@ export abstract class AbstractCreator {
         this.player = player;
     }
 
-    abstract getProductables(): string[];
+    abstract getProducibles(): string[];
 
     abstract getRequiredBuildings(itemName: string): string[];
 
@@ -22,9 +22,9 @@ export abstract class AbstractCreator {
         this.uiCreator = uiCreator;
     }
 
-    updateAlloweds() {
+    updateAllowedItems() {
         if (this.uiCreator) {
-            this.uiCreator.updateAlloweds(this.getAlloweds());
+            this.uiCreator.updateAllowedItems(this.getAlloweds());
         }
     }
 
@@ -40,7 +40,7 @@ export abstract class AbstractCreator {
     }
 
     private getAlloweds() {
-        return this.getProductables().filter((itemName) => {
+        return this.getProducibles().filter((itemName) => {
             return this.isAllowed(itemName);
         });
     }

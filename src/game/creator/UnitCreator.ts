@@ -15,7 +15,7 @@ export class UnitCreator extends AbstractCreator {
         this.inProductionUnits = [];
     }
 
-    getProductables(): string[] {
+    getProducibles(): string[] {
         return UnitProperties.getConstructableUnits();
     }
 
@@ -30,7 +30,20 @@ export class UnitCreator extends AbstractCreator {
     runProduction(unitName: string) {
         this.inProductionUnits.push(unitName);
         this.timerEvent.add(UnitProperties.getConstructionTime(unitName) * Phaser.Timer.SECOND, () => {
+            let index = this.inProductionUnits.indexOf(unitName);
+            if (index > -1) {
+                this.inProductionUnits.splice(index, 1);
+            }
+
+            if (this.uiCreator) {
+                this.uiCreator.resetButton(unitName);
+            }
+
             const building = this.worldKnowledge.getCreatorOf(unitName, this.player);
+            if (null == building) {
+                return;
+            }
+
             const cellPosition = AlternativePosition.getClosestAvailable(
                 building.getCellPositions()[0],
                 building.getCellPositions()[0],
@@ -51,15 +64,6 @@ export class UnitCreator extends AbstractCreator {
                     break;
                 default:
                     throw "Unable to build unit " + unitName;
-            }
-
-            if (this.uiCreator) {
-                this.uiCreator.resetButton(unitName);
-            }
-
-            let index = this.inProductionUnits.indexOf(unitName);
-            if (index > -1) {
-                this.inProductionUnits.splice(index, 1);
             }
         });
 

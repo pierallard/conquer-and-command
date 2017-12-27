@@ -41,7 +41,7 @@ export class AlternativePosition {
      * @param goalPosition    The goal position
      * @param currentPosition The current position of the unit
      * @param isAccessible    This method checks if a position is accessible by this unit
-     * @returns {PIXI.Point}
+     * @returns {{PIXI.Point}}
      */
     public static getClosestAvailable(
         goalPosition: PIXI.Point,

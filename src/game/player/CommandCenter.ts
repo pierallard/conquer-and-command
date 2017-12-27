@@ -51,8 +51,8 @@ export class CommandCenter {
     }
 
     updateAllowedUnitsAndBuildings() {
-        this.unitCreator.updateAlloweds();
-        this.buildingCreator.updateAlloweds();
+        this.unitCreator.updateAllowedItems();
+        this.buildingCreator.updateAllowedItems();
     }
 
     productUnit(unitName: string) {

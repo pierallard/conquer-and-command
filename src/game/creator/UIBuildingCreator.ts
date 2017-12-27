@@ -1,26 +1,22 @@
 import {AbstractUICreator} from "./AbstractUICreator";
 import {WorldKnowledge} from "../map/WorldKnowledge";
 import {Player} from "../player/Player";
-import {BuildingPositionner} from "../interface/BuildingPositionner";
+import {BuildingPositioner} from "../interface/BuildingPositionner";
 import {BuildingProperties} from "../building/BuildingProperties";
 
 const X = 1202 - 66;
 
 export class UIBuildingCreator extends AbstractUICreator {
-    private buildingPositionner: BuildingPositionner;
+    private buildingPositioner: BuildingPositioner;
 
-    constructor(worldKnowledge: WorldKnowledge, player: Player, buildingPositionner: BuildingPositionner) {
+    constructor(worldKnowledge: WorldKnowledge, player: Player, buildingPositionner: BuildingPositioner) {
         super(worldKnowledge, player, X);
 
-        this.buildingPositionner = buildingPositionner;
+        this.buildingPositioner = buildingPositionner;
     }
 
     getConstructableItems(): string[] {
         return BuildingProperties.getConstructableBuildings();
-    }
-
-    getAllowedItems(name: string): string[] {
-        return BuildingProperties.getRequiredBuildings(name);
     }
 
     getSpriteKey(itemName: string): string {
@@ -32,7 +28,7 @@ export class UIBuildingCreator extends AbstractUICreator {
     }
 
     getConstructionTime(itemName: string): number {
-        return BuildingProperties.getConstructionTime(itemName)
+        return BuildingProperties.getConstructionTime(itemName);
     }
 
     onProductFinish(itemName: string) {
@@ -41,7 +37,7 @@ export class UIBuildingCreator extends AbstractUICreator {
 
     onClickFunction(itemName: string) {
         if (this.player.order().getBuildingCreator().isProduced(itemName)) {
-            this.buildingPositionner.activate(this.player.order().getBuildingCreator(), itemName);
+            this.buildingPositioner.activate(this.player.order().getBuildingCreator(), itemName);
         } else if (this.player.order().getBuildingCreator().isProducing(itemName)) {
             // Do nothing
         } else if (this.player.order().getBuildingCreator().isAllowed(itemName)) {

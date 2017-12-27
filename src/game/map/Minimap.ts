@@ -7,7 +7,7 @@ const X = 571;
 const Y = 9;
 const REFRESH_TIME = 0.5 * Phaser.Timer.SECOND;
 
-export class Minimap {
+export class MiniMap {
     private graphics: Phaser.Graphics;
     private worldKnowledge: WorldKnowledge;
     private hasRenderedRecently: boolean = false;

@@ -1,5 +1,4 @@
 import {SCALE} from "../game_state/Play";
-import {Explosion} from "./Explosion";
 
 export class BuildingSprite extends Phaser.Sprite {
     constructor(game: Phaser.Game, x: number, y: number, key: string) {

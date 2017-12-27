@@ -1,67 +1,66 @@
 const DATA = {
-    ConstructionYard: {
-        constructable: false,
+    Barracks: {
         cellPositions: [
             [0, 0],
             [1, 0],
             [0, -1],
             [1, -1],
         ],
+        constructable: true,
+        constructable_units: [
+            'Tank',
+        ],
+        construction_time: 2,
+        requireds: [
+            'PowerPlant',
+        ],
+        sprite: 'Module',
+        sprite_layer: 0,
+    },
+    ConstructionYard: {
+        cellPositions: [
+            [0, 0],
+            [1, 0],
+            [0, -1],
+            [1, -1],
+        ],
+        constructable: false,
         constructable_units: [
             'Harvester',
         ],
     },
     PowerPlant: {
-        constructable: true,
-        sprite: 'Factory2',
-        sprite_layer: 0,
         cellPositions: [
             [0, 0],
             [1, 0],
             [0, -1],
             [1, -1],
         ],
+        constructable: true,
         constructable_units: [],
+        construction_time: 2,
         requireds: [
             'ConstructionYard',
         ],
-        construction_time: 2,
-    },
-    Barracks: {
-        constructable: true,
-        sprite: 'Module',
+        sprite: 'Factory2',
         sprite_layer: 0,
-        cellPositions: [
-            [0, 0],
-            [1, 0],
-            [0, -1],
-            [1, -1],
-        ],
-        constructable_units: [
-            'Tank',
-        ],
-        requireds: [
-            'PowerPlant',
-        ],
-        construction_time: 2,
     },
 };
 
-
 /**
- Buildings:
- - construction yard    : MinerAni
- - power plant          : Factory2
- - barracks             : Module
- - tiberium refinery    : Factory3
- - comm center          : Silo
- - concrete barrier     : Wall
- - repair facility      : TradPlat
- - guard tower          : Turret
- - helipad              : Starport
- - weapons factory      : ConstructionYard
- - silo                 : Storage1
- - advanced guard tower : Artilery2
+ * Buildings:
+ * - construction yard    : MinerAni
+ * - power plant          : Factory2
+ * - barracks             : Module
+ * - tiberium refinery    : Factory3
+ * - comm center          : Silo
+ * - concrete barrier     : Wall
+ * - repair facility      : TradPlat
+ * - guard tower          : Turret
+ * - helipad              : Starport
+ * - weapons factory      : ConstructionYard
+ * - silo                 : Storage1
+ * - advanced guard tower : Artilery2
  */
 export class BuildingProperties {
     static getCellPositions(buildingName: string): PIXI.Point[] {

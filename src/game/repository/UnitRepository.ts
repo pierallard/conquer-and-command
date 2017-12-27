@@ -1,5 +1,4 @@
 import {Unit} from "../unit/Unit";
-import {Player} from "../player/Player";
 
 export class UnitRepository {
     private units: Unit[];

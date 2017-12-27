@@ -26,7 +26,7 @@ export class MCV extends Unit {
         this.expand();
     }
 
-    updateStateAfterclick(cell: PIXI.Point) {
+    updateStateAfterClick(cell: PIXI.Point) {
         if (!this.expanded) {
             const unit = this.worldKnowledge.getUnitAt(cell);
             if (null !== unit) {

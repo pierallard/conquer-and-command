@@ -22,7 +22,7 @@ export abstract class Unit implements Shootable, Positionnable {
     protected cellPosition: PIXI.Point;
     private pathCache: Path;
     private goalCache: PIXI.Point;
-    private isFreezed: boolean = false;
+    private isFrozen: boolean = false;
     private selected: boolean = false;
     private key: string;
     private timerEvents: Phaser.Timer;
@@ -41,7 +41,7 @@ export abstract class Unit implements Shootable, Positionnable {
     }
 
     update(): void {
-        if (!this.isFreezed) {
+        if (!this.isFrozen) {
             this.state = this.state.getNextStep();
             this.state.run();
         }
@@ -142,7 +142,7 @@ export abstract class Unit implements Shootable, Positionnable {
         this.unitSprite.setSelected(value);
     }
 
-    updateStateAfterclick(cell: PIXI.Point) {
+    updateStateAfterClick(cell: PIXI.Point) {
         const unit = this.worldKnowledge.getUnitAt(cell);
         if (null !== unit) {
             if (this.getPlayer() !== unit.getPlayer()) {
@@ -168,9 +168,9 @@ export abstract class Unit implements Shootable, Positionnable {
     }
 
     protected freeze(time: number) {
-        this.isFreezed = true;
+        this.isFrozen = true;
         this.timerEvents.add(time, () => {
-            this.isFreezed = false;
+            this.isFrozen = false;
         }, this);
     }
 
