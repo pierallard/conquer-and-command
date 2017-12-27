@@ -11,7 +11,8 @@
         "interface-name": false,
         "switch-default": false,
         "no-unused-new": false,
-        "no-reference": false
+        "no-reference": false,
+        "radix": false
     },
     "rulesDirectory": []
 }

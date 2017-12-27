@@ -1,7 +1,7 @@
 import {Cell} from "../computing/Cell";
 import {SCALE} from "../game_state/Play";
 
-const FRAME_RATE = 20;
+const FRAME_RATE = 30;
 const ANCHOR_X = 3 / 8;
 const ANCHOR_Y = 6.5 / 8;
 
