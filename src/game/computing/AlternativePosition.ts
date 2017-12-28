@@ -23,7 +23,7 @@ export class AlternativePosition {
                 if (currentPosition.x === test.x && currentPosition.y === test.y) {
                     return true;
                 }
-                if (isAccessible(test) && null !== AStar.getPath(currentPosition, goalPosition, isAccessible)) {
+                if (isAccessible(test) && null !== AStar.getPath(currentPosition, test, isAccessible)) {
                     foundAccessible = true;
                 }
             }
@@ -51,7 +51,7 @@ export class AlternativePosition {
         for (let radius = 0; radius < MAX_SEARCH_RADIUS; radius++) {
             let possiblePositions = this.getPointsFromRadius(goalPosition, radius);
             possiblePositions = possiblePositions.filter((pos) => {
-                return isAccessible(pos);
+                return isAccessible(pos) && null !== AStar.getPath(currentPosition, pos, isAccessible);
             });
 
             if (possiblePositions.length) {

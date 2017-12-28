@@ -105,6 +105,7 @@ export class GeneratedGround {
             712: [TERRAIN.MOUNTAIN, TERRAIN.MOUNTAIN, TERRAIN.MOUNTAIN, TERRAIN.MOUNTAIN],
             930: [TERRAIN.STONE, TERRAIN.STONE, TERRAIN.STONE, TERRAIN.STONE],
         };
+        this.collisions.push(TERRAIN.WATER);
         this.initializeTiles();
     }
 

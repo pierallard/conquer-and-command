@@ -1,13 +1,22 @@
 import {AlternativePosition} from "./AlternativePosition";
 
 export class AStar {
-    static getPath(
+    static getPathOrClosest(
         cellPosition: PIXI.Point,
         cellGoal: PIXI.Point,
         isPositionAccessible: (position: PIXI.Point) => boolean
     ): Path {
         let goal = AlternativePosition.getClosestAvailable(cellGoal, cellPosition, isPositionAccessible);
-        let firstPath = new Path(goal);
+
+        return this.getPath(cellPosition, goal, isPositionAccessible)
+    }
+
+    static getPath(
+        cellPosition: PIXI.Point,
+        cellGoal: PIXI.Point,
+        isPositionAccessible: (position: PIXI.Point) => boolean
+    ): Path {
+        let firstPath = new Path(cellGoal);
         firstPath.add(cellPosition);
         let paths = new Paths();
         paths.add(firstPath);
@@ -29,8 +38,8 @@ export class AStar {
                 let existingPath = paths.getExistingThrough(nextPosition);
                 if (!existingPath) {
                     if (
-                        nextPosition.x === goal.x &&
-                        nextPosition.y === goal.y
+                        nextPosition.x === cellGoal.x &&
+                        nextPosition.y === cellGoal.y
                     ) {
                         return newPath;
                     }

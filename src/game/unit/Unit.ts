@@ -115,7 +115,7 @@ export abstract class Unit implements Shootable, Positionnable {
             }
         }
         if (!nextStep) {
-            const newPath = AStar.getPath(
+            const newPath = AStar.getPathOrClosest(
                 this.cellPosition,
                 goal,
                 this.worldKnowledge.isCellAccessible.bind(this.worldKnowledge)
@@ -123,6 +123,8 @@ export abstract class Unit implements Shootable, Positionnable {
             if (null !== newPath) {
                 this.pathCache = newPath;
                 this.goalCache = goal;
+                nextStep = this.pathCache.splice();
+            } else if (null !== this.pathCache && this.worldKnowledge.isCellAccessible(this.pathCache.firstStep())) {
                 nextStep = this.pathCache.splice();
             }
         }
