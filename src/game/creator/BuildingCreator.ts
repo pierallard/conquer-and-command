@@ -4,6 +4,9 @@ import {Player} from "../player/Player";
 import {PowerPlant} from "../building/PowerPlant";
 import {Barracks} from "../building/Barracks";
 import {AbstractCreator} from "./AbstractCreator";
+import {TiberiumRefinery} from "../building/TiberiumRefinery";
+import {Harvester} from "../unit/Harvester";
+import {AlternativePosition} from "../computing/AlternativePosition";
 
 export class BuildingCreator extends AbstractCreator {
     private producedBuildings: string[];
@@ -55,6 +58,17 @@ export class BuildingCreator extends AbstractCreator {
             case 'Barracks':
                 let barracks = new Barracks(this.worldKnowledge, cell, this.player);
                 this.worldKnowledge.addBuilding(barracks, true);
+                break;
+            case 'TiberiumRefinery':
+                let tiberiumRefinery = new TiberiumRefinery(this.worldKnowledge, cell, this.player);
+                this.worldKnowledge.addBuilding(tiberiumRefinery, true);
+                const cellHarvester = AlternativePosition.getClosestAvailable(
+                    cell,
+                    cell,
+                    this.worldKnowledge.isCellAccessible.bind(this.worldKnowledge)
+                );
+                let harvester = new Harvester(this.worldKnowledge, cellHarvester, this.player);
+                this.worldKnowledge.addUnit(harvester, true);
                 break;
             default:
                 throw "Unable to build building " + buildingName;

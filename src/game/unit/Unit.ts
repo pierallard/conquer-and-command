@@ -169,6 +169,10 @@ export abstract class Unit implements Shootable, Positionnable {
         this.state = new MoveAttack(this.worldKnowledge, this, goal);
     }
 
+    setVisible(value: boolean) {
+        this.unitSprite.alpha = value ? 1 : 0;
+    }
+
     protected freeze(time: number) {
         this.isFrozen = true;
         this.timerEvents.add(time, () => {

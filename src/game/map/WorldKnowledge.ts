@@ -6,6 +6,7 @@ import {UnitRepository} from "../repository/UnitRepository";
 import {Appear} from "../sprite/Appear";
 import {GeneratedGround} from "./GeneratedGround";
 import {Shootable} from "../Shootable";
+import {MiniAppear} from "../sprite/MiniAppear";
 
 export class WorldKnowledge {
     private game: Phaser.Game;
@@ -62,9 +63,17 @@ export class WorldKnowledge {
         }
     }
 
-    addUnit(newUnit: Unit) {
+    addUnit(newUnit: Unit, appear: boolean = false) {
         this.unitRepository.add(newUnit);
         newUnit.create(this.game, this.unitBuildingGroup);
+        if (appear) {
+            newUnit.setVisible(false);
+            let appearSprite = new MiniAppear(newUnit.getCellPositions()[0]);
+            appearSprite.create(this.game, this.unitBuildingGroup);
+            this.game.time.events.add(Phaser.Timer.SECOND * 2, () => {
+                newUnit.setVisible(true);
+            }, this);
+        }
     }
 
     removeUnit(unit: Unit, delay: number = 0) {

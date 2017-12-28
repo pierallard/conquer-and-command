@@ -45,6 +45,22 @@ const DATA = {
         sprite: 'Factory2',
         sprite_layer: 0,
     },
+    TiberiumRefinery: {
+        cellPositions: [
+            [0, 0],
+            [1, 0],
+            [0, -1],
+            [1, -1],
+        ],
+        constructable: true,
+        constructable_units: [],
+        construction_time: 2,
+        requireds: [
+            'PowerPlant',
+        ],
+        sprite: 'Factory3',
+        sprite_layer: 0,
+    },
 };
 
 /**
