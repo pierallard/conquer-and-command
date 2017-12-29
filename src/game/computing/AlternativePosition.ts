@@ -17,6 +17,7 @@ export class AlternativePosition {
         currentPosition: PIXI.Point,
         isAccessible: (point: PIXI.Point) => boolean
     ): boolean {
+        let zones = this.getZones(isAccessible, currentPosition);
         for (let radius = 0; radius < MAX_SEARCH_RADIUS; radius++) {
             const points = this.getPointsFromRadius(goalPosition, radius);
             let foundAccessible = false;
@@ -25,7 +26,10 @@ export class AlternativePosition {
                 if (currentPosition.x === test.x && currentPosition.y === test.y) {
                     return true;
                 }
-                if (isAccessible(test) && null !== AStar.getPath(currentPosition, test, isAccessible)) {
+                if (isAccessible(test) &&
+                    AlternativePosition.getZone(zones, test) ===
+                    AlternativePosition.getZone(zones, currentPosition) &&
+                    null !== AStar.getPath(currentPosition, test, isAccessible)) {
                     foundAccessible = true;
                 }
             }
@@ -50,11 +54,13 @@ export class AlternativePosition {
         currentPosition: PIXI.Point,
         isAccessible: (point: PIXI.Point) => boolean
     ): PIXI.Point {
+        let zones = this.getZones(isAccessible, currentPosition);
         for (let radius = 0; radius < MAX_SEARCH_RADIUS; radius++) {
             let possiblePositions = this.getPointsFromRadius(goalPosition, radius);
             possiblePositions = possiblePositions.filter((pos) => {
-                AlternativePosition.hasAPathTo(goalPosition, currentPosition, isAccessible);
-                return isAccessible(pos) && null !== AStar.getPath(currentPosition, pos, isAccessible);
+                return isAccessible(pos) &&
+                    AlternativePosition.getZone(zones, pos) ===
+                    AlternativePosition.getZone(zones, currentPosition);
             });
 
             if (possiblePositions.length) {
@@ -71,6 +77,7 @@ export class AlternativePosition {
                 return possiblePositions[0];
             }
         }
+        debugger;
 
         return null;
     }
@@ -95,14 +102,6 @@ export class AlternativePosition {
         return possiblePositions;
     }
 
-    private static hasAPathTo(
-        goalPosition: PIXI.Point,
-        currentPosition: PIXI.Point,
-        isAccessible: (point: PIXI.Point) => boolean
-    ): boolean {
-        return true;
-    }
-
     private static getZone(zones: PIXI.Point[][], point: PIXI.Point) {
         for (let i = 0; i < zones.length; i++) {
             for (let j = 0; j < zones[i].length; j++) {
@@ -115,12 +114,12 @@ export class AlternativePosition {
         return null;
     }
 
-    static getZones(isAccessible: any) {
+    static getZones(isAccessible: (point: PIXI.Point) => boolean, source: PIXI.Point = null) {
         let zones = [];
         for (let y = 0; y < GROUND_HEIGHT; y++) {
             for (let x = 0; x < GROUND_WIDTH; x++) {
                 const point = new PIXI.Point(x, y);
-                if (isAccessible(point)) {
+                if ((null !== source && source.x === x && source.y === y) || isAccessible(point)) {
                     if (y === 0 && x === 0) {
                         zones.push([point]);
                     } else if (y === 0) {
@@ -152,14 +151,10 @@ export class AlternativePosition {
                         } else {
                             zones[neighbourZones[0]].push(point);
                             if (neighbourZones.length > 1) {
-                                console.log(topLeftZone, leftZone, topZone, point.x, point.y);
-                                console.log('Merge ', neighbourZones);
-                                console.log(zones);
                                 for (let i = 1; i < neighbourZones.length; i++) {
                                     zones[neighbourZones[0]] = zones[neighbourZones[0]].concat(zones[neighbourZones[i]]);
                                     zones[neighbourZones[i]] = [];
                                 }
-                                console.log(zones);
                             }
                         }
                     }

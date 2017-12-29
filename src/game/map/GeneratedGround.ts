@@ -145,7 +145,7 @@ export class GeneratedGround {
     }
 
     isCellAccessible(position: PIXI.Point): boolean {
-        if (position.x < 0 || position.y < 0) {
+        if (position.x < 0 || position.y < 0 || position.x >= GROUND_WIDTH || position.y >= GROUND_HEIGHT) {
             return false;
         }
 
