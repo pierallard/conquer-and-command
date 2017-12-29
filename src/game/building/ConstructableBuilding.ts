@@ -11,7 +11,7 @@ export abstract class ConstructableBuilding implements Building, Shootable {
     protected cellPosition: PIXI.Point;
     protected sprite: BuildingSprite;
     protected life: number = 100;
-    private worldKnowledge: WorldKnowledge;
+    protected worldKnowledge: WorldKnowledge;
 
     constructor(worldKnowledge: WorldKnowledge, cellPosition: PIXI.Point, player: Player) {
         this.worldKnowledge = worldKnowledge;
