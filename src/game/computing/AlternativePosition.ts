@@ -100,6 +100,22 @@ export class AlternativePosition {
         currentPosition: PIXI.Point,
         isAccessible: (point: PIXI.Point) => boolean
     ): boolean {
+        return true;
+    }
+
+    private static getZone(zones: PIXI.Point[][], point: PIXI.Point) {
+        for (let i = 0; i < zones.length; i++) {
+            for (let j = 0; j < zones[i].length; j++) {
+                if (zones[i][j].x === point.x && zones[i][j].y === point.y) {
+                    return i;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    static getZones(isAccessible: any) {
         let zones = [];
         for (let y = 0; y < GROUND_HEIGHT; y++) {
             for (let x = 0; x < GROUND_WIDTH; x++) {
@@ -128,39 +144,27 @@ export class AlternativePosition {
                         let neighbourZones = [topLeftZone, leftZone, topZone].filter((zone) => {
                             return null !== zone;
                         });
-                        neighbourZones = Array.from(new Set(neighbourZones));
+                        neighbourZones = Array.from(new Set(neighbourZones)).sort((a, b) => {
+                            return a - b;
+                        });
                         if (neighbourZones.length === 0) {
                             zones.push([point]);
                         } else {
                             zones[neighbourZones[0]].push(point);
-                            zones = AlternativePosition.mergeZones(zones, neighbourZones);
+                            if (neighbourZones.length > 1) {
+                                console.log(topLeftZone, leftZone, topZone, point.x, point.y);
+                                console.log('Merge ', neighbourZones);
+                                console.log(zones);
+                                for (let i = 1; i < neighbourZones.length; i++) {
+                                    zones[neighbourZones[0]] = zones[neighbourZones[0]].concat(zones[neighbourZones[i]]);
+                                    zones[neighbourZones[i]] = [];
+                                }
+                                console.log(zones);
+                            }
                         }
                     }
                 }
             }
-        }
-
-        console.log(zones);
-
-        return true;
-    }
-
-    private static getZone(zones: PIXI.Point[][], point: PIXI.Point) {
-        for (let i = 0; i < zones.length; i++) {
-            for (let j = 0; j < zones[i].length; j++) {
-                if (zones[i][j].x === point.x && zones[i][j].y === point.y) {
-                    return i;
-                }
-            }
-        }
-
-        return null;
-    }
-
-    private static mergeZones(zones: PIXI.Point[][], neighbourZones: number[]): PIXI.Point[][] {
-        for (let i = 1; i < neighbourZones.length; i++) {
-            zones[0] = zones[0].concat(zones[i]);
-            zones[i] = [];
         }
 
         return zones;

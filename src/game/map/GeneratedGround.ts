@@ -1,7 +1,8 @@
 import {SCALE} from "../game_state/Play";
+import {AlternativePosition} from "../computing/AlternativePosition";
 
-export const GROUND_WIDTH = 60;
-export const GROUND_HEIGHT = 60;
+export const GROUND_WIDTH = 30;
+export const GROUND_HEIGHT = 30;
 
 enum TERRAIN {
     SNOW = 312,
@@ -128,6 +129,19 @@ export class GeneratedGround {
         let layer = this.map.createLayer(0);
         layer.scale.setTo(SCALE, SCALE);
         game.add.existing(layer);
+
+        const zones = AlternativePosition.getZones(this.isCellAccessible.bind(this));
+        let graphics = game.add.graphics(0, 0);
+        graphics.alpha = 0.5;
+        for (let z = 0; z < zones.length; z++) {
+            if (zones[z].length > 0) {
+                game.add.text(zones[z][0].x * 40, zones[z][0].y * 40, z + '');
+            }
+            graphics.beginFill(Phaser.Color.getRandomColor(0, 255, 200));
+            for (let i = 0; i < zones[z].length; i++) {
+                graphics.drawRect(zones[z][i].x * 40, zones[z][i].y * 40, 40, 40);
+            }
+        }
     }
 
     isCellAccessible(position: PIXI.Point): boolean {
