@@ -7,6 +7,7 @@ import {AbstractCreator} from "./AbstractCreator";
 import {TiberiumRefinery} from "../building/TiberiumRefinery";
 import {Harvester} from "../unit/Harvester";
 import {AlternativePosition} from "../computing/AlternativePosition";
+import {ConcreteBarrier} from "../building/ConcreteBarrier";
 
 export class BuildingCreator extends AbstractCreator {
     private producedBuildings: string[];
@@ -69,6 +70,10 @@ export class BuildingCreator extends AbstractCreator {
                 );
                 let harvester = new Harvester(this.worldKnowledge, cellHarvester, this.player);
                 this.worldKnowledge.addUnit(harvester, true);
+                break;
+            case 'ConcreteBarrier':
+                let concreteBarrier = new ConcreteBarrier(this.worldKnowledge, cell, this.player);
+                this.worldKnowledge.addBuilding(concreteBarrier, false);
                 break;
             default:
                 throw "Unable to build building " + buildingName;

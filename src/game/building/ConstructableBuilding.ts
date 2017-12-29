@@ -6,7 +6,7 @@ import {WorldKnowledge} from "../map/WorldKnowledge";
 import {Shootable} from "../Shootable";
 import {Positionnable} from "../Positionnable";
 
-export abstract class ConstructableBuilding implements Building, Shootable, Positionnable {
+export abstract class ConstructableBuilding implements Building, Shootable {
     protected player: Player;
     protected cellPosition: PIXI.Point;
     protected sprite: BuildingSprite;

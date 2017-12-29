@@ -17,6 +17,15 @@ const DATA = {
         sprite: 'Module',
         sprite_layer: 0,
     },
+    ConcreteBarrier: {
+        cellPositions: [[0, 0]],
+        constructable: true,
+        constructable_units: [],
+        construction_time: 0.5,
+        requireds: ['ConstructionYard'],
+        sprite: 'Wall',
+        sprite_layer: 0,
+    },
     ConstructionYard: {
         cellPositions: [
             [0, 0],
