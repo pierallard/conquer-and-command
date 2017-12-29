@@ -1,4 +1,6 @@
 import {AStar} from "./AStar";
+import {GAME_HEIGHT, GAME_WIDTH} from "../../app";
+import {GROUND_HEIGHT, GROUND_WIDTH} from "../map/GeneratedGround";
 const MAX_SEARCH_RADIUS = 20;
 
 export class AlternativePosition {
@@ -51,6 +53,7 @@ export class AlternativePosition {
         for (let radius = 0; radius < MAX_SEARCH_RADIUS; radius++) {
             let possiblePositions = this.getPointsFromRadius(goalPosition, radius);
             possiblePositions = possiblePositions.filter((pos) => {
+                AlternativePosition.hasAPathTo(goalPosition, currentPosition, isAccessible);
                 return isAccessible(pos) && null !== AStar.getPath(currentPosition, pos, isAccessible);
             });
 
@@ -90,5 +93,76 @@ export class AlternativePosition {
         }
 
         return possiblePositions;
+    }
+
+    private static hasAPathTo(
+        goalPosition: PIXI.Point,
+        currentPosition: PIXI.Point,
+        isAccessible: (point: PIXI.Point) => boolean
+    ): boolean {
+        let zones = [];
+        for (let y = 0; y < GROUND_HEIGHT; y++) {
+            for (let x = 0; x < GROUND_WIDTH; x++) {
+                const point = new PIXI.Point(x, y);
+                if (isAccessible(point)) {
+                    if (y === 0 && x === 0) {
+                        zones.push([point]);
+                    } else if (y === 0) {
+                        const leftZone = AlternativePosition.getZone(zones, new PIXI.Point(x - 1, y));
+                        if (null !== leftZone) {
+                            zones[leftZone].push(point);
+                        } else {
+                            zones.push([point]);
+                        }
+                    } else if (x === 0) {
+                        const topZone = AlternativePosition.getZone(zones, new PIXI.Point(x, y - 1));
+                        if (null !== topZone) {
+                            zones[topZone].push(point);
+                        } else {
+                            zones.push([point]);
+                        }
+                    } else {
+                        const topLeftZone = AlternativePosition.getZone(zones, new PIXI.Point(x - 1, y - 1));
+                        const leftZone = AlternativePosition.getZone(zones, new PIXI.Point(x - 1, y));
+                        const topZone = AlternativePosition.getZone(zones, new PIXI.Point(x, y - 1));
+                        let neighbourZones = [topLeftZone, leftZone, topZone].filter((zone) => {
+                            return null !== zone;
+                        });
+                        neighbourZones = Array.from(new Set(neighbourZones));
+                        if (neighbourZones.length === 0) {
+                            zones.push([point]);
+                        } else {
+                            zones[neighbourZones[0]].push(point);
+                            zones = AlternativePosition.mergeZones(zones, neighbourZones);
+                        }
+                    }
+                }
+            }
+        }
+
+        console.log(zones);
+
+        return true;
+    }
+
+    private static getZone(zones: PIXI.Point[][], point: PIXI.Point) {
+        for (let i = 0; i < zones.length; i++) {
+            for (let j = 0; j < zones[i].length; j++) {
+                if (zones[i][j].x === point.x && zones[i][j].y === point.y) {
+                    return i;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private static mergeZones(zones: PIXI.Point[][], neighbourZones: number[]): PIXI.Point[][] {
+        for (let i = 1; i < neighbourZones.length; i++) {
+            zones[0] = zones[0].concat(zones[i]);
+            zones[i] = [];
+        }
+
+        return zones;
     }
 }

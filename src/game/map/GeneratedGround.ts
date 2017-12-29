@@ -1,7 +1,7 @@
 import {SCALE} from "../game_state/Play";
 
-export const GROUND_WIDTH = 80;
-export const GROUND_HEIGHT = 80;
+export const GROUND_WIDTH = 60;
+export const GROUND_HEIGHT = 60;
 
 enum TERRAIN {
     SNOW = 312,
@@ -225,7 +225,8 @@ export class GeneratedGround {
                 max = Math.max(noises[y][x], max);
             }
         }
-        const terrains = [TERRAIN.WATER, TERRAIN.GRASS, TERRAIN.MOUNTAIN, TERRAIN.SNOW, TERRAIN.STONE];
+        const terrains = [TERRAIN.WATER, TERRAIN.GRASS];
+        // const terrains = [TERRAIN.WATER, TERRAIN.GRASS, TERRAIN.MOUNTAIN, TERRAIN.SNOW, TERRAIN.STONE];
         const step = (max - min) / terrains.length;
 
         for (let y = 0; y <= GROUND_HEIGHT; y++) {
