@@ -3,12 +3,14 @@ import {CommandCenter} from "./CommandCenter";
 import {BuildingCreator} from "../creator/BuildingCreator";
 import {UnitCreator} from "../creator/UnitCreator";
 
+const START_MINERALS = 200;
+
 export abstract class Player {
     protected worldKnowledge: WorldKnowledge;
     private color: number;
     private id: number;
     private commandCenter: CommandCenter;
-    private minerals: number = 0;
+    private minerals: number = START_MINERALS;
 
     constructor(worldKnowledge: WorldKnowledge, id: number, color: number) {
         this.worldKnowledge = worldKnowledge;
@@ -43,5 +45,9 @@ export abstract class Player {
 
     addMinerals(loading: number) {
         this.minerals += loading;
+    }
+
+    getMinerals(): number {
+        return this.minerals;
     }
 }
