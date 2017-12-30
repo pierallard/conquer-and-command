@@ -1,5 +1,5 @@
 export class Distance {
-    static to(from: PIXI.Point | PIXI.Point[], to: PIXI.Point | PIXI.Point[]) {
+    static to(from: PIXI.Point | PIXI.Point[], to: PIXI.Point | PIXI.Point[]): number {
         let toArray = (<PIXI.Point[]> ((!(to instanceof Array)) ? [to] : to));
         let fromArray = (<PIXI.Point[]> ((!(from instanceof Array)) ? [from] : from));
 

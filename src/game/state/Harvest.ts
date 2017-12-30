@@ -3,23 +3,23 @@ import {Stand} from "./Stand";
 import {AlternativePosition} from "../computing/AlternativePosition";
 import {Harvester} from "../unit/Harvester";
 import {ConstructionYard} from "../building/ConstructionYard";
-import {CubeSet} from "../building/CubeSet";
-import {Cube} from "../building/Cube";
+import {TiberiumPlant} from "../sprite/TiberiumPlant";
 import {WorldKnowledge} from "../map/WorldKnowledge";
+import {TiberiumSource} from "../building/TiberiumSource";
 
 export class Harvest implements State {
     private worldKnowledge: WorldKnowledge;
     private harvester: Harvester;
-    private cubeSet: CubeSet;
+    private source: TiberiumSource;
 
-    constructor(worldKnowledge: WorldKnowledge, harvester: Harvester, cubeSet: CubeSet) {
+    constructor(worldKnowledge: WorldKnowledge, harvester: Harvester, source: TiberiumSource) {
         this.worldKnowledge = worldKnowledge;
         this.harvester = harvester;
-        this.cubeSet = cubeSet;
+        this.source = source;
     }
 
     getNextStep(): State {
-        if (this.cubeSet.isEmpty() && !this.harvester.isLoaded()) {
+        if (this.source.isEmpty() && !this.harvester.isLoaded()) {
             return new Stand(this.harvester);
         }
 
@@ -30,7 +30,7 @@ export class Harvest implements State {
         if (this.harvester.isFull()) {
             this.goToBaseAndUnload();
         } else {
-            const closestCube = this.harvester.getClosestCube(this.cubeSet);
+            const closestCube = this.harvester.getClosestPlant(this.source);
             if (!closestCube) {
                 this.goToBaseAndUnload();
             } else {
@@ -55,7 +55,7 @@ export class Harvest implements State {
         }
     }
 
-    private isArrivedToCube(cube: Cube): boolean {
+    private isArrivedToCube(cube: TiberiumPlant): boolean {
         return AlternativePosition.isArrived(
             cube.getCellPositions()[0],
             this.harvester.getCellPositions()[0],

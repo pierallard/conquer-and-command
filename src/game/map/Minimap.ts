@@ -35,7 +35,7 @@ export class MiniMap {
         map.addTilesetImage('Grs2Mnt', 'Grs2Mnt', 20, 20, 0, 0, 700);
         map.addTilesetImage('Snw2Mnt', 'Snw2Mnt', 20, 20, 0, 0, 800);
         map.addTilesetImage('Stn2SnwB', 'Stn2SnwB', 20, 20, 0, 0, 900);
-        this.layer = map.createLayer(0, 1000000, 100000);
+        this.layer = map.createLayer(0, 60 * 20, 60 * 20);
 
         let scale = SIZE / Math.max(map.widthInPixels, map.heightInPixels) * 2;
         this.layer.scale.setTo(scale, scale);
@@ -43,14 +43,6 @@ export class MiniMap {
         this.layer.cameraOffset.setTo(X * 2, Y * 2);
         this.layer.scrollFactorX = 0;
         this.layer.scrollFactorY = 0;
-        game.camera.bounds.setTo(
-            0,
-            0,
-            this.worldKnowledge.getGroundWidth(),
-            this.worldKnowledge.getGroundHeight()
-        );
-
-        this.layer.resizeWorld();
 
         game.add.existing(this.layer);
 

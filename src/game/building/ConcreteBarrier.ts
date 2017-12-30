@@ -25,12 +25,7 @@ export class ConcreteBarrier extends ConstructableBuilding {
             group.add(sprite);
         });
 
-        this.worldKnowledge.getPlayerBuildings(this.player, this.constructor.name).forEach((building) => {
-            const concreteBarrier = <ConcreteBarrier> building;
-            if (concreteBarrier !== this) {
-                concreteBarrier.updateTileLayers();
-            }
-        });
+        this.updateConcretes();
     }
 
     updateTileLayers() {
@@ -38,6 +33,14 @@ export class ConcreteBarrier extends ConstructableBuilding {
         this.topRightSprite.loadTexture(this.topRightSprite.key, this.getTopRightLayer());
         this.bottomRightSprite.loadTexture(this.bottomRightSprite.key, this.getBottomRightLayer());
         this.bottomLeftSprite.loadTexture(this.bottomLeftSprite.key, this.getBottomLeftLayer());
+    }
+
+    destroy(): void {
+        this.getSprites().forEach((sprite) => {
+            sprite.destroy(true);
+        });
+
+        this.updateConcretes();
     }
 
     private getSprites(): Phaser.Sprite[] {
@@ -150,5 +153,14 @@ export class ConcreteBarrier extends ConstructableBuilding {
             building.constructor.name === this.constructor.name &&
             building.getPlayer() === this.getPlayer()
         );
+    }
+
+    private updateConcretes() {
+        this.worldKnowledge.getPlayerBuildings(this.player, this.constructor.name).forEach((building) => {
+            const concreteBarrier = <ConcreteBarrier> building;
+            if (concreteBarrier !== this) {
+                concreteBarrier.updateTileLayers();
+            }
+        });
     }
 }

@@ -1,24 +1,24 @@
 import {Cell} from "../computing/Cell";
 import {SCALE} from "../game_state/Play";
 import {GROUND_SIZE} from "../map/Ground";
+import {TiberiumSource} from "../building/TiberiumSource";
 
 const START_AMOUNT = 100;
 const HARVEST_QUANTITY = 10;
 
-export class Cube extends Phaser.Sprite {
+export class TiberiumPlant extends Phaser.Sprite {
+    private source: TiberiumSource;
     private cellPosition: PIXI.Point;
     private amount: number;
 
-    constructor(game: Phaser.Game, x: number, y: number, group: Phaser.Group) {
-        super(game, Cell.cellToReal(x), Cell.cellToReal(y), 'Cube');
+    constructor(source: TiberiumSource, game: Phaser.Game, x: number, y: number) {
+        super(game, Cell.cellToReal(x), Cell.cellToReal(y), 'GrssMisc-2020', 18);
 
+        this.source = source;
         this.amount = START_AMOUNT;
-        this.frame = 2;
         this.cellPosition = new PIXI.Point(x, y);
         this.scale.setTo(SCALE * GROUND_SIZE / 27);
         this.anchor.setTo(0.5, 0.5);
-
-        group.add(this);
     }
 
     getCellPositions(): PIXI.Point[] {
@@ -45,5 +45,9 @@ export class Cube extends Phaser.Sprite {
         }
 
         return result;
+    }
+
+    getSource(): TiberiumSource {
+        return this.source;
     }
 }
