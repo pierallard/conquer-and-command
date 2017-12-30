@@ -28,8 +28,7 @@ export class AlternativePosition {
                 }
                 if (isAccessible(test) &&
                     AlternativePosition.getZone(zones, test) ===
-                    AlternativePosition.getZone(zones, currentPosition) /*&&
-                    null !== AStar.getPath(currentPosition, test, isAccessible)*/) {
+                    AlternativePosition.getZone(zones, currentPosition)) {
                     foundAccessible = true;
                 }
             }
@@ -39,6 +38,19 @@ export class AlternativePosition {
         }
 
         return true;
+    }
+
+    public static getSquareClosest(position: PIXI.Point, radius: number = 0) {
+        let result = [];
+        for (let x = position.x - radius; x <= position.x + radius; x++) {
+            for (let y = position.y - radius; y <= position.y + radius; y++) {
+                result.push(new PIXI.Point(x, y));
+            }
+        }
+
+        console.log(result);
+
+        return result;
     }
 
     /**

@@ -21,9 +21,9 @@ export class WorldKnowledge {
         this.buildingRepository = new BuildingRepository();
     }
 
-    create(game: Phaser.Game) {
+    create(game: Phaser.Game, startPositions: PIXI.Point[]) {
         this.game = game;
-        this.ground.create(this.game);
+        this.ground.create(this.game, startPositions);
 
         this.unitBuildingGroup = this.game.add.group();
         this.unitBuildingGroup.fixedToCamera = false;

@@ -22,9 +22,15 @@ export default class Play extends Phaser.State {
     private dKey: Phaser.Key;
     private worldKnowledge: WorldKnowledge;
     private userInterface: UserInterface;
+    private startPositions: PIXI.Point[];
 
     constructor() {
         super();
+
+        this.startPositions = [
+            new PIXI.Point(Math.round(GROUND_WIDTH / 5), Math.round(GROUND_HEIGHT / 5)),
+            new PIXI.Point(Math.round(GROUND_WIDTH * 4 / 5), Math.round(GROUND_HEIGHT * 4 / 5))
+        ];
 
         this.worldKnowledge = new WorldKnowledge();
         this.players = [
@@ -36,7 +42,7 @@ export default class Play extends Phaser.State {
     }
 
     public create() {
-        this.worldKnowledge.create(this.game);
+        this.worldKnowledge.create(this.game, this.startPositions);
         this.userInterface.create(this.game);
 
         this.world.setBounds(0, 0, this.worldKnowledge.getGroundWidth(), this.worldKnowledge.getGroundHeight());
@@ -55,12 +61,12 @@ export default class Play extends Phaser.State {
     public start() {
         this.worldKnowledge.addUnit(new MCV(
             this.worldKnowledge,
-            new PIXI.Point(Math.round(GROUND_WIDTH / 5), Math.round(GROUND_HEIGHT / 5)),
+            this.startPositions[0],
             this.players[0]
         ));
         this.worldKnowledge.addUnit(new MCV(
             this.worldKnowledge,
-            new PIXI.Point(Math.round(GROUND_WIDTH * 4 / 5), Math.round(GROUND_HEIGHT * 4 / 5)),
+            this.startPositions[1],
             this.players[1]
         ));
 

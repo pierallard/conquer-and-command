@@ -1,4 +1,5 @@
 import {SCALE} from "../game_state/Play";
+import {AlternativePosition} from "../computing/AlternativePosition";
 
 export const GROUND_WIDTH = 56;
 export const GROUND_HEIGHT = 35;
@@ -14,11 +15,16 @@ enum TERRAIN {
     STONE = 930,
 }
 
+const MIN = 0.2;
+const MAX = 0.8;
+const TERRAINS = [TERRAIN.WATER, TERRAIN.GRASS, TERRAIN.MOUNTAIN, TERRAIN.SNOW, TERRAIN.STONE];
+const STEP = (MAX - MIN) / TERRAINS.length;
+
 export class GeneratedGround {
-    private static generateNoises(max: number): number[][] {
+    private static generateNoises(max: number, predefinedTiles: any): number[][] {
         const maps = [];
         for (let i = 0; i <= max; i++) {
-            maps.push(this.generateNoise(i));
+            maps.push(this.generateNoise(i, predefinedTiles));
         }
 
         const result = [];
@@ -36,17 +42,31 @@ export class GeneratedGround {
             result.push(resultLine);
         }
 
+        console.log(result);
         return result;
     }
 
-    private static generateNoise(power: number): number[][] {
+    private static generateNoise(power: number, predefinedTiles: any): number[][] {
         const littleMapWidth = Math.ceil(GROUND_WIDTH / Math.pow(2, power));
         const littleMapHeight = Math.ceil(GROUND_HEIGHT / Math.pow(2, power));
         const littleMap = [];
+        const littlePredefinedTiles = predefinedTiles.map((predefinedTile) => {
+            return [new PIXI.Point(
+                Math.floor(predefinedTile[0].x / Math.pow(2, power)),
+                Math.floor(predefinedTile[0].y / Math.pow(2, power))
+            ), predefinedTile[1]];
+        });
         for (let y = 0; y <= littleMapHeight; y++) {
             const littleMapLine = [];
             for (let x = 0; x <= littleMapWidth; x++) {
-                littleMapLine.push(Math.random());
+                let value = Math.random();
+                littlePredefinedTiles.forEach((predefinedTile) => {
+                    const position = predefinedTile[0];
+                    if (position.x === x && position.y === y) {
+                        value = GeneratedGround.textureToRand(predefinedTile[1]);
+                    }
+                });
+                littleMapLine.push(value);
             }
             littleMap.push(littleMapLine);
         }
@@ -59,7 +79,7 @@ export class GeneratedGround {
             result.push(resultLine);
         }
 
-        return this.fluzz(result, Math.floor(Math.pow(2, power) / 2));
+        return this.fluzz(result, Math.floor(Math.pow(2, power) / 2) + 1);
     }
 
     private static fluzz(cells: number[][], radius: number): number[][] {
@@ -89,6 +109,25 @@ export class GeneratedGround {
             }, 0) / cellsValues.length;
     }
 
+    private static randToTexture(rand: number): number {
+        let val = TERRAINS[TERRAINS.length - 1];
+        if (rand < MIN) {
+            return TERRAINS[0]
+        }
+        for (let i = 0; i < TERRAINS.length; i++) {
+            if (rand >= MIN + i * STEP && rand <= MIN + (i + 1) * STEP) {
+                val = TERRAINS[i];
+            }
+        }
+        return val;
+    }
+
+    private static textureToRand(texture: number): number {
+        const index = TERRAINS.indexOf(texture);
+
+        return MIN + (index + 0.5) * STEP;
+    }
+
     private generatedTiles: number[][];
     private map: Phaser.Tilemap;
     private cornersMap: number[][];
@@ -109,8 +148,13 @@ export class GeneratedGround {
         this.initializeTiles();
     }
 
-    create(game: Phaser.Game) {
-        this.createFakeData2();
+    create(game: Phaser.Game, startPositions: PIXI.Point[]) {
+        this.createFakeData2(startPositions.reduce((previous, startPosition) => {
+            AlternativePosition.getSquareClosest(startPosition, 5).forEach((position) => {
+                previous.push([position, TERRAIN.GRASS]);
+            });
+            return previous;
+        }, []));
         let data = this.getCSV();
 
         game.cache.addTilemap('dynamicMap', null, data, Phaser.Tilemap.CSV);
@@ -181,16 +225,16 @@ export class GeneratedGround {
     }
 
     private initializeTiles() {
-        this.generate(200, TERRAIN.SNOW, TERRAIN.ICE, true);
-        this.generate(400, TERRAIN.SNOW, TERRAIN.CRATER, true);
-        this.generate(500, TERRAIN.ICE, TERRAIN.ICE_BREAK2, false);
-        this.generate(600, TERRAIN.GRASS, TERRAIN.WATER, true, true);
-        this.generate(700, TERRAIN.MOUNTAIN, TERRAIN.GRASS, true);
-        this.generate(800, TERRAIN.MOUNTAIN, TERRAIN.SNOW, true);
-        this.generate(900, TERRAIN.STONE, TERRAIN.SNOW, true);
+        this.initializeTerrain(200, TERRAIN.SNOW, TERRAIN.ICE, true);
+        this.initializeTerrain(400, TERRAIN.SNOW, TERRAIN.CRATER, true);
+        this.initializeTerrain(500, TERRAIN.ICE, TERRAIN.ICE_BREAK2, false);
+        this.initializeTerrain(600, TERRAIN.GRASS, TERRAIN.WATER, true, true);
+        this.initializeTerrain(700, TERRAIN.MOUNTAIN, TERRAIN.GRASS, true);
+        this.initializeTerrain(800, TERRAIN.MOUNTAIN, TERRAIN.SNOW, true);
+        this.initializeTerrain(900, TERRAIN.STONE, TERRAIN.SNOW, true);
     }
 
-    private generate(
+    private initializeTerrain(
         startNumber: number,
         terrain1: TERRAIN,
         terrain2: TERRAIN,
@@ -229,30 +273,14 @@ export class GeneratedGround {
         this.tiles = Object.assign(this.tiles, result);
     }
 
-    private createFakeData2() {
+    private createFakeData2(predefinedTiles: any): void {
         this.cornersMap = [];
-        const noises = GeneratedGround.generateNoises(4);
-        let min = 1;
-        let max = 0;
-        for (let y = 0; y < noises.length; y++) {
-            for (let x = 0; x < noises[y].length; x++) {
-                min = Math.min(noises[y][x], min);
-                max = Math.max(noises[y][x], max);
-            }
-        }
+        const noises = GeneratedGround.generateNoises(4, predefinedTiles);
 
-        const terrains = [TERRAIN.WATER, TERRAIN.GRASS, TERRAIN.MOUNTAIN, TERRAIN.SNOW, TERRAIN.STONE];
-        const step = (max - min) / terrains.length;
         for (let y = 0; y <= GROUND_HEIGHT; y++) {
             let line = [];
             for (let x = 0; x <= GROUND_WIDTH; x++) {
-                let val = 0;
-                for (let i = 0; i < 5; i++) {
-                    if (noises[y][x] >= min + i * step && noises[y][x] <= min + (i + 1) * step) {
-                        val = terrains[i];
-                    }
-                }
-                line.push(val);
+                line.push(GeneratedGround.randToTexture(noises[y][x]));
             }
             this.cornersMap.push(line);
         }
