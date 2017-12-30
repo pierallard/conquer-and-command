@@ -1,9 +1,9 @@
-import {AStar} from "./AStar";
-import {GAME_HEIGHT, GAME_WIDTH} from "../../app";
 import {GROUND_HEIGHT, GROUND_WIDTH} from "../map/GeneratedGround";
 const MAX_SEARCH_RADIUS = 20;
 
 export class AlternativePosition {
+    static zones: PIXI.Point[][];
+
     /**
      * Returns true if the unit is arrived to its goal, or close enough to be considered as arrived.
      *
@@ -28,8 +28,8 @@ export class AlternativePosition {
                 }
                 if (isAccessible(test) &&
                     AlternativePosition.getZone(zones, test) ===
-                    AlternativePosition.getZone(zones, currentPosition) &&
-                    null !== AStar.getPath(currentPosition, test, isAccessible)) {
+                    AlternativePosition.getZone(zones, currentPosition) /*&&
+                    null !== AStar.getPath(currentPosition, test, isAccessible)*/) {
                     foundAccessible = true;
                 }
             }
@@ -77,9 +77,64 @@ export class AlternativePosition {
                 return possiblePositions[0];
             }
         }
-        debugger;
 
         return null;
+    }
+
+    static getZones(isAccessible: (point: PIXI.Point) => boolean, source: PIXI.Point = null) {
+        if (this.zones) {
+            return this.zones;
+        }
+
+        this.zones = [];
+        for (let y = 0; y < GROUND_HEIGHT; y++) {
+            for (let x = 0; x < GROUND_WIDTH; x++) {
+                const point = new PIXI.Point(x, y);
+                if ((null !== source && source.x === x && source.y === y) || isAccessible(point)) {
+                    if (y === 0 && x === 0) {
+                        this.zones.push([point]);
+                    } else if (y === 0) {
+                        const leftZone = AlternativePosition.getZone(this.zones, new PIXI.Point(x - 1, y));
+                        if (null !== leftZone) {
+                            this.zones[leftZone].push(point);
+                        } else {
+                            this.zones.push([point]);
+                        }
+                    } else if (x === 0) {
+                        const topZone = AlternativePosition.getZone(this.zones, new PIXI.Point(x, y - 1));
+                        if (null !== topZone) {
+                            this.zones[topZone].push(point);
+                        } else {
+                            this.zones.push([point]);
+                        }
+                    } else {
+                        const topLeftZone = AlternativePosition.getZone(this.zones, new PIXI.Point(x - 1, y - 1));
+                        const leftZone = AlternativePosition.getZone(this.zones, new PIXI.Point(x - 1, y));
+                        const topZone = AlternativePosition.getZone(this.zones, new PIXI.Point(x, y - 1));
+                        let neighbourZones = [topLeftZone, leftZone, topZone].filter((zone) => {
+                            return null !== zone;
+                        });
+                        neighbourZones = Array.from(new Set(neighbourZones)).sort((a, b) => {
+                            return a - b;
+                        });
+                        if (neighbourZones.length === 0) {
+                            this.zones.push([point]);
+                        } else {
+                            this.zones[neighbourZones[0]].push(point);
+                            if (neighbourZones.length > 1) {
+                                for (let i = 1; i < neighbourZones.length; i++) {
+                                    this.zones[neighbourZones[0]] = this.zones[neighbourZones[0]]
+                                        .concat(this.zones[neighbourZones[i]]);
+                                    this.zones[neighbourZones[i]] = [];
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return this.zones;
     }
 
     private static getPointsFromRadius(position: PIXI.Point, radius: number): PIXI.Point[] {
@@ -112,56 +167,5 @@ export class AlternativePosition {
         }
 
         return null;
-    }
-
-    static getZones(isAccessible: (point: PIXI.Point) => boolean, source: PIXI.Point = null) {
-        let zones = [];
-        for (let y = 0; y < GROUND_HEIGHT; y++) {
-            for (let x = 0; x < GROUND_WIDTH; x++) {
-                const point = new PIXI.Point(x, y);
-                if ((null !== source && source.x === x && source.y === y) || isAccessible(point)) {
-                    if (y === 0 && x === 0) {
-                        zones.push([point]);
-                    } else if (y === 0) {
-                        const leftZone = AlternativePosition.getZone(zones, new PIXI.Point(x - 1, y));
-                        if (null !== leftZone) {
-                            zones[leftZone].push(point);
-                        } else {
-                            zones.push([point]);
-                        }
-                    } else if (x === 0) {
-                        const topZone = AlternativePosition.getZone(zones, new PIXI.Point(x, y - 1));
-                        if (null !== topZone) {
-                            zones[topZone].push(point);
-                        } else {
-                            zones.push([point]);
-                        }
-                    } else {
-                        const topLeftZone = AlternativePosition.getZone(zones, new PIXI.Point(x - 1, y - 1));
-                        const leftZone = AlternativePosition.getZone(zones, new PIXI.Point(x - 1, y));
-                        const topZone = AlternativePosition.getZone(zones, new PIXI.Point(x, y - 1));
-                        let neighbourZones = [topLeftZone, leftZone, topZone].filter((zone) => {
-                            return null !== zone;
-                        });
-                        neighbourZones = Array.from(new Set(neighbourZones)).sort((a, b) => {
-                            return a - b;
-                        });
-                        if (neighbourZones.length === 0) {
-                            zones.push([point]);
-                        } else {
-                            zones[neighbourZones[0]].push(point);
-                            if (neighbourZones.length > 1) {
-                                for (let i = 1; i < neighbourZones.length; i++) {
-                                    zones[neighbourZones[0]] = zones[neighbourZones[0]].concat(zones[neighbourZones[i]]);
-                                    zones[neighbourZones[i]] = [];
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return zones;
     }
 }

@@ -42,8 +42,8 @@ export abstract class ConstructableBuilding implements Building, Shootable {
     lostLife(life: number) {
         this.life -= life;
         if (!this.isAlive()) {
-            this.sprite.doDestroy();
             this.worldKnowledge.removeBuilding(this);
+            this.destroy();
         }
     }
 

@@ -1,8 +1,7 @@
 import {SCALE} from "../game_state/Play";
-import {AlternativePosition} from "../computing/AlternativePosition";
 
-export const GROUND_WIDTH = 30;
-export const GROUND_HEIGHT = 30;
+export const GROUND_WIDTH = 56;
+export const GROUND_HEIGHT = 35;
 
 enum TERRAIN {
     SNOW = 312,
@@ -23,7 +22,7 @@ export class GeneratedGround {
         }
 
         const result = [];
-        for (let y = 0; y <= GROUND_WIDTH; y++) {
+        for (let y = 0; y <= GROUND_HEIGHT; y++) {
             const resultLine = [];
             for (let x = 0; x <= GROUND_WIDTH; x++) {
                 let value = 0;
@@ -44,15 +43,15 @@ export class GeneratedGround {
         const littleMapWidth = Math.ceil(GROUND_WIDTH / Math.pow(2, power));
         const littleMapHeight = Math.ceil(GROUND_HEIGHT / Math.pow(2, power));
         const littleMap = [];
-        for (let y = 0; y <= littleMapWidth; y++) {
+        for (let y = 0; y <= littleMapHeight; y++) {
             const littleMapLine = [];
-            for (let x = 0; x <= littleMapHeight; x++) {
+            for (let x = 0; x <= littleMapWidth; x++) {
                 littleMapLine.push(Math.random());
             }
             littleMap.push(littleMapLine);
         }
         const result = [];
-        for (let y = 0; y <= GROUND_WIDTH; y++) {
+        for (let y = 0; y <= GROUND_HEIGHT; y++) {
             const resultLine = [];
             for (let x = 0; x <= GROUND_WIDTH; x++) {
                 resultLine.push(littleMap[Math.floor(y / Math.pow(2, power))][Math.floor(x / Math.pow(2, power))]);
@@ -65,9 +64,9 @@ export class GeneratedGround {
 
     private static fluzz(cells: number[][], radius: number): number[][] {
         const result = [];
-        for (let y = 0; y <= GROUND_WIDTH; y++) {
+        for (let y = 0; y <= GROUND_HEIGHT; y++) {
             const resultLine = [];
-            for (let x = 0; x <= GROUND_HEIGHT; x++) {
+            for (let x = 0; x <= GROUND_WIDTH; x++) {
                 resultLine.push(this.getAvgAroundCellValues(cells, radius, x, y));
             }
             result.push(resultLine);
@@ -79,7 +78,7 @@ export class GeneratedGround {
         const cellsValues = [];
         for (let y = startY - radius; y <= startY + radius; y++) {
             for (let x = startX - radius; x <= startX + radius; x++) {
-                if (y >= 0 && x >= 0 && y <= GROUND_WIDTH && x <= GROUND_HEIGHT) {
+                if (y >= 0 && x >= 0 && y <= GROUND_HEIGHT && x <= GROUND_WIDTH) {
                     cellsValues.push(cells[y][x]);
                 }
             }
@@ -130,6 +129,7 @@ export class GeneratedGround {
         layer.scale.setTo(SCALE, SCALE);
         game.add.existing(layer);
 
+        /*
         const zones = AlternativePosition.getZones(this.isCellAccessible.bind(this));
         let graphics = game.add.graphics(0, 0);
         graphics.alpha = 0.5;
@@ -142,6 +142,7 @@ export class GeneratedGround {
                 graphics.drawRect(zones[z][i].x * 40, zones[z][i].y * 40, 40, 40);
             }
         }
+        */
     }
 
     isCellAccessible(position: PIXI.Point): boolean {
@@ -239,10 +240,9 @@ export class GeneratedGround {
                 max = Math.max(noises[y][x], max);
             }
         }
-        const terrains = [TERRAIN.WATER, TERRAIN.GRASS];
-        // const terrains = [TERRAIN.WATER, TERRAIN.GRASS, TERRAIN.MOUNTAIN, TERRAIN.SNOW, TERRAIN.STONE];
-        const step = (max - min) / terrains.length;
 
+        const terrains = [TERRAIN.WATER, TERRAIN.GRASS, TERRAIN.MOUNTAIN, TERRAIN.SNOW, TERRAIN.STONE];
+        const step = (max - min) / terrains.length;
         for (let y = 0; y <= GROUND_HEIGHT; y++) {
             let line = [];
             for (let x = 0; x <= GROUND_WIDTH; x++) {

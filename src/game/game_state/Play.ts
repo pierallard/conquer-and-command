@@ -4,6 +4,7 @@ import {UserInterface} from "../interface/UserInterface";
 import {MCV} from "../unit/MCV";
 import {HumanPlayer} from "../player/HumanPlayer";
 import {ComputerPlayer} from "../player/ComputerPlayer";
+import {GROUND_HEIGHT, GROUND_WIDTH} from "../map/GeneratedGround";
 
 export const SCALE = 2;
 export const MOVE = 3 * SCALE;
@@ -52,8 +53,16 @@ export default class Play extends Phaser.State {
     }
 
     public start() {
-        this.worldKnowledge.addUnit(new MCV(this.worldKnowledge, new PIXI.Point(5, 5), this.players[0]));
-        this.worldKnowledge.addUnit(new MCV(this.worldKnowledge, new PIXI.Point(35, 35), this.players[1]));
+        this.worldKnowledge.addUnit(new MCV(
+            this.worldKnowledge,
+            new PIXI.Point(Math.round(GROUND_WIDTH / 5), Math.round(GROUND_HEIGHT / 5)),
+            this.players[0]
+        ));
+        this.worldKnowledge.addUnit(new MCV(
+            this.worldKnowledge,
+            new PIXI.Point(Math.round(GROUND_WIDTH * 4 / 5), Math.round(GROUND_HEIGHT * 4 / 5)),
+            this.players[1]
+        ));
 
         this.players.filter((player) => {
             if (player.constructor.name === 'ComputerPlayer') {
