@@ -11,6 +11,7 @@ const DATA = {
             'Tank',
         ],
         construction_time: 2,
+        price: 150,
         requireds: [
             'PowerPlant',
         ],
@@ -22,6 +23,7 @@ const DATA = {
         constructable: true,
         constructable_units: [],
         construction_time: 0.5,
+        price: 50,
         requireds: ['ConstructionYard'],
         sprite: 'Wall',
         sprite_layer: 0,
@@ -48,6 +50,7 @@ const DATA = {
         constructable: true,
         constructable_units: [],
         construction_time: 2,
+        price: 100,
         requireds: [
             'ConstructionYard',
         ],
@@ -64,6 +67,7 @@ const DATA = {
         constructable: true,
         constructable_units: [],
         construction_time: 2,
+        price: 100,
         requireds: [
             'PowerPlant',
         ],
@@ -122,7 +126,11 @@ export class BuildingProperties {
         return DATA[buildingName].requireds;
     }
 
-    static getConstructionTime(buildingName: string) {
+    static getConstructionTime(buildingName: string): number {
         return DATA[buildingName].construction_time;
+    }
+
+    static getPrice(buildingName: string): number {
+        return DATA[buildingName].price;
     }
 }

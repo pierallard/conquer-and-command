@@ -27,6 +27,10 @@ export class UnitCreator extends AbstractCreator {
         return this.inProductionUnits.indexOf(itemName) > -1;
     }
 
+    hasMineralsToProduct(buildingName: string) {
+        return this.player.getMinerals() >= UnitProperties.getPrice(buildingName);
+    }
+
     runProduction(unitName: string) {
         this.inProductionUnits.push(unitName);
         this.timerEvent.add(UnitProperties.getConstructionTime(unitName) * Phaser.Timer.SECOND, () => {

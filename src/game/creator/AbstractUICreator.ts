@@ -61,6 +61,12 @@ export abstract class AbstractUICreator {
         });
     }
 
+    updateBuyableItems(buyableItems: string[]) {
+        this.buttons.forEach((button) => {
+            button.allowConstruct(buyableItems.indexOf(button.getName()) > -1);
+        });
+    }
+
     resetButton(itemName: string) {
         this.getButton(itemName).reset();
     }
@@ -95,6 +101,7 @@ class CreationButton {
     private itemSprite: Phaser.Sprite;
     private onProductFinished: any;
     private creator: AbstractUICreator;
+    private constructAllowed: boolean;
 
     constructor(
         creator: AbstractUICreator,
@@ -112,7 +119,7 @@ class CreationButton {
         this.onProductFinished = onProductFinished;
         this.creator = creator;
 
-        this.button = new Phaser.Sprite(game, x, top, 'buttons', 0);
+        this.button = new Phaser.Sprite(game, x, top, 'buttons', 2);
         this.button.scale.setTo(SCALE, SCALE);
         this.button.inputEnabled = true;
         this.button.events.onInputDown.add(() => {
@@ -134,11 +141,13 @@ class CreationButton {
         this.progress = new CreationButtonProgress(game, top, x);
         group.add(this.progress);
 
+        this.constructAllowed = true;
+
         this.hide();
     }
 
     runProduction(constructionTime) {
-        this.button.loadTexture(this.button.key, 1);
+        this.button.loadTexture(this.button.key, 3);
         const tween = this.progress.startProgress(constructionTime * Phaser.Timer.SECOND);
         tween.onComplete.add(() => {
             this.onProductFinished.bind(this.creator)(this.itemName);
@@ -151,11 +160,15 @@ class CreationButton {
 
     reset() {
         this.progress.resetProgress();
-        this.button.loadTexture(this.button.key, 0);
+        if (this.constructAllowed) {
+            this.button.loadTexture(this.button.key, 2);
+        } else {
+            this.button.loadTexture(this.button.key, 0);
+        }
     }
 
     setPending() {
-        this.button.loadTexture(this.button.key, 2);
+        this.button.loadTexture(this.button.key, 3);
     }
 
     hide() {
@@ -168,6 +181,17 @@ class CreationButton {
         this.button.alpha = 1;
         this.itemSprite.alpha = 1;
         this.progress.alpha = 1;
+    }
+
+    allowConstruct(value: boolean) {
+        this.constructAllowed = value;
+        if (!value) {
+            if (this.button.frame === 2) {
+                this.button.loadTexture(this.button.key, 0);
+            }
+        } else {
+            this.button.loadTexture(this.button.key, 2);
+        }
     }
 }
 

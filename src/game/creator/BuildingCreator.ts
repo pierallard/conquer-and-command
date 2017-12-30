@@ -50,6 +50,10 @@ export class BuildingCreator extends AbstractCreator {
         return this.inProductionBuildings.indexOf(buildingName) > -1;
     }
 
+    hasMineralsToProduct(buildingName: string) {
+        return this.player.getMinerals() >= BuildingProperties.getPrice(buildingName);
+    }
+
     runCreation(buildingName: string, cell: PIXI.Point) {
         switch (buildingName) {
             case 'PowerPlant':

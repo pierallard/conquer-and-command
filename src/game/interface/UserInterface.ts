@@ -17,7 +17,7 @@ export class UserInterface {
     private player: Player;
     private selector: Selector;
     private buildingPositionner: BuildingPositioner;
-    private mineralText;
+    private mineralText: Phaser.Text;
 
     constructor(worldKnowledge: WorldKnowledge, player: Player) {
         this.player = player;
@@ -56,5 +56,6 @@ export class UserInterface {
     update() {
         this.selector.update();
         this.miniMap.update();
+        this.mineralText.text = this.player.getMinerals() + '';
     }
 }

@@ -8,6 +8,7 @@ const DATA = {
             max_loading: 50,
             unload_time: 1,
         },
+        price: 100,
         shoot: 0.5,
         shoot_distance: Math.sqrt(2),
         slowness: 0.4,
@@ -18,6 +19,7 @@ const DATA = {
         allowed_by: ['WeaponsFactory', 'AdvancedCommandCenter'],
         construction_time: 2,
         life: 1000,
+        price: 100,
         shoot_distance: -1,
         slowness: 0.8,
         sprite_layer: 6,
@@ -27,6 +29,7 @@ const DATA = {
         allowed_by: ['Barracks'],
         construction_time: 2,
         life: 500,
+        price: 200,
         shoot: 0.5,
         shoot_distance: 4,
         slowness: 0.25,
@@ -74,5 +77,9 @@ export class UnitProperties {
 
     static getConstructionTime(unitName: string): number {
         return DATA[unitName].construction_time;
+    }
+
+    static getPrice(unitName: string): number {
+        return DATA[unitName].price;
     }
 }

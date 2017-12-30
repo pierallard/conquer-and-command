@@ -17,6 +17,8 @@ export abstract class AbstractCreator {
 
     abstract getRequiredBuildings(itemName: string): string[];
 
+    abstract hasMineralsToProduct(itemName: string): boolean;
+
     create(game: Phaser.Game, uiCreator: AbstractUICreator = null) {
         this.timerEvent = game.time.events;
         this.uiCreator = uiCreator;
@@ -28,7 +30,13 @@ export abstract class AbstractCreator {
         }
     }
 
-    isAllowed(itemName: string) {
+    updateBuyableItems() {
+        if (this.uiCreator) {
+            this.uiCreator.updateBuyableItems(this.getBuyables());
+        }
+    }
+
+    isAllowed(itemName: string): boolean {
         let found = true;
         this.getRequiredBuildings(itemName).forEach((requiredBuildingName) => {
             if (this.worldKnowledge.getPlayerBuildings(this.player, requiredBuildingName).length === 0) {
@@ -42,6 +50,12 @@ export abstract class AbstractCreator {
     private getAlloweds() {
         return this.getProducibles().filter((itemName) => {
             return this.isAllowed(itemName);
+        });
+    }
+
+    private getBuyables() {
+        return this.getProducibles().filter((itemName) => {
+            return this.hasMineralsToProduct(itemName);
         });
     }
 }

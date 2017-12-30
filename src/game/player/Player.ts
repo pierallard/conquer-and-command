@@ -3,7 +3,7 @@ import {CommandCenter} from "./CommandCenter";
 import {BuildingCreator} from "../creator/BuildingCreator";
 import {UnitCreator} from "../creator/UnitCreator";
 
-const START_MINERALS = 200;
+const START_MINERALS = 400;
 
 export abstract class Player {
     protected worldKnowledge: WorldKnowledge;
@@ -43,8 +43,14 @@ export abstract class Player {
         this.commandCenter.updateAllowedUnitsAndBuildings();
     }
 
-    addMinerals(loading: number) {
-        this.minerals += loading;
+    addMinerals(amount: number) {
+        this.minerals = Math.round(this.minerals + amount);
+        this.commandCenter.updateBuyableUnitsAndbuilding();
+    }
+
+    removeMinerals(amount: number) {
+        this.minerals = Math.round(this.minerals - amount);
+        this.commandCenter.updateBuyableUnitsAndbuilding();
     }
 
     getMinerals(): number {
