@@ -25,8 +25,8 @@ const DATA = {
         sprite_layer: 6,
         sprites: ['Transprt', 'Transprt'],
     },
-    Tank: {
-        allowed_by: ['Barracks'],
+    MediumTank: {
+        allowed_by: ['WeaponsFactory'],
         construction_time: 2,
         life: 500,
         price: 200,
@@ -37,6 +37,23 @@ const DATA = {
         sprites: ['Tank11', 'Tank12'],
     },
 };
+
+/**
+ * Minigun infantry:  Scout2
+ * Grenadier:         Tank5
+ * Rocket soldier:    Tank3
+ * Engineer Infantry: Tank10
+ * Commando Infantry: Miner
+ * APC:               Tank13
+ * Chinook:           Copter2a
+ * ORCA:              Copter
+ * Humm-vee:          Tank7
+ * Medium Tank:       Tank11
+ * Rocket Launcher:   TankB2
+ * MCV:               Transprt
+ * Mammooth Tank:     Artil3
+ * Harvester:         Builder2
+ */
 
 export class UnitProperties {
     static getSprite(unitName: string, playerId: number): string {

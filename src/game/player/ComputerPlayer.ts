@@ -25,11 +25,11 @@ export class ComputerPlayer extends Player {
                 this.order().productBuilding('Barracks');
             }
         } else {
-            this.order().productUnit('Tank');
+            this.order().productUnit('MediumTank');
         }
 
         // Attack
-        this.worldKnowledge.getPlayerUnits(this, 'Tank').forEach((unit) => {
+        this.worldKnowledge.getPlayerUnits(this, 'MediumTank').forEach((unit) => {
             this.order().orderMoveAttack(unit, new PIXI.Point(0, 0));
         });
     }

@@ -8,7 +8,7 @@ const DATA = {
         ],
         constructable: true,
         constructable_units: [
-            'Tank',
+            'MinigunInfantry', 'Grenadier', 'RockerSoldier', 'EngineerInfantry',
         ],
         construction_time: 2,
         price: 150,
@@ -36,9 +36,7 @@ const DATA = {
             [1, -1],
         ],
         constructable: false,
-        constructable_units: [
-            'Harvester',
-        ],
+        constructable_units: [],
     },
     PowerPlant: {
         cellPositions: [
@@ -65,7 +63,9 @@ const DATA = {
             [1, -1],
         ],
         constructable: true,
-        constructable_units: [],
+        constructable_units: [
+            'Harvester',
+        ],
         construction_time: 2,
         price: 100,
         requireds: [

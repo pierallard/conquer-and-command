@@ -3,7 +3,7 @@ import {UnitProperties} from "../unit/UnitProperties";
 import {WorldKnowledge} from "../map/WorldKnowledge";
 import {Player} from "../player/Player";
 import {Harvester} from "../unit/Harvester";
-import {Tank} from "../unit/Tank";
+import {MediumTank} from "../unit/MediumTank";
 import {MCV} from "../unit/MCV";
 import {AlternativePosition} from "../computing/AlternativePosition";
 
@@ -58,8 +58,8 @@ export class UnitCreator extends AbstractCreator {
                     let harvester = new Harvester(this.worldKnowledge, cellPosition, this.player);
                     this.worldKnowledge.addUnit(harvester);
                     break;
-                case 'Tank':
-                    let tank = new Tank(this.worldKnowledge, cellPosition, this.player);
+                case 'MediumTank':
+                    let tank = new MediumTank(this.worldKnowledge, cellPosition, this.player);
                     this.worldKnowledge.addUnit(tank);
                     break;
                 case 'MCV':
