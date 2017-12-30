@@ -5,8 +5,6 @@ import {ConstructionYardSprite} from "../sprite/ConstructionYardSprite";
 import {WorldKnowledge} from "../map/WorldKnowledge";
 
 export class ConstructionYard extends ConstructableBuilding {
-    private minerals: number = 0;
-
     constructor(worldKnowledge: WorldKnowledge, cellPosition: PIXI.Point, player: Player) {
         super(worldKnowledge, cellPosition, player);
     }
@@ -19,9 +17,5 @@ export class ConstructionYard extends ConstructableBuilding {
             'Base'
         );
         group.add(this.sprite);
-    }
-
-    addMinerals(loading: number) {
-        this.minerals += loading;
     }
 }

@@ -5,6 +5,7 @@ import {WorldKnowledge} from "../map/WorldKnowledge";
 import {SCALE} from "../game_state/Play";
 import {TiberiumPlant} from "../sprite/TiberiumPlant";
 import {Distance} from "../computing/Distance";
+import {Harvester} from "../unit/Harvester";
 
 const RADIUS = 6;
 
@@ -82,7 +83,11 @@ export class TiberiumSource implements Building {
         return true;
     }
 
-    getPlants(): TiberiumPlant[] {
-        return this.plants;
+    getFreePlants(harvester: Harvester): TiberiumPlant[] {
+        return this.plants.filter((plant) => {
+            const unit = this.worldKnowledge.getUnitAt(plant.getCellPositions()[0]);
+
+            return unit === null || unit === harvester;
+        });
     }
 }

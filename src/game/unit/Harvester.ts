@@ -5,11 +5,11 @@ import {Follow} from "../state/Follow";
 import {MoveAttack} from "../state/MoveAttack";
 import {Harvest} from "../state/Harvest";
 import {TiberiumPlant} from "../sprite/TiberiumPlant";
-import {ConstructionYard} from "../building/ConstructionYard";
 import {Distance} from "../computing/Distance";
 import {UnitProperties} from "./UnitProperties";
 import {WorldKnowledge} from "../map/WorldKnowledge";
 import {TiberiumSource} from "../building/TiberiumSource";
+import {TiberiumRefinery} from "../building/TiberiumRefinery";
 
 export class Harvester extends Unit {
     private loading: number;
@@ -24,6 +24,14 @@ export class Harvester extends Unit {
 
         this.life = this.maxLife = UnitProperties.getLife(Harvester.prototype.constructor.name);
         this.loading = 0;
+    }
+
+    harvest() {
+        const closestGround = Distance.getClosest(
+            this.getCellPositions()[0],
+            this.worldKnowledge.getGrounds()
+        );
+        this.state = new Harvest(this.worldKnowledge, this, closestGround.getSource());
     }
 
     updateStateAfterClick(cell: PIXI.Point) {
@@ -44,23 +52,24 @@ export class Harvester extends Unit {
         }
     }
 
-    getClosestBase() {
+    getClosestRefinery(): TiberiumRefinery {
         return Distance.getClosest(
             this.getCellPositions()[0],
-            this.worldKnowledge.getPlayerBuildings(this.player, 'ConstructionYard')
+            this.worldKnowledge.getPlayerBuildings(this.player, 'TiberiumRefinery')
         );
     }
 
     getClosestPlant(source: TiberiumSource) {
-        return Distance.getClosest(this.getCellPositions()[0], source.getPlants());
+        return Distance.getClosest(this.getCellPositions()[0], source.getFreePlants(this));
     }
 
     isFull() {
         return this.loading >= UnitProperties.getOption(this.constructor.name, 'max_loading');
     }
 
-    unload(base: ConstructionYard) {
-        base.addMinerals(this.loading);
+    unload(refinery: TiberiumRefinery) {
+        refinery.runUnloadAnimation();
+        refinery.getPlayer().addMinerals(this.loading);
         this.loading = 0;
 
         this.freeze(UnitProperties.getOption(this.constructor.name, 'unload_time') * Phaser.Timer.SECOND);
