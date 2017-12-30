@@ -175,4 +175,8 @@ export class WorldKnowledge {
         this.groundGroup.add(newPlant);
         this.groundRepository.push(newPlant);
     }
+
+    getGrounds(): TiberiumPlant[] {
+        return this.groundRepository;
+    }
 }

@@ -6,6 +6,7 @@ import {ConstructionYard} from "../building/ConstructionYard";
 import {TiberiumPlant} from "../sprite/TiberiumPlant";
 import {WorldKnowledge} from "../map/WorldKnowledge";
 import {TiberiumSource} from "../building/TiberiumSource";
+import {TiberiumRefinery} from "../building/TiberiumRefinery";
 
 export class Harvest implements State {
     private worldKnowledge: WorldKnowledge;
@@ -19,6 +20,9 @@ export class Harvest implements State {
     }
 
     getNextStep(): State {
+        if (null === this.harvester.getClosestRefinery()) {
+            return new Stand(this.harvester);
+        }
         if (this.source.isEmpty() && !this.harvester.isLoaded()) {
             return new Stand(this.harvester);
         }
@@ -30,42 +34,41 @@ export class Harvest implements State {
         if (this.harvester.isFull()) {
             this.goToBaseAndUnload();
         } else {
-            const closestCube = this.harvester.getClosestPlant(this.source);
-            if (!closestCube) {
+            const closestPlant = this.harvester.getClosestPlant(this.source);
+            if (!closestPlant) {
                 this.goToBaseAndUnload();
             } else {
-                if (this.isArrivedToCube(closestCube)) {
-                    this.harvester.load(closestCube);
+                if (this.isArrivedToPlant(closestPlant)) {
+                    this.harvester.load(closestPlant);
                 } else {
-                    this.harvester.moveTowards(closestCube.getCellPositions()[0]);
+                    this.harvester.moveTowards(closestPlant.getCellPositions()[0]);
                 }
             }
         }
     }
 
     private goToBaseAndUnload() {
-        const closestBase = this.harvester.getClosestBase();
-        if (this.isArrivedToBase(closestBase)) {
-            this.harvester.unload(closestBase);
-        } else {
-            this.harvester.moveTowards(new PIXI.Point(
-                closestBase.getCellPositions()[0].x + 1,
-                closestBase.getCellPositions()[0].y + 1
-            ));
+        const closestRefinery = this.harvester.getClosestRefinery();
+        if (null !== closestRefinery) {
+            if (this.isArrivedToRefinery(closestRefinery)) {
+                this.harvester.unload(closestRefinery);
+            } else {
+                this.harvester.moveTowards(new PIXI.Point(
+                    closestRefinery.getCellPositions()[0].x + 1,
+                    closestRefinery.getCellPositions()[0].y + 1
+                ));
+            }
         }
     }
 
-    private isArrivedToCube(cube: TiberiumPlant): boolean {
-        return AlternativePosition.isArrived(
-            cube.getCellPositions()[0],
-            this.harvester.getCellPositions()[0],
-            this.worldKnowledge.isCellAccessible.bind(this.worldKnowledge)
-        );
+    private isArrivedToPlant(plant: TiberiumPlant): boolean {
+        return plant.getCellPositions()[0].x === this.harvester.getCellPositions()[0].x &&
+            plant.getCellPositions()[0].y === this.harvester.getCellPositions()[0].y;
     }
 
-    private isArrivedToBase(base: ConstructionYard): boolean {
+    private isArrivedToRefinery(refinery: TiberiumRefinery): boolean {
         return AlternativePosition.isArrived(
-            new PIXI.Point(base.getCellPositions()[0].x + 1, base.getCellPositions()[0].y + 1),
+            refinery.getCellPositions()[0],
             this.harvester.getCellPositions()[0],
             this.worldKnowledge.isCellAccessible.bind(this.worldKnowledge)
         );

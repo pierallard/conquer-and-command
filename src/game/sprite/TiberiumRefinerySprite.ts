@@ -15,7 +15,13 @@ export class TiberiumRefinerySprite extends BuildingSprite {
             'toto',
             [0, 1, 2, 3, 2, 1],
         );
-        // this.animationPump.play(5, true, false);
         this.animationElec.play(10, true, false);
+    }
+
+    runUnloadAnimation() {
+        let animation = this.animationPump.play(5, false, false);
+        animation.onComplete.add(() => {
+            this.animationElec.play(10, true, false);
+        });
     }
 }

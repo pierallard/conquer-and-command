@@ -70,6 +70,9 @@ export class BuildingCreator extends AbstractCreator {
                 );
                 let harvester = new Harvester(this.worldKnowledge, cellHarvester, this.player);
                 this.worldKnowledge.addUnit(harvester, true);
+                this.timerEvent.add(3 * Phaser.Timer.SECOND, () => {
+                    harvester.harvest();
+                });
                 break;
             case 'ConcreteBarrier':
                 let concreteBarrier = new ConcreteBarrier(this.worldKnowledge, cell, this.player);

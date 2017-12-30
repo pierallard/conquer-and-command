@@ -18,4 +18,8 @@ export class TiberiumRefinery extends ConstructableBuilding {
         );
         group.add(this.sprite);
     }
+
+    runUnloadAnimation() {
+        (<TiberiumRefinerySprite> this.sprite).runUnloadAnimation();
+    }
 }

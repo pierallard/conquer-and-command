@@ -7,15 +7,26 @@ const START_AMOUNT = 100;
 const HARVEST_QUANTITY = 10;
 
 export class TiberiumPlant extends Phaser.Sprite {
+    private static getLayerFromAmount(amount): number {
+        if (amount < START_AMOUNT / 3) {
+            return 4;
+        } else if (amount < 2 * START_AMOUNT / 3) {
+            return 2;
+        } else {
+            return 0;
+        }
+    }
+
     private source: TiberiumSource;
     private cellPosition: PIXI.Point;
     private amount: number;
 
     constructor(source: TiberiumSource, game: Phaser.Game, x: number, y: number) {
-        super(game, Cell.cellToReal(x), Cell.cellToReal(y), 'GrssMisc-2020', 18);
+        const amount = Math.random() * (START_AMOUNT / 2) + START_AMOUNT / 2;
+        super(game, Cell.cellToReal(x), Cell.cellToReal(y), 'GrssCrtr', TiberiumPlant.getLayerFromAmount(amount));
 
         this.source = source;
-        this.amount = START_AMOUNT;
+        this.amount = amount;
         this.cellPosition = new PIXI.Point(x, y);
         this.scale.setTo(SCALE * GROUND_SIZE / 27);
         this.anchor.setTo(0.5, 0.5);
@@ -38,10 +49,8 @@ export class TiberiumPlant extends Phaser.Sprite {
 
         if (this.amount <= 0) {
             this.destroy();
-        } else if (this.amount < START_AMOUNT / 3) {
-            this.loadTexture(this.key, 0);
-        } else if (this.amount < 2 * START_AMOUNT / 3) {
-            this.loadTexture(this.key, 1);
+        } else {
+            this.loadTexture(this.key, TiberiumPlant.getLayerFromAmount(this.amount));
         }
 
         return result;

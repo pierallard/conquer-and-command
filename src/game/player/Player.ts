@@ -8,6 +8,7 @@ export abstract class Player {
     private color: number;
     private id: number;
     private commandCenter: CommandCenter;
+    private minerals: number = 0;
 
     constructor(worldKnowledge: WorldKnowledge, id: number, color: number) {
         this.worldKnowledge = worldKnowledge;
@@ -38,5 +39,9 @@ export abstract class Player {
 
     updateAllowedUnitsAndBuildings() {
         this.commandCenter.updateAllowedUnitsAndBuildings();
+    }
+
+    addMinerals(loading: number) {
+        this.minerals += loading;
     }
 }
