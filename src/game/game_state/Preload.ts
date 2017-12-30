@@ -29,6 +29,7 @@ export default class Preload extends Phaser.State {
         this.load.spritesheet('Builder2', 'assets/Builder2.png', 19, 19, 9, 1, 1);
         this.load.spritesheet('Tank5c', 'assets/Tank5c.png', 19, 19, 25, 1, 1);
         this.load.spritesheet('Transprt', 'assets/Transprt.png', 39, 39, 9, 1, 1);
+        this.load.spritesheet('Scout2', 'assets/Scout2.png', 19, 19, 9, 1, 1);
 
         // Tiles
         this.load.spritesheet('GrssMisc', 'assets/GrssMisc.png', 20, 20, 40, 0, 0);
@@ -51,7 +52,6 @@ export default class Preload extends Phaser.State {
         this.load.spritesheet('Wall', 'assets/Wall.png', 20, 40, 52, 0, 0);
         this.load.spritesheet('GrssMisc-2060', 'assets/GrssMisc.png', 20, 60, 1, 0, 0);
         this.load.spritesheet('GrssCrtr', 'assets/GrssCrtr.png', 20, 20, 5, 0, 0);
-
 
         // Others
         this.load.spritesheet('exploBig', 'assets/exploBig.png', 39, 39, 12, 1, 1);

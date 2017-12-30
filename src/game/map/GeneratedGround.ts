@@ -42,7 +42,6 @@ export class GeneratedGround {
             result.push(resultLine);
         }
 
-        console.log(result);
         return result;
     }
 

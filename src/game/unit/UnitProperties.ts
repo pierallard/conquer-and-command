@@ -32,10 +32,21 @@ const DATA = {
         price: 200,
         shoot: 0.5,
         shoot_distance: 4,
-        slowness: 0.25,
+        slowness: 0.35,
         sprite_layer: 6,
         sprites: ['Tank11', 'Tank12'],
     },
+    MinigunInfantry: {
+        allowed_by: ['Barracks'],
+        construction_time: 1,
+        life: 100,
+        price: 50,
+        shoot: 0.5,
+        shoot_distance: 3,
+        slowness: 0.25,
+        sprite_layer: 6,
+        sprites: ['Scout2', 'Scout2'],
+    }
 };
 
 /**

@@ -48,8 +48,6 @@ export class AlternativePosition {
             }
         }
 
-        console.log(result);
-
         return result;
     }
 
