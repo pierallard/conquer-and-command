@@ -5,6 +5,5 @@ export interface Building extends Positionnable {
     create(game: Phaser.Game, group: Phaser.Group): void;
     setVisible(value: boolean): void;
     getPlayer(): Player;
-    lostLife(life: number): void;
     destroy(): void;
 }

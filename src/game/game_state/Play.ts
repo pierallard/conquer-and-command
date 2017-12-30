@@ -5,6 +5,7 @@ import {MCV} from "../unit/MCV";
 import {HumanPlayer} from "../player/HumanPlayer";
 import {ComputerPlayer} from "../player/ComputerPlayer";
 import {GROUND_HEIGHT, GROUND_WIDTH} from "../map/GeneratedGround";
+import {TiberiumSource} from "../building/TiberiumSource";
 
 export const SCALE = 2;
 export const MOVE = 3 * SCALE;
@@ -23,6 +24,7 @@ export default class Play extends Phaser.State {
     private worldKnowledge: WorldKnowledge;
     private userInterface: UserInterface;
     private startPositions: PIXI.Point[];
+    private startTiberiums: PIXI.Point[];
 
     constructor() {
         super();
@@ -30,6 +32,10 @@ export default class Play extends Phaser.State {
         this.startPositions = [
             new PIXI.Point(Math.round(GROUND_WIDTH / 5), Math.round(GROUND_HEIGHT / 5)),
             new PIXI.Point(Math.round(GROUND_WIDTH * 4 / 5), Math.round(GROUND_HEIGHT * 4 / 5))
+        ];
+        this.startTiberiums = [
+            new PIXI.Point(Math.round(GROUND_WIDTH * 2 / 5), Math.round(GROUND_HEIGHT / 5)),
+            new PIXI.Point(Math.round(GROUND_WIDTH * 3 / 5), Math.round(GROUND_HEIGHT * 4 / 5))
         ];
 
         this.worldKnowledge = new WorldKnowledge();
@@ -42,7 +48,7 @@ export default class Play extends Phaser.State {
     }
 
     public create() {
-        this.worldKnowledge.create(this.game, this.startPositions);
+        this.worldKnowledge.create(this.game, this.startPositions.concat(this.startTiberiums));
         this.userInterface.create(this.game);
 
         this.world.setBounds(0, 0, this.worldKnowledge.getGroundWidth(), this.worldKnowledge.getGroundHeight());
@@ -69,6 +75,12 @@ export default class Play extends Phaser.State {
             this.startPositions[1],
             this.players[1]
         ));
+        this.startTiberiums.forEach((tiberiumPosition) => {
+            this.worldKnowledge.addBuilding(new TiberiumSource(
+                this.worldKnowledge,
+                tiberiumPosition
+            ));
+        });
 
         this.players.filter((player) => {
             if (player.constructor.name === 'ComputerPlayer') {

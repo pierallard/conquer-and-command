@@ -7,23 +7,30 @@ import {Appear} from "../sprite/Appear";
 import {GeneratedGround} from "./GeneratedGround";
 import {Shootable} from "../Shootable";
 import {MiniAppear} from "../sprite/MiniAppear";
+import {TiberiumPlant} from "../sprite/TiberiumPlant";
 
 export class WorldKnowledge {
     private game: Phaser.Game;
     private ground: GeneratedGround;
+    private groundGroup: Phaser.Group;
     private unitBuildingGroup: Phaser.Group;
     private unitRepository: UnitRepository;
     private buildingRepository: BuildingRepository;
+    private groundRepository: TiberiumPlant[];
 
     constructor() {
         this.ground = new GeneratedGround();
         this.unitRepository = new UnitRepository();
         this.buildingRepository = new BuildingRepository();
+        this.groundRepository = [];
     }
 
     create(game: Phaser.Game, startPositions: PIXI.Point[]) {
         this.game = game;
         this.ground.create(this.game, startPositions);
+
+        this.groundGroup = this.game.add.group();
+        this.groundGroup.fixedToCamera = false;
 
         this.unitBuildingGroup = this.game.add.group();
         this.unitBuildingGroup.fixedToCamera = false;
@@ -94,6 +101,17 @@ export class WorldKnowledge {
         return this.buildingRepository.buildingAt(cell);
     }
 
+    getGroundAt(cell: PIXI.Point): TiberiumPlant {
+        for (let i = 0; i < this.groundRepository.length; i++) {
+            if (this.groundRepository[i].getCellPositions()[0].x === cell.x &&
+                this.groundRepository[i].getCellPositions()[0].y === cell.y) {
+                return this.groundRepository[i];
+            }
+        }
+
+        return null;
+    }
+
     getUnits() {
         return this.unitRepository.getUnits();
     }
@@ -151,5 +169,10 @@ export class WorldKnowledge {
 
     getGroundCSV() {
         return this.ground.getCSV();
+    }
+
+    addGroundElement(newPlant: TiberiumPlant) {
+        this.groundGroup.add(newPlant);
+        this.groundRepository.push(newPlant);
     }
 }

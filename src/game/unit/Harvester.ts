@@ -4,12 +4,12 @@ import {Attack} from "../state/Attack";
 import {Follow} from "../state/Follow";
 import {MoveAttack} from "../state/MoveAttack";
 import {Harvest} from "../state/Harvest";
-import {Cube} from "../building/Cube";
+import {TiberiumPlant} from "../sprite/TiberiumPlant";
 import {ConstructionYard} from "../building/ConstructionYard";
 import {Distance} from "../computing/Distance";
-import {CubeSet} from "../building/CubeSet";
 import {UnitProperties} from "./UnitProperties";
 import {WorldKnowledge} from "../map/WorldKnowledge";
+import {TiberiumSource} from "../building/TiberiumSource";
 
 export class Harvester extends Unit {
     private loading: number;
@@ -35,9 +35,9 @@ export class Harvester extends Unit {
                 this.state = new Follow(this.worldKnowledge, this, unit);
             }
         } else {
-            const building = this.worldKnowledge.getBuildingAt(cell);
-            if (building && building instanceof CubeSet) {
-                this.state = new Harvest(this.worldKnowledge, this, (<CubeSet> building));
+            const ground = this.worldKnowledge.getGroundAt(cell);
+            if (ground && ground instanceof TiberiumPlant) {
+                this.state = new Harvest(this.worldKnowledge, this, (<TiberiumPlant> ground).getSource());
             } else {
                 this.state = new MoveAttack(this.worldKnowledge, this, cell);
             }
@@ -51,8 +51,8 @@ export class Harvester extends Unit {
         );
     }
 
-    getClosestCube(cubeSet: CubeSet) {
-        return Distance.getClosest(this.getCellPositions()[0], cubeSet.getCubes());
+    getClosestPlant(source: TiberiumSource) {
+        return Distance.getClosest(this.getCellPositions()[0], source.getPlants());
     }
 
     isFull() {
@@ -66,7 +66,7 @@ export class Harvester extends Unit {
         this.freeze(UnitProperties.getOption(this.constructor.name, 'unload_time') * Phaser.Timer.SECOND);
     }
 
-    load(cube: Cube) {
+    load(cube: TiberiumPlant) {
         this.unitSprite.doLoad(cube.getCellPositions()[0]);
         this.loading += cube.harvest();
 

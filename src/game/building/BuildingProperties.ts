@@ -70,6 +70,12 @@ const DATA = {
         sprite: 'Factory3',
         sprite_layer: 0,
     },
+    TiberiumSource: {
+        cellPositions: [
+            [0, 0],
+        ],
+        constructable: false,
+    },
 };
 
 /**
@@ -109,7 +115,7 @@ export class BuildingProperties {
     }
 
     static getConstructableUnits(buildingName: string): string[] {
-        return DATA[buildingName].constructable_units;
+        return DATA[buildingName].constructable_units || [];
     }
 
     static getRequiredBuildings(buildingName: string): string[] {
