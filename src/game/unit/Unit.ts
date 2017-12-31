@@ -11,6 +11,8 @@ import {UnitProperties} from "./UnitProperties";
 import {WorldKnowledge} from "../map/WorldKnowledge";
 import {Shootable} from "../Shootable";
 import {Positionnable} from "../Positionnable";
+import {Rocket} from "../shoot/Rocket";
+import {Cell} from "../computing/Cell";
 
 export abstract class Unit implements Shootable, Positionnable {
     protected life: number;
@@ -26,6 +28,7 @@ export abstract class Unit implements Shootable, Positionnable {
     private selected: boolean = false;
     private key: string;
     private timerEvents: Phaser.Timer;
+    private effectsGroup: Phaser.Group;
 
     constructor(worldKnowledge: WorldKnowledge, cellPosition: PIXI.Point, player: Player) {
         this.worldKnowledge = worldKnowledge;
@@ -36,15 +39,16 @@ export abstract class Unit implements Shootable, Positionnable {
         this.life = this.maxLife = UnitProperties.getLife(this.constructor.name);
     }
 
-    create(game: Phaser.Game, group: Phaser.Group) {
+    create(game: Phaser.Game, unitGroup: Phaser.Group, effectsGroup: Phaser.Group) {
+        this.effectsGroup = effectsGroup;
+        this.timerEvents = game.time.events;
         this.unitSprite = new UnitSprite(
             game,
-            group,
+            unitGroup,
             this.cellPosition,
             this.key,
             UnitProperties.getImageFormat(this.constructor.name)
         );
-        this.timerEvents = game.time.events;
     }
 
     update(): void {
@@ -76,9 +80,18 @@ export abstract class Unit implements Shootable, Positionnable {
 
     shoot(enemy: Shootable): void {
         let closestEnemyPosition = Distance.getClosestPosition(this.getCellPositions()[0], enemy.getCellPositions());
-        this.unitSprite.doShoot(closestEnemyPosition);
         enemy.lostLife(UnitProperties.getShootPower(this.constructor.name));
         this.freeze(UnitProperties.getShootTime(this.constructor.name) * Phaser.Timer.SECOND);
+        this.unitSprite.rotateTowards(closestEnemyPosition);
+
+        switch (UnitProperties.getShootType(this.constructor.name)) {
+            case 'rocket':
+                new Rocket(this.effectsGroup, this.getShootSource(closestEnemyPosition), new PIXI.Point(
+                    Cell.cellToReal(closestEnemyPosition.x),
+                    Cell.cellToReal(closestEnemyPosition.y)
+                ));
+        }
+
     }
 
     lostLife(life: number) {
@@ -179,6 +192,10 @@ export abstract class Unit implements Shootable, Positionnable {
 
     setVisible(value: boolean) {
         this.unitSprite.alpha = value ? 1 : 0;
+    }
+
+    protected getShootSource(dest: PIXI.Point): PIXI.Point {
+        return new PIXI.Point(Cell.cellToReal(this.cellPosition.x), Cell.cellToReal(this.cellPosition.y));
     }
 
     protected freeze(time: number) {

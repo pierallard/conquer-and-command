@@ -13,6 +13,7 @@ const DATA = {
         shoot_cooldown: 50,
         shoot_distance: 3.25,
         shoot_power: 50,
+        shoot_type: 'default',
         speed: 10,
         sprite_layer: 20,
         sprites: ['Tank5', 'Tank5'],
@@ -53,6 +54,7 @@ const DATA = {
         shoot_cooldown: 50,
         shoot_distance: 4.75,
         shoot_power: 30,
+        shoot_type: 'default',
         speed: 18,
         sprite_layer: 6,
         sprites: ['Tank11', 'Tank12'],
@@ -66,6 +68,7 @@ const DATA = {
         shoot_cooldown: 20,
         shoot_distance: 2,
         shoot_power: 15,
+        shoot_type: 'default',
         speed: 8,
         sprite_layer: 6,
         sprites: ['Scout2', 'Scout2'],
@@ -79,6 +82,7 @@ const DATA = {
         shoot_cooldown: 60,
         shoot_distance: 4,
         shoot_power: 30,
+        shoot_type: 'rocket',
         speed: 6,
         sprite_layer: 14,
         sprites: ['Tank3', 'Tank3'],
@@ -156,5 +160,9 @@ export class UnitProperties {
 
     static getImageFormat(unitName: string): IMAGE_FORMAT {
         return DATA[unitName].image_format;
+    }
+
+    static getShootType(unitName: string) {
+        return DATA[unitName].shoot_type;
     }
 }

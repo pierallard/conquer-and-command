@@ -14,6 +14,7 @@ export class WorldKnowledge {
     private ground: GeneratedGround;
     private groundGroup: Phaser.Group;
     private unitBuildingGroup: Phaser.Group;
+    private effectsGroup: Phaser.Group;
     private unitRepository: UnitRepository;
     private buildingRepository: BuildingRepository;
     private groundRepository: TiberiumPlant[];
@@ -34,6 +35,9 @@ export class WorldKnowledge {
 
         this.unitBuildingGroup = this.game.add.group();
         this.unitBuildingGroup.fixedToCamera = false;
+
+        this.effectsGroup = this.game.add.group();
+        this.effectsGroup.fixedToCamera = false;
     }
 
     update() {
@@ -75,7 +79,7 @@ export class WorldKnowledge {
 
     addUnit(newUnit: Unit, appear: boolean = false) {
         this.unitRepository.add(newUnit);
-        newUnit.create(this.game, this.unitBuildingGroup);
+        newUnit.create(this.game, this.unitBuildingGroup, this.effectsGroup);
         if (appear) {
             newUnit.setVisible(false);
             let appearSprite = new MiniAppear(newUnit.getCellPositions()[0]);
