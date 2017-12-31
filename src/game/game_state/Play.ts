@@ -83,10 +83,6 @@ export default class Play extends Phaser.State {
             ));
         });
 
-        const muzzle = new Phaser.Sprite(this.game, 50, 50, 'Muzzle', 16);
-        muzzle.scale.setTo(20);
-        this.game.add.existing(muzzle);
-
         this.players.filter((player) => {
             if (player.constructor.name === 'ComputerPlayer') {
                 (<ComputerPlayer> player).getUnitCreator().create(this.game);
