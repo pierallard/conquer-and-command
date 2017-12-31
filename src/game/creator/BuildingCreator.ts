@@ -8,6 +8,7 @@ import {TiberiumRefinery} from "../building/TiberiumRefinery";
 import {Harvester} from "../unit/Harvester";
 import {AlternativePosition} from "../computing/AlternativePosition";
 import {ConcreteBarrier} from "../building/ConcreteBarrier";
+import {AdvancedPowerPlant} from "../building/AdvancedPowerPlant";
 
 export class BuildingCreator extends AbstractCreator {
     private producedBuildings: string[];
@@ -59,6 +60,10 @@ export class BuildingCreator extends AbstractCreator {
             case 'PowerPlant':
                 let powerPlant = new PowerPlant(this.worldKnowledge, cell, this.player);
                 this.worldKnowledge.addBuilding(powerPlant, true);
+                break;
+            case 'AdvancedPowerPlant':
+                let advancedPowerPlant = new AdvancedPowerPlant(this.worldKnowledge, cell, this.player);
+                this.worldKnowledge.addBuilding(advancedPowerPlant, true);
                 break;
             case 'Barracks':
                 let barracks = new Barracks(this.worldKnowledge, cell, this.player);

@@ -1,5 +1,24 @@
 import {_DEBUG_FAST_CONSTRUCT} from "../game_state/Play";
 const DATA = {
+    AdvancedPowerPlant: {
+        cellPositions: [
+            [0, 0],
+            [1, 0],
+            [0, -1],
+            [1, -1],
+        ],
+        constructable: true,
+        constructable_units: [],
+        construction_time: 47,
+        life: 300,
+        power: 200,
+        price: 700,
+        requireds: [
+            'PowerPlant',
+        ],
+        sprite: 'Generator',
+        sprite_layer: 0,
+    },
     Barracks: {
         cellPositions: [
             [0, 0],
@@ -95,6 +114,7 @@ const DATA = {
  * Buildings:
  * - construction yard    : MinerAni
  * - power plant          : Factory2
+ * - advanced power plant : Generator
  * - barracks             : Module
  * - tiberium refinery    : Factory3
  * - comm center          : Silo
