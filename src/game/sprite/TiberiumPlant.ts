@@ -3,8 +3,8 @@ import {SCALE} from "../game_state/Play";
 import {GROUND_SIZE} from "../map/Ground";
 import {TiberiumSource} from "../building/TiberiumSource";
 
-const START_AMOUNT = 100;
-const HARVEST_QUANTITY = 10;
+const START_AMOUNT = 1000;
+const HARVEST_QUANTITY = 100;
 
 export class TiberiumPlant extends Phaser.Sprite {
     private static getLayerFromAmount(amount): number {

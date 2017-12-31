@@ -25,7 +25,7 @@ const DATA = {
         life: 600,
         options: {
             load_time: 1,
-            max_loading: 50,
+            max_loading: 500,
             unload_time: 1,
         },
         price: 1400,
