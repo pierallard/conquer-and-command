@@ -5,11 +5,14 @@ import {AbstractCreator} from "./AbstractCreator";
 
 const WIDTH = 33;
 const HEIGHT = 36;
+const TOP = 244;
 
 export abstract class AbstractUICreator {
     protected player: Player;
     protected worldKnowledge: WorldKnowledge;
     protected buttons: CreationButton[];
+    private game: Phaser.Game;
+    private group: Phaser.Group;
     private x: number;
 
     constructor(worldKnowledge: WorldKnowledge, player: Player, x: number) {
@@ -18,8 +21,6 @@ export abstract class AbstractUICreator {
         this.worldKnowledge = worldKnowledge;
         this.x = x;
     }
-
-    abstract getConstructableItems(): string[];
 
     abstract getSpriteKey(itemName: string): string;
 
@@ -32,26 +33,19 @@ export abstract class AbstractUICreator {
     abstract getConstructionTime(itemName: string): number;
 
     create(game: Phaser.Game, group: Phaser.Group, creator: AbstractCreator) {
-        let top = 250;
-        this.getConstructableItems().forEach((item) => {
-            this.buttons.push(new CreationButton(
-                this,
-                game,
-                top,
-                item,
-                group,
-                this.x,
-                this.getSpriteKey(item),
-                this.getSpriteLayer(item),
-                this.onClickFunction,
-                this.onProductFinish
-            ));
-            top += HEIGHT * SCALE;
-        });
+        this.game = game;
+        this.group = group;
         creator.create(game, this);
     }
 
     updateAllowedItems(allowedItems: string[]) {
+        allowedItems.forEach((allowedItem) => {
+            if (!this.buttons.some((button) => {
+                return button.getName() === allowedItem;
+            })) {
+                this.createButton(allowedItem);
+            }
+        });
         this.buttons.forEach((button) => {
             if (allowedItems.indexOf(button.getName()) > -1) {
                 button.show();
@@ -95,6 +89,21 @@ export abstract class AbstractUICreator {
                 return previousText + letter;
             }
         }, '');
+    }
+
+    private createButton(itemName: string) {
+        this.buttons.push(new CreationButton(
+            this,
+            this.game,
+            TOP + this.buttons.length * HEIGHT * SCALE,
+            itemName,
+            this.group,
+            this.x,
+            this.getSpriteKey(itemName),
+            this.getSpriteLayer(itemName),
+            this.onClickFunction,
+            this.onProductFinish
+        ));
     }
 
     private getButton(itemName: string): CreationButton {
@@ -166,8 +175,6 @@ class CreationButton {
         group.add(this.progress);
 
         this.constructAllowed = true;
-
-        this.hide();
     }
 
     runProduction(constructionTime) {
@@ -196,10 +203,10 @@ class CreationButton {
     }
 
     hide() {
-        this.button.alpha = 0;
-        this.itemSprite.alpha = 0;
-        this.progress.alpha = 0;
-        this.text.alpha = 0;
+        this.button.alpha = 0.5;
+        this.itemSprite.alpha = 0.5;
+        this.progress.alpha = 0.5;
+        this.text.alpha = 0.5;
     }
 
     show() {
