@@ -1,3 +1,4 @@
+import {_DEBUG_FAST_CONSTRUCT} from "../game_state/Play";
 const DATA = {
     Barracks: {
         cellPositions: [
@@ -135,6 +136,9 @@ export class BuildingProperties {
     }
 
     static getConstructionTime(buildingName: string): number {
+        if (_DEBUG_FAST_CONSTRUCT) {
+            return DATA[buildingName].construction_time / 50;
+        }
         return DATA[buildingName].construction_time;
     }
 

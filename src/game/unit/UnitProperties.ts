@@ -1,7 +1,23 @@
+import {_DEBUG_FAST_CONSTRUCT} from "../game_state/Play";
+import {IMAGE_FORMAT} from "../sprite/UnitSprite";
 const DATA = {
+    Grenadier: {
+        allowed_by: ['Barracks'],
+        construction_time: 7,
+        image_format: IMAGE_FORMAT.FIVE,
+        life: 50,
+        price: 160,
+        shoot_cooldown: 50,
+        shoot_distance: 3.25,
+        shoot_power: 50,
+        speed: 10,
+        sprite_layer: 20,
+        sprites: ['Tank5', 'Tank5'],
+    },
     Harvester: {
         allowed_by: ['WeaponsFactory', 'TiberiumRefinery'],
         construction_time: 93,
+        image_format: IMAGE_FORMAT.THREE,
         life: 600,
         options: {
             load_time: 1,
@@ -17,6 +33,7 @@ const DATA = {
     MCV: {
         allowed_by: ['WeaponsFactory', 'AdvancedCommandCenter'],
         construction_time: 213,
+        image_format: IMAGE_FORMAT.THREE,
         life: 600,
         price: 5000,
         shoot_distance: -1,
@@ -27,6 +44,7 @@ const DATA = {
     MediumTank: {
         allowed_by: ['WeaponsFactory'],
         construction_time: 53,
+        image_format: IMAGE_FORMAT.THREE,
         life: 400,
         price: 800,
         shoot_cooldown: 50,
@@ -39,6 +57,7 @@ const DATA = {
     MinigunInfantry: {
         allowed_by: ['Barracks'],
         construction_time: 7,
+        image_format: IMAGE_FORMAT.THREE,
         life: 50,
         price: 100,
         shoot_cooldown: 20,
@@ -105,6 +124,9 @@ export class UnitProperties {
     }
 
     static getConstructionTime(unitName: string): number {
+        if (_DEBUG_FAST_CONSTRUCT) {
+            return DATA[unitName].construction_time / 50;
+        }
         return DATA[unitName].construction_time;
     }
 
@@ -114,5 +136,9 @@ export class UnitProperties {
 
     static getShootPower(unitName: string): number {
         return DATA[unitName].shoot_power;
+    }
+
+    static getImageFormat(unitName: string): IMAGE_FORMAT {
+        return DATA[unitName].image_format;
     }
 }

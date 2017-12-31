@@ -37,7 +37,13 @@ export abstract class Unit implements Shootable, Positionnable {
     }
 
     create(game: Phaser.Game, group: Phaser.Group) {
-        this.unitSprite = new UnitSprite(game, group, this.cellPosition, this.key);
+        this.unitSprite = new UnitSprite(
+            game,
+            group,
+            this.cellPosition,
+            this.key,
+            UnitProperties.getImageFormat(this.constructor.name)
+        );
         this.timerEvents = game.time.events;
     }
 
