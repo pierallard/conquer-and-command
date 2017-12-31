@@ -75,7 +75,8 @@ export abstract class Unit implements Shootable, Positionnable {
     }
 
     shoot(enemy: Shootable): void {
-        this.unitSprite.doShoot(enemy.getCellPositions()[0]);
+        let closestEnemyPosition = Distance.getClosestPosition(this.getCellPositions()[0], enemy.getCellPositions());
+        this.unitSprite.doShoot(closestEnemyPosition);
         enemy.lostLife(UnitProperties.getShootPower(this.constructor.name));
         this.freeze(UnitProperties.getShootTime(this.constructor.name) * Phaser.Timer.SECOND);
     }

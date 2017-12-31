@@ -54,6 +54,11 @@ export class UnitSprite extends Phaser.Sprite {
         this.doShootEffect(cellPosition);
     }
 
+    doRocketShoot(cellPosition: PIXI.Point) {
+        this.rotateTowards(cellPosition);
+        this.doRocketShootEffect(cellPosition);
+    }
+
     updateLife(life: number, maxLife: number) {
         this.lifeRectangle.updateLife(life / maxLife);
     }
@@ -102,6 +107,24 @@ export class UnitSprite extends Phaser.Sprite {
         this.group.add(new Shoot(this.game, this.x, this.y, rotation));
     }
 
+    private doRocketShootEffect(cellPosition: PIXI.Point) {
+        const rotation = Rotation.getRotation(new Phaser.Point(
+            cellPosition.x - Cell.realToCell(this.x),
+            cellPosition.y - Cell.realToCell(this.y)
+        ));
+        let rocket = new Phaser.Sprite(this.game, this.x, this.y, 'Bullets', UnitSprite.getRocketFrame(rotation));
+        rocket.scale.setTo(SCALE * 1.5, SCALE * 1.5);
+        this.group.add(rocket);
+        this.game.add.tween(rocket).to({
+            x: Cell.cellToReal(cellPosition.x),
+            y: Cell.cellToReal(cellPosition.y),
+        }, 800, Phaser.Easing.Default, true).onComplete.add(() => {
+            let explosion = new Explosion(this.game, Cell.cellToReal(cellPosition.x), Cell.cellToReal(cellPosition.y));
+            this.group.add(explosion);
+            rocket.destroy(true);
+        });
+    }
+
     private loadRotation(rotation: ROTATION) {
         if (this.imageFormat === IMAGE_FORMAT.THREE) {
             switch (rotation) {
@@ -136,6 +159,19 @@ export class UnitSprite extends Phaser.Sprite {
                 case ROTATION.LEFT: this.loadTexture(this.key, 12); break;
                 case ROTATION.TOP_LEFT: this.loadTexture(this.key, 10); break;
             }
+        }
+    }
+
+    private static getRocketFrame(rotation: ROTATION) {
+        switch (rotation) {
+            case ROTATION.TOP: return 10;
+            case ROTATION.TOP_RIGHT: return 11;
+            case ROTATION.RIGHT: return 23;
+            case ROTATION.BOTTOM_RIGHT: return 35;
+            case ROTATION.BOTTOM: return 34;
+            case ROTATION.BOTTOM_LEFT: return 33;
+            case ROTATION.LEFT: return 21;
+            case ROTATION.TOP_LEFT: return 9;
         }
     }
 }
