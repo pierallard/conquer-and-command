@@ -8,30 +8,20 @@ export class ComputerPlayer extends Player {
             this.order().expand((<MCV> unit));
         });
 
-        // Check if there is Power Plant
-        if (this.worldKnowledge.getPlayerBuildings(this, 'PowerPlant').length === 0) {
-            if (this.order().getBuildingCreator().isProduced('PowerPlant')) {
-                this.order().createBuilding('PowerPlant', this.getRandomCellNearBase());
-            } else {
-                this.order().productBuilding('PowerPlant');
-            }
-        }
+        this.constructWhenYouCan('PowerPlant');
+        this.constructWhenYouCan('TiberiumRefinery');
+        this.constructWhenYouCan('Barracks');
 
-        // Check if there is Barracks
-        if (this.worldKnowledge.getPlayerBuildings(this, 'Barracks').length === 0) {
-            if (this.order().getBuildingCreator().isProduced('Barracks')) {
-                this.order().createBuilding('Barracks', this.getRandomCellNearBase());
-            } else {
-                this.order().productBuilding('Barracks');
-            }
-        } else {
-            this.order().productUnit('MediumTank');
+        if (this.worldKnowledge.getPlayerBuildings(this, 'Barracks').length > 0) {
+            this.order().productUnit('MinigunInfantry');
         }
 
         // Attack
-        this.worldKnowledge.getPlayerUnits(this, 'MediumTank').forEach((unit) => {
-            this.order().orderMoveAttack(unit, new PIXI.Point(0, 0));
-        });
+        if (this.worldKnowledge.getPlayerUnits(this, 'MinigunInfantry').length > 5) {
+            this.worldKnowledge.getPlayerUnits(this, 'MinigunInfantry').forEach((unit) => {
+                this.order().orderMoveAttack(unit, new PIXI.Point(0, 0));
+            });
+        }
     }
 
     private getRandomCellNearBase(): PIXI.Point {
@@ -40,5 +30,15 @@ export class ComputerPlayer extends Player {
             cellPos.x + (2 + Math.floor(Math.random() * 3)) * (Math.random() > 0.5 ? -1 : 1),
             cellPos.y + (2 + Math.floor(Math.random() * 3)) * (Math.random() > 0.5 ? -1 : 1)
         );
+    }
+
+    private constructWhenYouCan(buildingName: string) {
+        if (this.worldKnowledge.getPlayerBuildings(this, buildingName).length === 0) {
+            if (this.order().getBuildingCreator().isProduced(buildingName)) {
+                this.order().createBuilding(buildingName, this.getRandomCellNearBase());
+            } else {
+                this.order().productBuilding(buildingName);
+            }
+        }
     }
 }
