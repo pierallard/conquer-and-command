@@ -12,10 +12,10 @@ export class ConstructionYard extends ConstructableBuilding {
     create(game: Phaser.Game, group: Phaser.Group) {
         this.sprite = new ConstructionYardSprite(
             game,
+            group,
             Cell.cellToReal(this.cellPosition.x),
             Cell.cellToReal(this.cellPosition.y),
             'Base'
         );
-        group.add(this.sprite);
     }
 }

@@ -12,11 +12,11 @@ export class TiberiumRefinery extends ConstructableBuilding {
     create(game: Phaser.Game, group: Phaser.Group) {
         this.sprite = new TiberiumRefinerySprite(
             game,
+            group,
             Cell.cellToReal(this.cellPosition.x),
             Cell.cellToReal(this.cellPosition.y),
             'Factory3'
         );
-        group.add(this.sprite);
     }
 
     runUnloadAnimation() {
