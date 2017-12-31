@@ -90,4 +90,9 @@ export class TiberiumSource implements Building {
             return unit === null || unit === harvester;
         });
     }
+
+    remove(tiberiumPlant: TiberiumPlant) {
+        const index = this.plants.indexOf(tiberiumPlant);
+        this.plants.splice(index, 1);
+    }
 }

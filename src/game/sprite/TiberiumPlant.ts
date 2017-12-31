@@ -49,6 +49,7 @@ export class TiberiumPlant extends Phaser.Sprite {
 
         if (this.amount <= 0) {
             this.destroy();
+            this.source.remove(this);
         } else {
             this.loadTexture(this.key, TiberiumPlant.getLayerFromAmount(this.amount));
         }

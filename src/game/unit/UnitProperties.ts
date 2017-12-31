@@ -1,49 +1,50 @@
 const DATA = {
     Harvester: {
         allowed_by: ['WeaponsFactory', 'TiberiumRefinery'],
-        construction_time: 2,
-        life: 100,
+        construction_time: 93,
+        life: 600,
         options: {
             load_time: 1,
             max_loading: 50,
             unload_time: 1,
         },
-        price: 100,
-        shoot: 0.5,
-        shoot_distance: Math.sqrt(2),
-        slowness: 0.4,
+        price: 1400,
+        shoot_distance: -1,
+        speed: 12,
         sprite_layer: 6,
         sprites: ['Builder2', 'Builder2'],
     },
     MCV: {
         allowed_by: ['WeaponsFactory', 'AdvancedCommandCenter'],
-        construction_time: 2,
-        life: 1000,
-        price: 100,
+        construction_time: 213,
+        life: 600,
+        price: 5000,
         shoot_distance: -1,
-        slowness: 0.8,
+        speed: 12,
         sprite_layer: 6,
         sprites: ['Transprt', 'Transprt'],
     },
     MediumTank: {
         allowed_by: ['WeaponsFactory'],
-        construction_time: 2,
-        life: 500,
-        price: 200,
-        shoot: 0.5,
-        shoot_distance: 4,
-        slowness: 0.35,
+        construction_time: 53,
+        life: 400,
+        price: 800,
+        shoot_cooldown: 50,
+        shoot_distance: 4.75,
+        shoot_power: 30,
+        speed: 18,
         sprite_layer: 6,
         sprites: ['Tank11', 'Tank12'],
     },
     MinigunInfantry: {
         allowed_by: ['Barracks'],
-        construction_time: 1,
-        life: 100,
-        price: 50,
-        shoot: 0.5,
-        shoot_distance: 3,
-        slowness: 0.25,
+        construction_time: 7,
+        life: 50,
+        price: 100,
+        shoot_cooldown: 20,
+        shoot_distance: 2,
+        shoot_power: 15,
+        speed: 8,
         sprite_layer: 6,
         sprites: ['Scout2', 'Scout2'],
     }
@@ -76,7 +77,7 @@ export class UnitProperties {
     }
 
     static getShootDistance(unitName: string): number {
-        return DATA[unitName].shoot_distance;
+        return DATA[unitName].shoot_distance * 1.5;
     }
 
     static getLife(unitName: string): number {
@@ -84,11 +85,11 @@ export class UnitProperties {
     }
 
     static getShootTime(unitName: string): number {
-        return DATA[unitName].shoot;
+        return DATA[unitName].shoot_cooldown / 10;
     }
 
     static getSlownessTime(unitName: string): number {
-        return DATA[unitName].slowness;
+        return 6 / DATA[unitName].speed;
     }
 
     static getRequiredBuildings(unitName: string): string[] {

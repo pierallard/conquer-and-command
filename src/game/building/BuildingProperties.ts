@@ -10,8 +10,10 @@ const DATA = {
         constructable_units: [
             'MinigunInfantry', 'Grenadier', 'RockerSoldier', 'EngineerInfantry',
         ],
-        construction_time: 2,
-        price: 150,
+        construction_time: 20,
+        life: 400,
+        power: -20,
+        price: 300,
         requireds: [
             'PowerPlant',
         ],
@@ -22,8 +24,9 @@ const DATA = {
         cellPositions: [[0, 0]],
         constructable: true,
         constructable_units: [],
-        construction_time: 0.5,
-        price: 50,
+        construction_time: 7,
+        life: 1,
+        price: 100,
         requireds: ['ConstructionYard'],
         sprite: 'Wall',
         sprite_layer: 0,
@@ -37,6 +40,7 @@ const DATA = {
         ],
         constructable: false,
         constructable_units: [],
+        life: 400,
     },
     PowerPlant: {
         cellPositions: [
@@ -47,8 +51,10 @@ const DATA = {
         ],
         constructable: true,
         constructable_units: [],
-        construction_time: 2,
-        price: 100,
+        construction_time: 20,
+        life: 200,
+        power: 100,
+        price: 300,
         requireds: [
             'ConstructionYard',
         ],
@@ -66,8 +72,10 @@ const DATA = {
         constructable_units: [
             'Harvester',
         ],
-        construction_time: 2,
-        price: 100,
+        construction_time: 73,
+        life: 450,
+        power: -40,
+        price: 2000,
         requireds: [
             'PowerPlant',
         ],

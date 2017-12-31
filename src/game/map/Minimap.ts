@@ -23,8 +23,8 @@ export class MiniMap {
 
         let data = this.worldKnowledge.getGroundCSV();
 
-        game.cache.addTilemap('dynamicMap', null, data, Phaser.Tilemap.CSV);
-        let map = game.add.tilemap('dynamicMap', 20, 20, GROUND_WIDTH, GROUND_HEIGHT);
+        game.cache.addTilemap('minimap', null, data, Phaser.Tilemap.CSV);
+        let map = game.add.tilemap('minimap', 20, 20, GROUND_WIDTH, GROUND_HEIGHT);
         map.addTilesetImage('GrasClif', 'GrasClif', 20, 20, 0, 0, 0);
         map.addTilesetImage('GrssMisc', 'GrssMisc', 20, 20, 0, 0, 100);
         map.addTilesetImage('Ice2Snow', 'Ice2Snow', 20, 20, 0, 0, 200);
