@@ -13,6 +13,7 @@ import {Shootable} from "../Shootable";
 import {Positionnable} from "../Positionnable";
 import {Rocket} from "../shoot/Rocket";
 import {Cell} from "../computing/Cell";
+import {Bullet} from "../shoot/Bullet";
 
 export abstract class Unit implements Shootable, Positionnable {
     protected life: number;
@@ -87,6 +88,12 @@ export abstract class Unit implements Shootable, Positionnable {
         switch (UnitProperties.getShootType(this.constructor.name)) {
             case 'rocket':
                 new Rocket(this.effectsGroup, this.getShootSource(closestEnemyPosition), new PIXI.Point(
+                    Cell.cellToReal(closestEnemyPosition.x),
+                    Cell.cellToReal(closestEnemyPosition.y)
+                ));
+                break;
+            default:
+                new Bullet(this.effectsGroup, this.getShootSource(closestEnemyPosition), new PIXI.Point(
                     Cell.cellToReal(closestEnemyPosition.x),
                     Cell.cellToReal(closestEnemyPosition.y)
                 ));
