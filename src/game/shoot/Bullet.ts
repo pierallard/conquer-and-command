@@ -22,7 +22,7 @@ export class Bullet extends Phaser.Sprite {
         super(group.game, source.x, source.y, 'Bullets', Bullet.getBulletFrame(rotation));
 
         this.anchor.setTo(0.5, 0.5);
-        this.scale.setTo(SCALE * 1.5, SCALE * 1.5);
+        this.scale.setTo(SCALE, SCALE);
         group.add(this);
 
         this.game.add.tween(this).to({

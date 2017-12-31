@@ -15,7 +15,7 @@ export class RocketSoldier extends Unit {
             cellDest.y - this.cellPosition.y
         ));
         const angle = rotation / 8 * 2 * Math.PI;
-        const dist = 10;
+        const dist = 12;
         return new PIXI.Point(
             Cell.cellToReal(this.cellPosition.x) + Math.cos(angle) * dist,
             Cell.cellToReal(this.cellPosition.y) - Math.sin(angle) * dist
