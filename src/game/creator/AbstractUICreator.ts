@@ -83,6 +83,20 @@ export abstract class AbstractUICreator {
         return this.player;
     }
 
+    getUIText(itemName: string) {
+        return itemName.split('').reduce((previousText, letter) => {
+            if (/^[A-Z]$/.test(letter)) {
+                if (previousText !== '') {
+                    return previousText + "\n" + letter;
+                } else {
+                    return letter;
+                }
+            } else {
+                return previousText + letter;
+            }
+        }, '');
+    }
+
     private getButton(itemName: string): CreationButton {
         for (let i = 0; i < this.buttons.length; i++) {
             if (this.buttons[i].getName() === itemName) {
@@ -102,6 +116,7 @@ class CreationButton {
     private onProductFinished: any;
     private creator: AbstractUICreator;
     private constructAllowed: boolean;
+    private text: Phaser.Text;
 
     constructor(
         creator: AbstractUICreator,
@@ -137,6 +152,15 @@ class CreationButton {
         this.itemSprite.scale.setTo(SCALE / 2, SCALE / 2);
         this.itemSprite.anchor.setTo(0.5, 0.7);
         group.add(this.itemSprite);
+
+        this.text = new Phaser.Text(
+            game,
+            x,
+            top,
+            creator.getUIText(this.itemName),
+            { align: 'center', fill: "#ffffff", font: '14px 000webfont' }
+        );
+        group.add(this.text);
 
         this.progress = new CreationButtonProgress(game, top, x);
         group.add(this.progress);
@@ -175,12 +199,14 @@ class CreationButton {
         this.button.alpha = 0;
         this.itemSprite.alpha = 0;
         this.progress.alpha = 0;
+        this.text.alpha = 0;
     }
 
     show() {
         this.button.alpha = 1;
         this.itemSprite.alpha = 1;
         this.progress.alpha = 1;
+        this.text.alpha = 1;
     }
 
     allowConstruct(value: boolean) {
