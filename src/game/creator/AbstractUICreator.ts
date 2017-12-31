@@ -14,12 +14,16 @@ export abstract class AbstractUICreator {
     private game: Phaser.Game;
     private group: Phaser.Group;
     private x: number;
+    private bottomButton: Phaser.Sprite;
+    private topButton: Phaser.Sprite;
+    private index: number;
 
     constructor(worldKnowledge: WorldKnowledge, player: Player, x: number) {
         this.buttons = [];
         this.player = player;
         this.worldKnowledge = worldKnowledge;
         this.x = x;
+        this.index = 0;
     }
 
     abstract getSpriteKey(itemName: string): string;
@@ -35,6 +39,21 @@ export abstract class AbstractUICreator {
     create(game: Phaser.Game, group: Phaser.Group, creator: AbstractCreator) {
         this.game = game;
         this.group = group;
+
+        this.bottomButton = new Phaser.Sprite(game, this.x + 3 * 2, 305 * 2, 'interfacebuttons', 3);
+        this.bottomButton.scale.setTo(SCALE);
+        this.bottomButton.events.onInputDown.add(() => {
+            this.goDown();
+        }, this);
+        this.topButton = new Phaser.Sprite(game, this.x + 18 * 2, 305 * 2, 'interfacebuttons', 2);
+        this.topButton.scale.setTo(SCALE);
+        this.topButton.events.onInputDown.add(() => {
+            this.goUp();
+        }, this);
+
+        group.add(this.bottomButton);
+        group.add(this.topButton);
+
         creator.create(game, this);
     }
 
@@ -46,11 +65,12 @@ export abstract class AbstractUICreator {
                 this.createButton(allowedItem);
             }
         });
+        this.refreshButtons();
         this.buttons.forEach((button) => {
             if (allowedItems.indexOf(button.getName()) > -1) {
-                button.show();
+                button.enable();
             } else {
-                button.hide();
+                button.disable();
             }
         });
     }
@@ -114,6 +134,59 @@ export abstract class AbstractUICreator {
         }
 
         return null;
+    }
+
+    private enableBottomButton(value: boolean): void {
+        if (value) {
+            this.bottomButton.loadTexture(this.bottomButton.key, 1);
+        } else {
+            this.bottomButton.loadTexture(this.bottomButton.key, 3);
+        }
+        this.bottomButton.inputEnabled = value;
+    }
+
+    private enableTopButton(value: boolean): void {
+        if (value) {
+            this.topButton.loadTexture(this.bottomButton.key, 0);
+        } else {
+            this.topButton.loadTexture(this.bottomButton.key, 2);
+        }
+        this.topButton.inputEnabled = value;
+    }
+
+    private goDown() {
+        this.index += 1;
+        this.refreshButtons();
+        this.buttons.forEach((button) => {
+            button.goUp();
+        });
+    }
+
+    private goUp() {
+        this.index -= 1;
+        this.refreshButtons();
+        this.buttons.forEach((button) => {
+            button.goDown();
+        });
+    }
+
+    private refreshButtons() {
+        let displayTop = false;
+        let displayBottom = false;
+        for (let i = 0; i < this.buttons.length; i++) {
+            if (i < this.index) {
+                this.buttons[i].hide();
+                displayTop = true;
+            } else if (i > this.index + 4) {
+                this.buttons[i].hide();
+                displayBottom = true;
+            } else {
+                this.buttons[i].show();
+            }
+        }
+
+        this.enableTopButton(displayTop);
+        this.enableBottomButton(displayBottom);
     }
 }
 
@@ -202,19 +275,6 @@ class CreationButton {
         this.button.loadTexture(this.button.key, 3);
     }
 
-    hide() {
-        this.button.alpha = 0.5;
-        this.itemSprite.alpha = 0.5;
-        this.progress.alpha = 0.5;
-        this.text.alpha = 0.5;
-    }
-
-    show() {
-        this.button.alpha = 1;
-        this.itemSprite.alpha = 1;
-        this.progress.alpha = 1;
-        this.text.alpha = 1;
-    }
 
     allowConstruct(value: boolean) {
         this.constructAllowed = value;
@@ -225,6 +285,48 @@ class CreationButton {
         } else {
             this.button.loadTexture(this.button.key, 2);
         }
+    }
+
+    disable() {
+        this.applyAllElement((element) => {
+            element.alpha = 0.5;
+        });
+    }
+
+    enable() {
+        this.applyAllElement((element) => {
+            element.alpha = 1;
+        });
+    }
+
+    hide() {
+        this.applyAllElement((element) => {
+            element.visible = false;
+        });
+    }
+
+    show() {
+        this.applyAllElement((element) => {
+            element.visible = true;
+        });
+    }
+
+    goDown() {
+        this.applyAllElement((element) => {
+            element.y = element.y + HEIGHT * SCALE;
+        });
+    }
+
+    goUp() {
+        this.applyAllElement((element) => {
+            element.y = element.y - HEIGHT * SCALE;
+        });
+    }
+
+    private applyAllElement(a: any) {
+        [this.button, this.itemSprite, this.progress, this.text].forEach((element) => {
+            a(element);
+        });
     }
 }
 
