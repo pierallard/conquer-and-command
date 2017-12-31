@@ -6,10 +6,7 @@ export class Distance {
         let distances = [];
         toArray.forEach((posTo) => {
             fromArray.forEach((posFrom) => {
-                distances.push(Math.sqrt(
-                    (posFrom.x - posTo.x) * (posFrom.x - posTo.x) +
-                    (posFrom.y - posTo.y) * (posFrom.y - posTo.y)
-                ));
+                distances.push(this.distance(posTo, posFrom));
             });
         });
         return distances.reduce((dist1, dist2) => {
@@ -17,7 +14,21 @@ export class Distance {
         });
     }
 
-    static getClosest(from: PIXI.Point, objects: any) {
+    static getClosestPosition(from: PIXI.Point, to: PIXI.Point[]): PIXI.Point {
+        let minDistance = null;
+        let minPosition = null;
+        to.forEach((posTo) => {
+            const distance = this.distance(from, posTo);
+            if (minDistance === null || minDistance > distance) {
+                minPosition = posTo;
+                minDistance = distance;
+            }
+        });
+
+        return minPosition;
+    }
+
+    static getClosestItem(from: PIXI.Point, objects: any) {
         let minDistance = null;
         let closest = null;
         for (let i = 0; i < objects.length; i++) {
@@ -30,5 +41,12 @@ export class Distance {
         }
 
         return closest;
+    }
+
+    private static distance(posTo: PIXI.Point, posFrom: PIXI.Point) {
+        return Math.sqrt(
+            (posFrom.x - posTo.x) * (posFrom.x - posTo.x) +
+            (posFrom.y - posTo.y) * (posFrom.y - posTo.y)
+        );
     }
 }

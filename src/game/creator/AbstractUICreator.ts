@@ -275,7 +275,6 @@ class CreationButton {
         this.button.loadTexture(this.button.key, 3);
     }
 
-
     allowConstruct(value: boolean) {
         this.constructAllowed = value;
         if (!value) {

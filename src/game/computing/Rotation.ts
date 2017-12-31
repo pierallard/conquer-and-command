@@ -1,12 +1,12 @@
 export enum ROTATION {
-    TOP = 1,
+    RIGHT = 0,
     TOP_RIGHT,
-    RIGHT,
-    BOTTOM_RIGHT,
-    BOTTOM,
-    BOTTOM_LEFT,
+    TOP,
+    TOP_LEFT,
     LEFT,
-    TOP_LEFT
+    BOTTOM_LEFT,
+    BOTTOM,
+    BOTTOM_RIGHT,
 }
 
 export class Rotation {

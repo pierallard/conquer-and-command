@@ -49,11 +49,6 @@ export class UnitSprite extends Phaser.Sprite {
         this.destroy(true);
     }
 
-    doShoot(cellPosition: PIXI.Point) {
-        this.rotateTowards(cellPosition);
-        this.doShootEffect(cellPosition);
-    }
-
     updateLife(life: number, maxLife: number) {
         this.lifeRectangle.updateLife(life / maxLife);
     }
@@ -82,7 +77,7 @@ export class UnitSprite extends Phaser.Sprite {
             this.y - this.height / 2 < bottom;
     }
 
-    private rotateTowards(cellPosition: PIXI.Point): void {
+    rotateTowards(cellPosition: PIXI.Point): void {
         const rotation = Rotation.getRotation(new Phaser.Point(
             cellPosition.x - Cell.realToCell(this.x),
             cellPosition.y - Cell.realToCell(this.y)
@@ -92,14 +87,6 @@ export class UnitSprite extends Phaser.Sprite {
 
     private doExplodeEffect() {
         this.group.add(new Explosion(this.game, this.x, this.y));
-    }
-
-    private doShootEffect(cellPosition: PIXI.Point) {
-        const rotation = Rotation.getRotation(new Phaser.Point(
-            cellPosition.x - Cell.realToCell(this.x),
-            cellPosition.y - Cell.realToCell(this.y)
-        ));
-        this.group.add(new Shoot(this.game, this.x, this.y, rotation));
     }
 
     private loadRotation(rotation: ROTATION) {

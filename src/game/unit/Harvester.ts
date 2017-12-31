@@ -21,7 +21,7 @@ export class Harvester extends Unit {
     }
 
     harvest() {
-        const closestGround = Distance.getClosest(
+        const closestGround = Distance.getClosestItem(
             this.getCellPositions()[0],
             this.worldKnowledge.getGrounds()
         );
@@ -47,14 +47,14 @@ export class Harvester extends Unit {
     }
 
     getClosestRefinery(): TiberiumRefinery {
-        return Distance.getClosest(
+        return Distance.getClosestItem(
             this.getCellPositions()[0],
             this.worldKnowledge.getPlayerBuildings(this.player, 'TiberiumRefinery')
         );
     }
 
     getClosestPlant(source: TiberiumSource) {
-        return Distance.getClosest(this.getCellPositions()[0], source.getFreePlants(this));
+        return Distance.getClosestItem(this.getCellPositions()[0], source.getFreePlants(this));
     }
 
     isFull() {
