@@ -1,18 +1,31 @@
 import {SCALE} from "../game_state/Play";
+import {Explosion} from "./Explosion";
 
 export class BuildingSprite extends Phaser.Sprite {
-    constructor(game: Phaser.Game, x: number, y: number, key: string) {
-        super(game, x, y, key);
+    private group: Phaser.Group;
+    private timerEvents: Phaser.Timer;
 
+    constructor(game: Phaser.Game, group: Phaser.Group, x: number, y: number, key: string) {
+        super(game, x, y, key);
+        this.group = group;
         this.scale.setTo(SCALE);
+        this.group.add(this);
+        this.timerEvents = game.time.events;
     }
 
     doDestroy() {
         this.doExplodeEffect();
-        this.destroy(true);
+        this.timerEvents.add(0.3 * Phaser.Timer.SECOND, () => {
+            this.destroy(true);
+        });
     }
 
     private doExplodeEffect() {
-        // this.game.add.existing(new Explosion(this.game, this.x, this.y));
+        this.group.add(new Explosion(
+            this.game,
+            (this.right - this.left) / 2 + this.left,
+            (this.bottom - this.top) / 2 + this.top,
+            Math.max(this.right - this.left, this.bottom - this.top)
+        ));
     }
 }

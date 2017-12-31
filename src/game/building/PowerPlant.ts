@@ -12,10 +12,10 @@ export class PowerPlant extends ConstructableBuilding {
     create(game: Phaser.Game, group: Phaser.Group) {
         this.sprite = new PowerPlantSprite(
             game,
+            group,
             Cell.cellToReal(this.cellPosition.x),
             Cell.cellToReal(this.cellPosition.y),
             'Factory2'
         );
-        group.add(this.sprite);
     }
 }
