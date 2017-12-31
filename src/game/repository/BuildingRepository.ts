@@ -31,7 +31,7 @@ export class BuildingRepository {
         return null;
     }
 
-    getBuildings(type: string = null) {
+    getBuildings(type: string = null): Building[] {
         if (type === null) {
             return this.buildings;
         }

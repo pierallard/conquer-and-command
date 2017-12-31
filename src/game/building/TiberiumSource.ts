@@ -95,4 +95,8 @@ export class TiberiumSource implements Building {
         const index = this.plants.indexOf(tiberiumPlant);
         this.plants.splice(index, 1);
     }
+
+    update(): void {
+        // TODO Do Spread every x seconds
+    }
 }

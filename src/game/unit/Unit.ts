@@ -186,5 +186,4 @@ export abstract class Unit implements Shootable, Positionnable {
             this.isFrozen = false;
         }, this);
     }
-
 }

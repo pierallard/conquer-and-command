@@ -2,7 +2,7 @@ import {SCALE} from "../game_state/Play";
 import {Explosion} from "./Explosion";
 
 export class BuildingSprite extends Phaser.Sprite {
-    private group: Phaser.Group;
+    protected group: Phaser.Group;
     private timerEvents: Phaser.Timer;
 
     constructor(game: Phaser.Game, group: Phaser.Group, x: number, y: number, key: string) {

@@ -4,7 +4,6 @@ import {BuildingProperties} from "./BuildingProperties";
 import {BuildingSprite} from "../sprite/BuildingSprite";
 import {WorldKnowledge} from "../map/WorldKnowledge";
 import {Shootable} from "../Shootable";
-import {Positionnable} from "../Positionnable";
 
 export abstract class ConstructableBuilding implements Building, Shootable {
     protected player: Player;
@@ -46,6 +45,9 @@ export abstract class ConstructableBuilding implements Building, Shootable {
             this.worldKnowledge.removeBuilding(this);
             this.destroy();
         }
+    }
+
+    update(): void {
     }
 
     private isAlive(): boolean {

@@ -41,6 +41,9 @@ export class WorldKnowledge {
         this.unitRepository.getUnits().forEach((unit) => {
             unit.update();
         });
+        this.buildingRepository.getBuildings().forEach((building) => {
+            building.update();
+        });
     }
 
     isCellAccessible(position: PIXI.Point) {

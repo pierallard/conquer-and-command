@@ -1,36 +1,36 @@
 import {SCALE} from "../game_state/Play";
-import {Rotation} from "./UnitSprite";
+import {ROTATION} from "../computing/Rotation";
 
 export class Shoot extends Phaser.Sprite {
-    static getStartFrame(rotation: Rotation): number {
+    static getStartFrame(rotation: ROTATION): number {
         switch (rotation) {
-            case Rotation.TOP: return 8;
-            case Rotation.TOP_RIGHT: return 34;
-            case Rotation.RIGHT: return 42;
-            case Rotation.BOTTOM_RIGHT: return 0;
-            case Rotation.BOTTOM: return 12;
-            case Rotation.BOTTOM_LEFT: return 4;
-            case Rotation.LEFT: return 38;
-            case Rotation.TOP_LEFT: return 30;
+            case ROTATION.TOP: return 8;
+            case ROTATION.TOP_RIGHT: return 34;
+            case ROTATION.RIGHT: return 42;
+            case ROTATION.BOTTOM_RIGHT: return 0;
+            case ROTATION.BOTTOM: return 12;
+            case ROTATION.BOTTOM_LEFT: return 4;
+            case ROTATION.LEFT: return 38;
+            case ROTATION.TOP_LEFT: return 30;
         }
     }
 
-    static getAnchor(rotation: Rotation): number[] {
+    static getAnchor(rotation: ROTATION): number[] {
         switch (rotation) {
-            case Rotation.TOP: return [0, 1];
-            case Rotation.TOP_RIGHT: return [0.7, 0.7];
-            case Rotation.RIGHT: return [1, 0];
-            case Rotation.BOTTOM_RIGHT: return [0.7, -0.7];
-            case Rotation.BOTTOM: return [0, -1];
-            case Rotation.BOTTOM_LEFT: return [-0.7, -0.7];
-            case Rotation.LEFT: return [-1, 0];
-            case Rotation.TOP_LEFT: return [-0.7, 0.7];
+            case ROTATION.TOP: return [0, 1];
+            case ROTATION.TOP_RIGHT: return [0.7, 0.7];
+            case ROTATION.RIGHT: return [1, 0];
+            case ROTATION.BOTTOM_RIGHT: return [0.7, -0.7];
+            case ROTATION.BOTTOM: return [0, -1];
+            case ROTATION.BOTTOM_LEFT: return [-0.7, -0.7];
+            case ROTATION.LEFT: return [-1, 0];
+            case ROTATION.TOP_LEFT: return [-0.7, 0.7];
         }
     }
 
     private firstFrame: number;
 
-    constructor(game: Phaser.Game, x: number, y: number, rotation: Rotation) {
+    constructor(game: Phaser.Game, x: number, y: number, rotation: ROTATION) {
         super(game, x, y, 'ArtlFlsh');
 
         this.firstFrame = Shoot.getStartFrame(rotation);

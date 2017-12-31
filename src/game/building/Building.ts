@@ -6,4 +6,5 @@ export interface Building extends Positionnable {
     setVisible(value: boolean): void;
     getPlayer(): Player;
     destroy(): void;
+    update(): void;
 }

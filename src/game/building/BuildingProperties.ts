@@ -1,4 +1,5 @@
 import {_DEBUG_FAST_CONSTRUCT} from "../game_state/Play";
+
 const DATA = {
     AdvancedPowerPlant: {
         cellPositions: [
@@ -61,6 +62,28 @@ const DATA = {
         constructable: false,
         constructable_units: [],
         life: 400,
+    },
+    GuardTower: {
+        cellPositions: [
+            [0, 0],
+            [1, 0],
+        ],
+        constructable: true,
+        constructable_units: [],
+        construction_time: 33,
+        life: 200,
+        options: {
+            shoot_cooldown: 50,
+            shoot_distance: 4,
+            shoot_power: 25,
+        },
+        power: -10,
+        price: 500,
+        requireds: [
+            'Barracks',
+        ],
+        sprite: 'Turret',
+        sprite_layer: 5,
     },
     PowerPlant: {
         cellPositions: [
@@ -168,5 +191,9 @@ export class BuildingProperties {
 
     static getLife(buildingName: string): number {
         return DATA[buildingName].life;
+    }
+
+    static getOption(buildingName: string, optionName: string): any {
+        return DATA[buildingName].options[optionName];
     }
 }

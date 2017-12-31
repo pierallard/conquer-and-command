@@ -1,5 +1,8 @@
 import {_DEBUG_FAST_CONSTRUCT} from "../game_state/Play";
 import {IMAGE_FORMAT} from "../sprite/UnitSprite";
+
+export const SHOOT_COOLDOWN_RATIO = 0.1;
+
 const DATA = {
     Grenadier: {
         allowed_by: ['Barracks'],
@@ -117,7 +120,7 @@ export class UnitProperties {
     }
 
     static getShootTime(unitName: string): number {
-        return DATA[unitName].shoot_cooldown / 10;
+        return DATA[unitName].shoot_cooldown * SHOOT_COOLDOWN_RATIO;
     }
 
     static getSlownessTime(unitName: string): number {

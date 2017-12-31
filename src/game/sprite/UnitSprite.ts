@@ -4,17 +4,7 @@ import {Shoot} from "./Shoot";
 import {Cell} from "../computing/Cell";
 import {SelectRectangle} from "./SelectRectangle";
 import {LifeRectangle} from "./LifeRectangle";
-
-export enum Rotation {
-    TOP = 1,
-    TOP_RIGHT,
-    RIGHT,
-    BOTTOM_RIGHT,
-    BOTTOM,
-    BOTTOM_LEFT,
-    LEFT,
-    TOP_LEFT
-}
+import {ROTATION, Rotation} from "../computing/Rotation";
 
 export enum IMAGE_FORMAT {
     THREE,
@@ -93,7 +83,7 @@ export class UnitSprite extends Phaser.Sprite {
     }
 
     private rotateTowards(cellPosition: PIXI.Point): void {
-        const rotation = this.getRotation(new Phaser.Point(
+        const rotation = Rotation.getRotation(new Phaser.Point(
             cellPosition.x - Cell.realToCell(this.x),
             cellPosition.y - Cell.realToCell(this.y)
         ));
@@ -105,81 +95,47 @@ export class UnitSprite extends Phaser.Sprite {
     }
 
     private doShootEffect(cellPosition: PIXI.Point) {
-        const rotation = this.getRotation(new Phaser.Point(
+        const rotation = Rotation.getRotation(new Phaser.Point(
             cellPosition.x - Cell.realToCell(this.x),
             cellPosition.y - Cell.realToCell(this.y)
         ));
         this.group.add(new Shoot(this.game, this.x, this.y, rotation));
     }
 
-    private loadRotation(rotation: Rotation) {
+    private loadRotation(rotation: ROTATION) {
         if (this.imageFormat === IMAGE_FORMAT.THREE) {
             switch (rotation) {
-                case Rotation.TOP: this.loadTexture(this.key, 1); break;
-                case Rotation.TOP_RIGHT: this.loadTexture(this.key, 2); break;
-                case Rotation.RIGHT: this.loadTexture(this.key, 5); break;
-                case Rotation.BOTTOM_RIGHT: this.loadTexture(this.key, 8); break;
-                case Rotation.BOTTOM: this.loadTexture(this.key, 7); break;
-                case Rotation.BOTTOM_LEFT: this.loadTexture(this.key, 6); break;
-                case Rotation.LEFT: this.loadTexture(this.key, 3); break;
-                case Rotation.TOP_LEFT: this.loadTexture(this.key, 0); break;
+                case ROTATION.TOP: this.loadTexture(this.key, 1); break;
+                case ROTATION.TOP_RIGHT: this.loadTexture(this.key, 2); break;
+                case ROTATION.RIGHT: this.loadTexture(this.key, 5); break;
+                case ROTATION.BOTTOM_RIGHT: this.loadTexture(this.key, 8); break;
+                case ROTATION.BOTTOM: this.loadTexture(this.key, 7); break;
+                case ROTATION.BOTTOM_LEFT: this.loadTexture(this.key, 6); break;
+                case ROTATION.LEFT: this.loadTexture(this.key, 3); break;
+                case ROTATION.TOP_LEFT: this.loadTexture(this.key, 0); break;
             }
         } else if (this.imageFormat === IMAGE_FORMAT.FIVE) {
             switch (rotation) {
-                case Rotation.TOP: this.loadTexture(this.key, 2); break;
-                case Rotation.TOP_RIGHT: this.loadTexture(this.key, 4); break;
-                case Rotation.RIGHT: this.loadTexture(this.key, 14); break;
-                case Rotation.BOTTOM_RIGHT: this.loadTexture(this.key, 24); break;
-                case Rotation.BOTTOM: this.loadTexture(this.key, 22); break;
-                case Rotation.BOTTOM_LEFT: this.loadTexture(this.key, 20); break;
-                case Rotation.LEFT: this.loadTexture(this.key, 10); break;
-                case Rotation.TOP_LEFT: this.loadTexture(this.key, 0); break;
+                case ROTATION.TOP: this.loadTexture(this.key, 2); break;
+                case ROTATION.TOP_RIGHT: this.loadTexture(this.key, 4); break;
+                case ROTATION.RIGHT: this.loadTexture(this.key, 14); break;
+                case ROTATION.BOTTOM_RIGHT: this.loadTexture(this.key, 24); break;
+                case ROTATION.BOTTOM: this.loadTexture(this.key, 22); break;
+                case ROTATION.BOTTOM_LEFT: this.loadTexture(this.key, 20); break;
+                case ROTATION.LEFT: this.loadTexture(this.key, 10); break;
+                case ROTATION.TOP_LEFT: this.loadTexture(this.key, 0); break;
             }
         } else {
             switch (rotation) {
-                case Rotation.TOP: this.loadTexture(this.key, 8); break;
-                case Rotation.TOP_RIGHT: this.loadTexture(this.key, 6); break;
-                case Rotation.RIGHT: this.loadTexture(this.key, 4); break;
-                case Rotation.BOTTOM_RIGHT: this.loadTexture(this.key, 2); break;
-                case Rotation.BOTTOM: this.loadTexture(this.key, 0); break;
-                case Rotation.BOTTOM_LEFT: this.loadTexture(this.key, 14); break;
-                case Rotation.LEFT: this.loadTexture(this.key, 12); break;
-                case Rotation.TOP_LEFT: this.loadTexture(this.key, 10); break;
+                case ROTATION.TOP: this.loadTexture(this.key, 8); break;
+                case ROTATION.TOP_RIGHT: this.loadTexture(this.key, 6); break;
+                case ROTATION.RIGHT: this.loadTexture(this.key, 4); break;
+                case ROTATION.BOTTOM_RIGHT: this.loadTexture(this.key, 2); break;
+                case ROTATION.BOTTOM: this.loadTexture(this.key, 0); break;
+                case ROTATION.BOTTOM_LEFT: this.loadTexture(this.key, 14); break;
+                case ROTATION.LEFT: this.loadTexture(this.key, 12); break;
+                case ROTATION.TOP_LEFT: this.loadTexture(this.key, 10); break;
             }
         }
-    }
-
-    private getRotation(vector: PIXI.Point): Rotation {
-        if (null === vector) {
-            return Rotation.TOP_LEFT;
-        }
-
-        const angle = Math.atan2(vector.y, vector.x);
-        if (angle > Math.PI / 8 * 7) {
-            return Rotation.LEFT;
-        }
-        if (angle > Math.PI / 8 * 5) {
-            return Rotation.BOTTOM_LEFT;
-        }
-        if (angle > Math.PI / 8 * 3) {
-            return Rotation.BOTTOM;
-        }
-        if (angle > Math.PI / 8) {
-            return Rotation.BOTTOM_RIGHT;
-        }
-        if (angle > Math.PI / 8 * -1) {
-            return Rotation.RIGHT;
-        }
-        if (angle > Math.PI / 8 * -3) {
-            return Rotation.TOP_RIGHT;
-        }
-        if (angle > Math.PI / 8 * -5) {
-            return Rotation.TOP;
-        }
-        if (angle > Math.PI / 8 * -7) {
-            return Rotation.TOP_LEFT;
-        }
-
-        return Rotation.LEFT;
     }
 }
