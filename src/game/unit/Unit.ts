@@ -27,12 +27,13 @@ export abstract class Unit implements Shootable, Positionnable {
     private key: string;
     private timerEvents: Phaser.Timer;
 
-    constructor(worldKnowledge: WorldKnowledge, cellPosition: PIXI.Point, player: Player, key: string) {
+    constructor(worldKnowledge: WorldKnowledge, cellPosition: PIXI.Point, player: Player) {
         this.worldKnowledge = worldKnowledge;
         this.cellPosition = cellPosition;
         this.player = player;
         this.state = new Stand(this);
-        this.key = key;
+        this.key = UnitProperties.getSprite(this.constructor.name, player.getId());
+        this.life = this.maxLife = UnitProperties.getLife(this.constructor.name);
     }
 
     create(game: Phaser.Game, group: Phaser.Group) {
@@ -67,9 +68,9 @@ export abstract class Unit implements Shootable, Positionnable {
         return this.selected;
     }
 
-    shoot(ennemy: Shootable): void {
-        this.unitSprite.doShoot(ennemy.getCellPositions()[0]);
-        ennemy.lostLife(10);
+    shoot(enemy: Shootable): void {
+        this.unitSprite.doShoot(enemy.getCellPositions()[0]);
+        enemy.lostLife(UnitProperties.getShootPower(this.constructor.name));
         this.freeze(UnitProperties.getShootTime(this.constructor.name) * Phaser.Timer.SECOND);
     }
 

@@ -47,7 +47,7 @@ const DATA = {
         speed: 8,
         sprite_layer: 6,
         sprites: ['Scout2', 'Scout2'],
-    }
+    },
 };
 
 /**
@@ -110,5 +110,9 @@ export class UnitProperties {
 
     static getPrice(unitName: string): number {
         return DATA[unitName].price;
+    }
+
+    static getShootPower(unitName: string): number {
+        return DATA[unitName].shoot_power;
     }
 }

@@ -2,7 +2,6 @@ import {State} from "./State";
 import {Stand} from "./Stand";
 import {AlternativePosition} from "../computing/AlternativePosition";
 import {Harvester} from "../unit/Harvester";
-import {ConstructionYard} from "../building/ConstructionYard";
 import {TiberiumPlant} from "../sprite/TiberiumPlant";
 import {WorldKnowledge} from "../map/WorldKnowledge";
 import {TiberiumSource} from "../building/TiberiumSource";

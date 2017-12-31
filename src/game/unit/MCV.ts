@@ -1,6 +1,5 @@
 import {Unit} from "./Unit";
 import {Player} from "../player/Player";
-import {UnitProperties} from "./UnitProperties";
 import {WorldKnowledge} from "../map/WorldKnowledge";
 import {MoveTo} from "../state/MoveTo";
 import {Follow} from "../state/Follow";
@@ -11,14 +10,7 @@ export class MCV extends Unit {
     private expanded: boolean = false;
 
     constructor(worldKnowledge: WorldKnowledge, cellPosition: PIXI.Point, player: Player) {
-        super(
-            worldKnowledge,
-            cellPosition,
-            player,
-            UnitProperties.getSprite(MCV.prototype.constructor.name, player.getId())
-        );
-
-        this.life = this.maxLife = UnitProperties.getLife(MCV.prototype.constructor.name);
+        super(worldKnowledge, cellPosition, player);
     }
 
     orderExpand() {

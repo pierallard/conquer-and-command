@@ -17,6 +17,7 @@ export abstract class ConstructableBuilding implements Building, Shootable {
         this.worldKnowledge = worldKnowledge;
         this.cellPosition = cellPosition;
         this.player = player;
+        this.life = BuildingProperties.getLife(this.constructor.name);
     }
 
     abstract create(game: Phaser.Game, group: Phaser.Group): void;

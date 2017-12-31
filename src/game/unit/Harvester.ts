@@ -15,14 +15,8 @@ export class Harvester extends Unit {
     private loading: number;
 
     constructor(worldKnowledge: WorldKnowledge, cellPosition: PIXI.Point, player: Player) {
-        super(
-            worldKnowledge,
-            cellPosition,
-            player,
-            UnitProperties.getSprite(Harvester.prototype.constructor.name, player.getId())
-        );
+        super(worldKnowledge, cellPosition, player);
 
-        this.life = this.maxLife = UnitProperties.getLife(Harvester.prototype.constructor.name);
         this.loading = 0;
     }
 

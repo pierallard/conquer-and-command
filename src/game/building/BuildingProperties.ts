@@ -141,4 +141,8 @@ export class BuildingProperties {
     static getPrice(buildingName: string): number {
         return DATA[buildingName].price;
     }
+
+    static getLife(buildingName: string): number {
+        return DATA[buildingName].life;
+    }
 }
