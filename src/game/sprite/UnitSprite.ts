@@ -18,7 +18,8 @@ export enum Rotation {
 
 export enum IMAGE_FORMAT {
     THREE,
-    FIVE
+    FIVE,
+    NINE,
 }
 
 export class UnitSprite extends Phaser.Sprite {
@@ -114,57 +115,36 @@ export class UnitSprite extends Phaser.Sprite {
     private loadRotation(rotation: Rotation) {
         if (this.imageFormat === IMAGE_FORMAT.THREE) {
             switch (rotation) {
-                case Rotation.TOP:
-                    this.loadTexture(this.key, 1);
-                    break;
-                case Rotation.TOP_RIGHT:
-                    this.loadTexture(this.key, 2);
-                    break;
-                case Rotation.RIGHT:
-                    this.loadTexture(this.key, 5);
-                    break;
-                case Rotation.BOTTOM_RIGHT:
-                    this.loadTexture(this.key, 8);
-                    break;
-                case Rotation.BOTTOM:
-                    this.loadTexture(this.key, 7);
-                    break;
-                case Rotation.BOTTOM_LEFT:
-                    this.loadTexture(this.key, 6);
-                    break;
-                case Rotation.LEFT:
-                    this.loadTexture(this.key, 3);
-                    break;
-                case Rotation.TOP_LEFT:
-                    this.loadTexture(this.key, 0);
-                    break;
+                case Rotation.TOP: this.loadTexture(this.key, 1); break;
+                case Rotation.TOP_RIGHT: this.loadTexture(this.key, 2); break;
+                case Rotation.RIGHT: this.loadTexture(this.key, 5); break;
+                case Rotation.BOTTOM_RIGHT: this.loadTexture(this.key, 8); break;
+                case Rotation.BOTTOM: this.loadTexture(this.key, 7); break;
+                case Rotation.BOTTOM_LEFT: this.loadTexture(this.key, 6); break;
+                case Rotation.LEFT: this.loadTexture(this.key, 3); break;
+                case Rotation.TOP_LEFT: this.loadTexture(this.key, 0); break;
+            }
+        } else if (this.imageFormat === IMAGE_FORMAT.FIVE) {
+            switch (rotation) {
+                case Rotation.TOP: this.loadTexture(this.key, 2); break;
+                case Rotation.TOP_RIGHT: this.loadTexture(this.key, 4); break;
+                case Rotation.RIGHT: this.loadTexture(this.key, 14); break;
+                case Rotation.BOTTOM_RIGHT: this.loadTexture(this.key, 24); break;
+                case Rotation.BOTTOM: this.loadTexture(this.key, 22); break;
+                case Rotation.BOTTOM_LEFT: this.loadTexture(this.key, 20); break;
+                case Rotation.LEFT: this.loadTexture(this.key, 10); break;
+                case Rotation.TOP_LEFT: this.loadTexture(this.key, 0); break;
             }
         } else {
             switch (rotation) {
-                case Rotation.TOP:
-                    this.loadTexture(this.key, 2);
-                    break;
-                case Rotation.TOP_RIGHT:
-                    this.loadTexture(this.key, 4);
-                    break;
-                case Rotation.RIGHT:
-                    this.loadTexture(this.key, 14);
-                    break;
-                case Rotation.BOTTOM_RIGHT:
-                    this.loadTexture(this.key, 24);
-                    break;
-                case Rotation.BOTTOM:
-                    this.loadTexture(this.key, 22);
-                    break;
-                case Rotation.BOTTOM_LEFT:
-                    this.loadTexture(this.key, 20);
-                    break;
-                case Rotation.LEFT:
-                    this.loadTexture(this.key, 10);
-                    break;
-                case Rotation.TOP_LEFT:
-                    this.loadTexture(this.key, 0);
-                    break;
+                case Rotation.TOP: this.loadTexture(this.key, 8); break;
+                case Rotation.TOP_RIGHT: this.loadTexture(this.key, 6); break;
+                case Rotation.RIGHT: this.loadTexture(this.key, 4); break;
+                case Rotation.BOTTOM_RIGHT: this.loadTexture(this.key, 2); break;
+                case Rotation.BOTTOM: this.loadTexture(this.key, 0); break;
+                case Rotation.BOTTOM_LEFT: this.loadTexture(this.key, 14); break;
+                case Rotation.LEFT: this.loadTexture(this.key, 12); break;
+                case Rotation.TOP_LEFT: this.loadTexture(this.key, 10); break;
             }
         }
     }

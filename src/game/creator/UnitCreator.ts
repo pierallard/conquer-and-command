@@ -8,6 +8,7 @@ import {MCV} from "../unit/MCV";
 import {AlternativePosition} from "../computing/AlternativePosition";
 import {MinigunInfantry} from "../unit/MinigunInfantry";
 import {Grenadier} from "../unit/Grenadier";
+import {RocketSoldier} from "../unit/RocketSoldier";
 
 export class UnitCreator extends AbstractCreator {
     private inProductionUnits: string[];
@@ -75,6 +76,10 @@ export class UnitCreator extends AbstractCreator {
                 case 'Grenadier':
                     let grenadier = new Grenadier(this.worldKnowledge, cellPosition, this.player);
                     this.worldKnowledge.addUnit(grenadier);
+                    break;
+                case 'RocketSoldier':
+                    let rocketSoldier = new RocketSoldier(this.worldKnowledge, cellPosition, this.player);
+                    this.worldKnowledge.addUnit(rocketSoldier);
                     break;
                 default:
                     throw "Unable to build unit " + unitName;

@@ -67,6 +67,19 @@ const DATA = {
         sprite_layer: 6,
         sprites: ['Scout2', 'Scout2'],
     },
+    RocketSoldier: {
+        allowed_by: ['Barracks'],
+        construction_time: 17,
+        image_format: IMAGE_FORMAT.NINE,
+        life: 25,
+        price: 300,
+        shoot_cooldown: 60,
+        shoot_distance: 4,
+        shoot_power: 30,
+        speed: 6,
+        sprite_layer: 14,
+        sprites: ['Tank3', 'Tank3'],
+    },
 };
 
 /**
