@@ -194,7 +194,7 @@ export abstract class Unit implements Shootable, Positionnable {
         this.unitSprite.alpha = value ? 1 : 0;
     }
 
-    protected getShootSource(dest: PIXI.Point): PIXI.Point {
+    protected getShootSource(cellDest: PIXI.Point): PIXI.Point {
         return new PIXI.Point(Cell.cellToReal(this.cellPosition.x), Cell.cellToReal(this.cellPosition.y));
     }
 

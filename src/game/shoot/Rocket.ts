@@ -1,6 +1,7 @@
 import {Rotation, ROTATION} from "../computing/Rotation";
 import {SCALE} from "../game_state/Play";
 import {Explosion} from "../sprite/Explosion";
+import {Distance} from "../computing/Distance";
 
 export class Rocket extends Phaser.Sprite {
     private static getRocketFrame(rotation: ROTATION) {
@@ -27,7 +28,7 @@ export class Rocket extends Phaser.Sprite {
         this.game.add.tween(this).to({
             x: dest.x,
             y: dest.y,
-        }, 800, Phaser.Easing.Default, true).onComplete.add(() => {
+        }, Distance.to(source, dest) * 4, Phaser.Easing.Default, true).onComplete.add(() => {
             let explosion = new Explosion(this.game, dest.x, dest.y);
             group.add(explosion);
             this.destroy(true);
