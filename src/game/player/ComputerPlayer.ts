@@ -25,7 +25,11 @@ export class ComputerPlayer extends Player {
     }
 
     private getRandomCellNearBase(): PIXI.Point {
-        const cellPos = this.worldKnowledge.getPlayerBuildings(this, 'ConstructionYard')[0].getCellPositions()[0];
+        const constructionYard = this.worldKnowledge.getPlayerBuildings(this, 'ConstructionYard')[0];
+        if (!constructionYard) {
+            return null;
+        }
+        const cellPos = constructionYard.getCellPositions()[0];
         return new PIXI.Point(
             cellPos.x + (2 + Math.floor(Math.random() * 3)) * (Math.random() > 0.5 ? -1 : 1),
             cellPos.y + (2 + Math.floor(Math.random() * 3)) * (Math.random() > 0.5 ? -1 : 1)
@@ -35,7 +39,9 @@ export class ComputerPlayer extends Player {
     private constructWhenYouCan(buildingName: string) {
         if (this.worldKnowledge.getPlayerBuildings(this, buildingName).length === 0) {
             if (this.order().getBuildingCreator().isProduced(buildingName)) {
-                this.order().createBuilding(buildingName, this.getRandomCellNearBase());
+                if (this.getRandomCellNearBase()) {
+                    this.order().createBuilding(buildingName, this.getRandomCellNearBase());
+                }
             } else {
                 this.order().productBuilding(buildingName);
             }
