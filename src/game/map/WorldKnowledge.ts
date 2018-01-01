@@ -1,5 +1,5 @@
 import {BuildingRepository} from "../repository/BuildingRepository";
-import {Player} from "../player/Player";
+import {Player, START_POWER} from "../player/Player";
 import {Building} from "../building/Building";
 import {Unit} from "../unit/Unit";
 import {UnitRepository} from "../repository/UnitRepository";
@@ -8,6 +8,7 @@ import {GeneratedGround} from "./GeneratedGround";
 import {Shootable} from "../Shootable";
 import {MiniAppear} from "../sprite/MiniAppear";
 import {TiberiumPlant} from "../sprite/TiberiumPlant";
+import {BuildingProperties} from "../building/BuildingProperties";
 
 export class WorldKnowledge {
     private game: Phaser.Game;
@@ -185,5 +186,17 @@ export class WorldKnowledge {
 
     getGrounds(): TiberiumPlant[] {
         return this.groundRepository;
+    }
+
+    getPlayerNeededPower(player: Player): number {
+        return -this.getPlayerBuildings(player).reduce((power, building) => {
+            return power + Math.min(0, BuildingProperties.getPower(building.constructor.name));
+        }, 0);
+    }
+
+    getPlayerProvidedPower(player: Player): number {
+        return START_POWER + this.getPlayerBuildings(player).reduce((power, building) => {
+            return power + Math.max(0, BuildingProperties.getPower(building.constructor.name));
+        }, 0);
     }
 }

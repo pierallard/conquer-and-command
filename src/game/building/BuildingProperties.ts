@@ -62,6 +62,7 @@ const DATA = {
         constructable: false,
         constructable_units: [],
         life: 400,
+        power: -20,
     },
     GuardTower: {
         cellPositions: [
@@ -195,5 +196,9 @@ export class BuildingProperties {
 
     static getOption(buildingName: string, optionName: string): any {
         return DATA[buildingName].options[optionName];
+    }
+
+    static getPower(buildingName: string): number {
+        return DATA[buildingName].power || 0;
     }
 }

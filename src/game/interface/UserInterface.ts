@@ -6,8 +6,9 @@ import {BuildingPositioner} from "./BuildingPositionner";
 import {Selector} from "./Selector";
 import {UIUnitCreator} from "../creator/UIUnitCreator";
 import {GAME_WIDTH} from "../../app";
+import {PowerInterface} from "./PowerInterface";
 
-export const INTERFACE_WIDTH = 160;
+export const INTERFACE_WIDTH = 94 * 2;
 
 export class UserInterface {
     private UIBuildingCreator: UIBuildingCreator;
@@ -18,6 +19,7 @@ export class UserInterface {
     private selector: Selector;
     private buildingPositionner: BuildingPositioner;
     private mineralText: Phaser.Text;
+    private powerInterface: PowerInterface;
 
     constructor(worldKnowledge: WorldKnowledge, player: Player) {
         this.player = player;
@@ -26,6 +28,7 @@ export class UserInterface {
         this.UIBuildingCreator = new UIBuildingCreator(worldKnowledge, this.player, this.buildingPositionner);
         this.UIUnitCreator = new UIUnitCreator(worldKnowledge, this.player);
         this.miniMap = new MiniMap(worldKnowledge);
+        this.powerInterface = new PowerInterface(worldKnowledge, this.player);
     }
 
     create(game: Phaser.Game) {
@@ -51,11 +54,14 @@ export class UserInterface {
             { align: 'center', fill: "#ffffff", font: '24px 000webfont' }
         );
         this.interfaceGroup.add(this.mineralText);
+
+        this.powerInterface.create(game, this.interfaceGroup);
     }
 
     update() {
         this.selector.update();
         this.miniMap.update();
+        this.powerInterface.update();
         this.mineralText.text = this.player.getMinerals() + '';
     }
 }
