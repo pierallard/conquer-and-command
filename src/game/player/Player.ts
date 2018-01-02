@@ -3,7 +3,7 @@ import {CommandCenter} from "./CommandCenter";
 import {BuildingCreator} from "../creator/BuildingCreator";
 import {UnitCreator} from "../creator/UnitCreator";
 
-const START_MINERALS = 3000;
+const START_MINERALS = 10000;
 export const START_POWER = 10;
 
 export abstract class Player {
