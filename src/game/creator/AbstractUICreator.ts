@@ -58,20 +58,9 @@ export abstract class AbstractUICreator {
     }
 
     updateAllowedItems(allowedItems: string[]) {
-        allowedItems.forEach((allowedItem) => {
-            if (!this.buttons.some((button) => {
-                return button.getName() === allowedItem;
-            })) {
-                this.createButton(allowedItem);
-            }
-        });
-        this.refreshButtons();
+        this.createButtons(allowedItems);
         this.buttons.forEach((button) => {
-            if (allowedItems.indexOf(button.getName()) > -1) {
-                button.enable();
-            } else {
-                button.disable();
-            }
+            button.setAllowed(allowedItems.indexOf(button.getName()) > -1);
         });
     }
 
@@ -97,7 +86,7 @@ export abstract class AbstractUICreator {
         return this.player;
     }
 
-    getUIText(itemName: string) {
+    static getUIText(itemName: string) {
         return itemName.split('').reduce((previousText, letter) => {
             if (/^[A-Z]$/.test(letter)) {
                 if (previousText !== '') {
@@ -136,57 +125,53 @@ export abstract class AbstractUICreator {
         return null;
     }
 
-    private enableBottomButton(value: boolean): void {
-        if (value) {
-            this.bottomButton.loadTexture(this.bottomButton.key, 1);
-        } else {
-            this.bottomButton.loadTexture(this.bottomButton.key, 3);
-        }
-        this.bottomButton.inputEnabled = value;
-    }
-
-    private enableTopButton(value: boolean): void {
-        if (value) {
-            this.topButton.loadTexture(this.bottomButton.key, 0);
-        } else {
-            this.topButton.loadTexture(this.bottomButton.key, 2);
-        }
-        this.topButton.inputEnabled = value;
-    }
-
     private goDown() {
         this.index += 1;
-        this.refreshButtons();
         this.buttons.forEach((button) => {
             button.goUp();
         });
+        this.updateVisibleButtons();
     }
 
     private goUp() {
         this.index -= 1;
-        this.refreshButtons();
         this.buttons.forEach((button) => {
             button.goDown();
         });
+        this.updateVisibleButtons();
     }
 
-    private refreshButtons() {
+    private updateVisibleButtons() {
         let displayTop = false;
         let displayBottom = false;
         for (let i = 0; i < this.buttons.length; i++) {
             if (i < this.index) {
-                this.buttons[i].hide();
+                this.buttons[i].setVisible(false);
                 displayTop = true;
             } else if (i > this.index + 4) {
-                this.buttons[i].hide();
+                this.buttons[i].setVisible(false);
                 displayBottom = true;
             } else {
-                this.buttons[i].show();
+                this.buttons[i].setVisible(true);
             }
         }
 
-        this.enableTopButton(displayTop);
-        this.enableBottomButton(displayBottom);
+        this.topButton.loadTexture(this.topButton.key, displayTop ? 0 : 2);
+        this.topButton.inputEnabled = displayTop;
+
+        this.bottomButton.loadTexture(this.bottomButton.key, displayBottom ? 1 : 3);
+        this.bottomButton.inputEnabled = displayBottom;
+    }
+
+    private createButtons(itemNames: string[]) {
+        itemNames.forEach((itemName) => {
+            if (!this.buttons.some((button) => {
+                    return button.getName() === itemName;
+                })) {
+                this.createButton(itemName);
+            }
+        });
+        this.updateVisibleButtons();
     }
 }
 
@@ -196,7 +181,7 @@ class CreationButton {
     private button: Phaser.Sprite;
     private itemSprite: Phaser.Sprite;
     private onProductFinished: any;
-    private creator: AbstractUICreator;
+    private uiCreator: AbstractUICreator;
     private constructAllowed: boolean;
     private text: Phaser.Text;
 
@@ -214,7 +199,7 @@ class CreationButton {
     ) {
         this.itemName = itemName;
         this.onProductFinished = onProductFinished;
-        this.creator = creator;
+        this.uiCreator = creator;
 
         this.button = new Phaser.Sprite(game, x, top, 'buttons', 2);
         this.button.scale.setTo(SCALE, SCALE);
@@ -239,7 +224,7 @@ class CreationButton {
             game,
             x,
             top,
-            creator.getUIText(this.itemName),
+            AbstractUICreator.getUIText(this.itemName),
             { align: 'center', fill: "#ffffff", font: '14px 000webfont' }
         );
         group.add(this.text);
@@ -254,8 +239,8 @@ class CreationButton {
         this.button.loadTexture(this.button.key, 3);
         const tween = this.progress.startProgress(constructionTime * Phaser.Timer.SECOND);
         tween.onComplete.add(() => {
-            this.onProductFinished.bind(this.creator)(this.itemName);
-        }, this.creator);
+            this.onProductFinished.bind(this.uiCreator)(this.itemName);
+        }, this.uiCreator);
     }
 
     getName() {
@@ -286,27 +271,15 @@ class CreationButton {
         }
     }
 
-    disable() {
+    setAllowed(value: boolean): void {
         this.applyAllElement((element) => {
-            element.alpha = 0.5;
+            element.alpha = value ? 1 : 0.5;
         });
     }
 
-    enable() {
+    setVisible(value: boolean): void {
         this.applyAllElement((element) => {
-            element.alpha = 1;
-        });
-    }
-
-    hide() {
-        this.applyAllElement((element) => {
-            element.visible = false;
-        });
-    }
-
-    show() {
-        this.applyAllElement((element) => {
-            element.visible = true;
+            element.visible = value;
         });
     }
 
