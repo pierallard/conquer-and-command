@@ -15,8 +15,22 @@ export class UIBuildingCreator extends AbstractUICreator {
         this.buildingPositioner = buildingPositionner;
     }
 
-    getConstructableItems(): string[] {
-        return BuildingProperties.getConstructableBuildings();
+    update() {
+        super.update();
+
+        const productionStatus = this.worldKnowledge.getBuildingProductionStatus(this.player);
+        this.buttons.forEach((button) => {
+            if (productionStatus && button.getName() === productionStatus.getItemName()) {
+                button.updateProgress(productionStatus.percentage);
+            } else {
+                button.setAvailable(this.worldKnowledge.canProductBuilding(this.player, button.getName()));
+                button.updateProgress(0);
+            }
+        });
+    }
+
+    getPossibleButtons(): string[] {
+        return this.worldKnowledge.getPlayerAllowedBuildings(this.player);
     }
 
     getSpriteKey(itemName: string): string {
@@ -27,21 +41,11 @@ export class UIBuildingCreator extends AbstractUICreator {
         return BuildingProperties.getSpriteLayer(itemName);
     }
 
-    getConstructionTime(itemName: string): number {
-        return BuildingProperties.getConstructionTime(itemName);
-    }
-
-    onProductFinish(itemName: string) {
-        return this.setPendingButton(itemName);
-    }
-
     onClickFunction(itemName: string) {
-        if (this.player.order().getBuildingCreator().isProduced(itemName)) {
-            this.buildingPositioner.activate(this.player.order().getBuildingCreator(), itemName);
-        } else if (this.player.order().getBuildingCreator().isProducing(itemName)) {
-            // Do nothing
-        } else if (this.player.order().getBuildingCreator().isAllowed(itemName)) {
-            this.player.order().productBuilding(itemName);
+        if (this.worldKnowledge.isBuildingProduced(this.player, itemName)) {
+            this.buildingPositioner.activate(itemName);
+        } else {
+            this.worldKnowledge.productBuilding(this.player, itemName);
         }
     }
 }

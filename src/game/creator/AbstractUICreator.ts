@@ -1,13 +1,26 @@
 import {Player} from "../player/Player";
 import {WorldKnowledge} from "../map/WorldKnowledge";
 import {SCALE} from "../game_state/Play";
-import {AbstractCreator} from "./AbstractCreator";
 
 const WIDTH = 33;
 const HEIGHT = 36;
 const TOP = 244;
 
 export abstract class AbstractUICreator {
+    static getUIText(itemName: string) {
+        return itemName.split('').reduce((previousText, letter) => {
+            if (/^[A-Z]$/.test(letter)) {
+                if (previousText !== '') {
+                    return previousText + "\n" + letter;
+                } else {
+                    return letter;
+                }
+            } else {
+                return previousText + letter;
+            }
+        }, '');
+    }
+
     protected player: Player;
     protected worldKnowledge: WorldKnowledge;
     protected buttons: CreationButton[];
@@ -32,11 +45,9 @@ export abstract class AbstractUICreator {
 
     abstract onClickFunction(itemName: string);
 
-    abstract onProductFinish(itemName: string);
+    abstract getPossibleButtons(): string[];
 
-    abstract getConstructionTime(itemName: string): number;
-
-    create(game: Phaser.Game, group: Phaser.Group, creator: AbstractCreator) {
+    create(game: Phaser.Game, group: Phaser.Group) {
         this.game = game;
         this.group = group;
 
@@ -53,51 +64,24 @@ export abstract class AbstractUICreator {
 
         group.add(this.bottomButton);
         group.add(this.topButton);
-
-        creator.create(game, this);
     }
 
-    updateAllowedItems(allowedItems: string[]) {
-        this.createButtons(allowedItems);
-        this.buttons.forEach((button) => {
-            button.setAllowed(allowedItems.indexOf(button.getName()) > -1);
-        });
-    }
-
-    updateBuyableItems(buyableItems: string[]) {
-        this.buttons.forEach((button) => {
-            button.allowConstruct(buyableItems.indexOf(button.getName()) > -1);
-        });
-    }
-
-    resetButton(itemName: string) {
-        this.getButton(itemName).reset();
-    }
-
-    setPendingButton(itemName: string) {
-        this.getButton(itemName).setPending();
-    }
-
-    runProduction(itemName: string) {
-        this.getButton(itemName).runProduction(this.getConstructionTime(itemName));
+    update() {
+        this.createButtons(this.getPossibleButtons());
     }
 
     getPlayer(): Player {
         return this.player;
     }
 
-    static getUIText(itemName: string) {
-        return itemName.split('').reduce((previousText, letter) => {
-            if (/^[A-Z]$/.test(letter)) {
-                if (previousText !== '') {
-                    return previousText + "\n" + letter;
-                } else {
-                    return letter;
-                }
-            } else {
-                return previousText + letter;
+    protected getButton(itemName: string): CreationButton {
+        for (let i = 0; i < this.buttons.length; i++) {
+            if (this.buttons[i].getName() === itemName) {
+                return this.buttons[i];
             }
-        }, '');
+        }
+
+        return null;
     }
 
     private createButton(itemName: string) {
@@ -110,19 +94,8 @@ export abstract class AbstractUICreator {
             this.x,
             this.getSpriteKey(itemName),
             this.getSpriteLayer(itemName),
-            this.onClickFunction,
-            this.onProductFinish
+            this.onClickFunction
         ));
-    }
-
-    private getButton(itemName: string): CreationButton {
-        for (let i = 0; i < this.buttons.length; i++) {
-            if (this.buttons[i].getName() === itemName) {
-                return this.buttons[i];
-            }
-        }
-
-        return null;
     }
 
     private goDown() {
@@ -180,7 +153,6 @@ class CreationButton {
     private itemName: string;
     private button: Phaser.Sprite;
     private itemSprite: Phaser.Sprite;
-    private onProductFinished: any;
     private uiCreator: AbstractUICreator;
     private constructAllowed: boolean;
     private text: Phaser.Text;
@@ -194,11 +166,9 @@ class CreationButton {
         x: number,
         spriteKey: string,
         spriteLayer: number,
-        onClickFunction: any,
-        onProductFinished: any
+        onClickFunction: any
     ) {
         this.itemName = itemName;
-        this.onProductFinished = onProductFinished;
         this.uiCreator = creator;
 
         this.button = new Phaser.Sprite(game, x, top, 'buttons', 2);
@@ -235,46 +205,17 @@ class CreationButton {
         this.constructAllowed = true;
     }
 
-    runProduction(constructionTime) {
-        this.button.loadTexture(this.button.key, 3);
-        const tween = this.progress.startProgress(constructionTime * Phaser.Timer.SECOND);
-        tween.onComplete.add(() => {
-            this.onProductFinished.bind(this.uiCreator)(this.itemName);
-        }, this.uiCreator);
+    updateProgress(percentage: number) {
+        this.setPending(percentage > 0);
+        this.progress.setProgress(percentage);
     }
 
     getName() {
         return this.itemName;
     }
 
-    reset() {
-        this.progress.resetProgress();
-        if (this.constructAllowed) {
-            this.button.loadTexture(this.button.key, 2);
-        } else {
-            this.button.loadTexture(this.button.key, 0);
-        }
-    }
-
-    setPending() {
-        this.button.loadTexture(this.button.key, 3);
-    }
-
-    allowConstruct(value: boolean) {
-        this.constructAllowed = value;
-        if (!value) {
-            if (this.button.frame === 2) {
-                this.button.loadTexture(this.button.key, 0);
-            }
-        } else {
-            this.button.loadTexture(this.button.key, 2);
-        }
-    }
-
-    setAllowed(value: boolean): void {
-        this.applyAllElement((element) => {
-            element.alpha = value ? 1 : 0.5;
-        });
+    setPending(value: boolean) {
+        this.button.loadTexture(this.button.key, value ? 3 : this.constructAllowed ? 2 : 0);
     }
 
     setVisible(value: boolean): void {
@@ -293,6 +234,10 @@ class CreationButton {
         this.applyAllElement((element) => {
             element.y = element.y - HEIGHT * SCALE;
         });
+    }
+
+    setAvailable(value: boolean) {
+        this.constructAllowed = value;
     }
 
     private applyAllElement(a: any) {
@@ -321,12 +266,12 @@ class CreationButtonProgress extends Phaser.Sprite {
         this.crop(this.myCropRect, false);
     }
 
-    startProgress(time: number): Phaser.Tween {
-        return this.game.add.tween(this.cropRect).to({ width: WIDTH }, time, "Linear", true);
-    }
-
     resetProgress() {
         this.cropRect.width = 0;
         this.crop(this.myCropRect, false);
+    }
+
+    setProgress(percentage: number) {
+        this.cropRect.width = WIDTH * percentage;
     }
 }

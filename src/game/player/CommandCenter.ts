@@ -37,7 +37,6 @@ export class CommandCenter {
             !this.buildingCreator.isProducing(buildingName) &&
             this.buildingCreator.hasMineralsToProduct(buildingName)
         ) {
-            this.player.removeMinerals(BuildingProperties.getPrice(buildingName));
             this.buildingCreator.runProduction(buildingName);
         }
     }
@@ -46,24 +45,6 @@ export class CommandCenter {
         if (this.buildingCreator.isProduced(buildingName)) {
             this.buildingCreator.runCreation(buildingName, cell);
         }
-    }
-
-    getBuildingCreator(): BuildingCreator {
-        return this.buildingCreator;
-    }
-
-    getUnitCreator(): UnitCreator {
-        return this.unitCreator;
-    }
-
-    updateAllowedUnitsAndBuildings() {
-        this.unitCreator.updateAllowedItems();
-        this.buildingCreator.updateAllowedItems();
-    }
-
-    updateBuyableUnitsAndbuilding() {
-        this.unitCreator.updateBuyableItems();
-        this.buildingCreator.updateBuyableItems();
     }
 
     productUnit(unitName: string) {

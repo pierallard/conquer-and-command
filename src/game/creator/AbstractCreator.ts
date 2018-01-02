@@ -1,38 +1,38 @@
-import {AbstractUICreator} from "./AbstractUICreator";
 import {WorldKnowledge} from "../map/WorldKnowledge";
 import {Player} from "../player/Player";
 
 export abstract class AbstractCreator {
     protected timerEvent: Phaser.Timer;
-    protected uiCreator: AbstractUICreator = null;
     protected worldKnowledge: WorldKnowledge;
     protected player: Player;
+    protected productionStatus: ProductionStatus = null;
+    protected game: Phaser.Game;
 
     constructor(worldKnowledge: WorldKnowledge, player: Player) {
         this.worldKnowledge = worldKnowledge;
         this.player = player;
     }
 
-    abstract getProducibles(): string[];
-
     abstract getRequiredBuildings(itemName: string): string[];
 
     abstract hasMineralsToProduct(itemName: string): boolean;
 
-    create(game: Phaser.Game, uiCreator: AbstractUICreator = null) {
+    abstract canProduct(itemName: string): boolean;
+
+    abstract runProduction(itemName: string): void;
+
+    create(game: Phaser.Game) {
         this.timerEvent = game.time.events;
-        this.uiCreator = uiCreator;
+        this.game = game;
     }
 
-    updateAllowedItems() {
-        if (this.uiCreator) {
-            this.uiCreator.updateAllowedItems(this.getAlloweds());
-        }
+    getPlayer(): Player {
+        return this.player;
     }
 
-    updateBuyableItems() {
-        if (this.uiCreator) {
-            this.uiCreator.updateBuyableItems(this.getBuyables());
+    orderProduction(itemName) {
+        if (this.canProduct(itemName)) {
+            return this.runProduction(itemName);
         }
     }
 
@@ -47,15 +47,39 @@ export abstract class AbstractCreator {
         return found;
     }
 
-    private getAlloweds() {
-        return this.getProducibles().filter((itemName) => {
-            return this.isAllowed(itemName);
-        });
+    getProductionStatus(): ProductionStatus {
+        return this.productionStatus;
     }
 
-    private getBuyables() {
-        return this.getProducibles().filter((itemName) => {
-            return this.hasMineralsToProduct(itemName);
-        });
+    isProduced(itemName: string) {
+        return this.productionStatus &&
+            this.productionStatus.getItemName() === itemName &&
+            this.productionStatus.percentage >= 1;
+    }
+
+    isProducing(itemName: string) {
+        return this.productionStatus &&
+            this.productionStatus.getItemName() === itemName;
+    }
+
+    isProducingAny() {
+        return null !== this.productionStatus;
+    }
+}
+
+export class ProductionStatus {
+    public percentage: number;
+    private itemName: string;
+
+    constructor(itemName: string, duration: number, game: Phaser.Game) {
+        this.itemName = itemName;
+        this.percentage = 0;
+        game.add.tween(this).to({
+            percentage: 1,
+        }, duration, Phaser.Easing.Default, true);
+    }
+
+    getItemName(): string {
+        return this.itemName;
     }
 }

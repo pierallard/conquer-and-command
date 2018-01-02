@@ -10,8 +10,22 @@ export class UIUnitCreator extends AbstractUICreator {
         super(worldKnowledge, player, X);
     }
 
-    getConstructableItems(): string[] {
-        return UnitProperties.getConstructableUnits();
+    update() {
+        super.update();
+
+        const productionStatus = this.worldKnowledge.getUnitProductionStatus(this.player);
+        this.buttons.forEach((button) => {
+            if (productionStatus && button.getName() === productionStatus.getItemName()) {
+                button.updateProgress(productionStatus.percentage);
+            } else {
+                button.setAvailable(this.worldKnowledge.canProductUnit(this.player, button.getName()));
+                button.updateProgress(0);
+            }
+        });
+    }
+
+    getPossibleButtons(): string[] {
+        return this.worldKnowledge.getPlayerAllowedUnits(this.player);
     }
 
     getSpriteKey(itemName: string): string {
@@ -22,19 +36,7 @@ export class UIUnitCreator extends AbstractUICreator {
         return UnitProperties.getSpriteLayer(itemName);
     }
 
-    getConstructionTime(itemName: string): number {
-        return UnitProperties.getConstructionTime(itemName);
-    }
-
-    onProductFinish(itemName: string) {
-        return this.resetButton(itemName);
-    }
-
     onClickFunction(itemName: string) {
-        if (this.player.order().getUnitCreator().isProducing(itemName)) {
-            // Do nothing
-        } else if (this.player.order().getUnitCreator().isAllowed(itemName)) {
-            this.player.order().productUnit(itemName);
-        }
+        this.worldKnowledge.productUnit(this.player, itemName);
     }
 }

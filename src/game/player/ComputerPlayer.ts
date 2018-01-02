@@ -38,7 +38,7 @@ export class ComputerPlayer extends Player {
 
     private constructWhenYouCan(buildingName: string) {
         if (this.worldKnowledge.getPlayerBuildings(this, buildingName).length === 0) {
-            if (this.order().getBuildingCreator().isProduced(buildingName)) {
+            if (this.worldKnowledge.isBuildingProduced(this, buildingName)) {
                 if (this.getRandomCellNearBase()) {
                     this.order().createBuilding(buildingName, this.getRandomCellNearBase());
                 }

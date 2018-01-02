@@ -1,7 +1,5 @@
 import {WorldKnowledge} from "../map/WorldKnowledge";
 import {CommandCenter} from "./CommandCenter";
-import {BuildingCreator} from "../creator/BuildingCreator";
-import {UnitCreator} from "../creator/UnitCreator";
 
 const START_MINERALS = 10000;
 export const START_POWER = 10;
@@ -28,30 +26,16 @@ export abstract class Player {
         return this.id;
     }
 
-    order() {
+    order(): CommandCenter {
         return this.commandCenter;
-    }
-
-    getBuildingCreator(): BuildingCreator {
-        return this.commandCenter.getBuildingCreator();
-    }
-
-    getUnitCreator(): UnitCreator {
-        return this.commandCenter.getUnitCreator();
-    }
-
-    updateAllowedUnitsAndBuildings() {
-        this.commandCenter.updateAllowedUnitsAndBuildings();
     }
 
     addMinerals(amount: number) {
         this.minerals = Math.round(this.minerals + amount);
-        this.commandCenter.updateBuyableUnitsAndbuilding();
     }
 
     removeMinerals(amount: number) {
         this.minerals = Math.round(this.minerals - amount);
-        this.commandCenter.updateBuyableUnitsAndbuilding();
     }
 
     getMinerals(): number {
