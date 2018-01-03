@@ -3,7 +3,7 @@ import {WorldKnowledge} from "../map/WorldKnowledge";
 import {Player} from "../player/Player";
 import {PowerPlant} from "../building/PowerPlant";
 import {Barracks} from "../building/Barracks";
-import {AbstractCreator} from "./AbstractCreator";
+import {AbstractCreator, ProductionStatus} from "./AbstractCreator";
 import {TiberiumRefinery} from "../building/TiberiumRefinery";
 import {Harvester} from "../unit/Harvester";
 import {AlternativePosition} from "../computing/AlternativePosition";
@@ -12,44 +12,33 @@ import {AdvancedPowerPlant} from "../building/AdvancedPowerPlant";
 import {GuardTower} from "../building/GuardTower";
 
 export class BuildingCreator extends AbstractCreator {
-    private producedBuildings: string[];
-    private inProductionBuildings: string[];
-
     constructor(worldKnowledge: WorldKnowledge, player: Player) {
         super(worldKnowledge, player);
-        this.producedBuildings = [];
-        this.inProductionBuildings = [];
     }
 
-    getProducibles(): string[] {
-        return BuildingProperties.getConstructableBuildings();
+    getAllowedBuildings(): string[] {
+        return BuildingProperties.getConstructableBuildings().filter((buildingName) => {
+            return this.isAllowed(buildingName);
+        });
     }
 
     getRequiredBuildings(itemName: string): string[] {
         return BuildingProperties.getRequiredBuildings(itemName);
     }
 
+    canProduct(itemName: string): boolean {
+        return !this.isProducingAny() &&
+            this.isAllowed(itemName) &&
+            this.hasMineralsToProduct(itemName);
+    }
+
     runProduction(buildingName: string) {
-        this.inProductionBuildings.push(buildingName);
-        this.timerEvent.add(BuildingProperties.getConstructionTime(buildingName) * Phaser.Timer.SECOND, () => {
-            let index = this.inProductionBuildings.indexOf(buildingName);
-            if (index > -1) {
-                this.inProductionBuildings.splice(index, 1);
-            }
-            this.producedBuildings.push(buildingName);
-        });
-
-        if (this.uiCreator !== null) {
-            this.uiCreator.runProduction(buildingName);
-        }
-    }
-
-    isProduced(buildingName: string) {
-        return this.producedBuildings.indexOf(buildingName) > -1;
-    }
-
-    isProducing(buildingName: string) {
-        return this.inProductionBuildings.indexOf(buildingName) > -1;
+        this.player.removeMinerals(BuildingProperties.getPrice(buildingName));
+        this.productionStatus = new ProductionStatus(
+            buildingName,
+            BuildingProperties.getConstructionTime(buildingName) * Phaser.Timer.SECOND,
+            this.game
+        );
     }
 
     hasMineralsToProduct(buildingName: string) {
@@ -57,6 +46,8 @@ export class BuildingCreator extends AbstractCreator {
     }
 
     runCreation(buildingName: string, cell: PIXI.Point) {
+        this.productionStatus = null;
+
         switch (buildingName) {
             case 'PowerPlant':
                 let powerPlant = new PowerPlant(this.worldKnowledge, cell, this.player);
@@ -94,16 +85,6 @@ export class BuildingCreator extends AbstractCreator {
                 break;
             default:
                 throw "Unable to build building " + buildingName;
-        }
-
-        this.player.order().updateAllowedUnitsAndBuildings();
-        if (this.uiCreator) {
-            this.uiCreator.resetButton(buildingName);
-        }
-
-        let index = this.producedBuildings.indexOf(buildingName);
-        if (index > -1) {
-            this.producedBuildings.splice(index, 1);
         }
     }
 }

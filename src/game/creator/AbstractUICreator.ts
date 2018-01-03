@@ -1,13 +1,26 @@
 import {Player} from "../player/Player";
 import {WorldKnowledge} from "../map/WorldKnowledge";
 import {SCALE} from "../game_state/Play";
-import {AbstractCreator} from "./AbstractCreator";
 
 const WIDTH = 33;
 const HEIGHT = 36;
 const TOP = 244;
 
 export abstract class AbstractUICreator {
+    static getUIText(itemName: string) {
+        return itemName.split('').reduce((previousText, letter) => {
+            if (/^[A-Z]$/.test(letter)) {
+                if (previousText !== '') {
+                    return previousText + "\n" + letter;
+                } else {
+                    return letter;
+                }
+            } else {
+                return previousText + letter;
+            }
+        }, '');
+    }
+
     protected player: Player;
     protected worldKnowledge: WorldKnowledge;
     protected buttons: CreationButton[];
@@ -32,11 +45,9 @@ export abstract class AbstractUICreator {
 
     abstract onClickFunction(itemName: string);
 
-    abstract onProductFinish(itemName: string);
+    abstract getPossibleButtons(): string[];
 
-    abstract getConstructionTime(itemName: string): number;
-
-    create(game: Phaser.Game, group: Phaser.Group, creator: AbstractCreator) {
+    create(game: Phaser.Game, group: Phaser.Group) {
         this.game = game;
         this.group = group;
 
@@ -53,62 +64,24 @@ export abstract class AbstractUICreator {
 
         group.add(this.bottomButton);
         group.add(this.topButton);
-
-        creator.create(game, this);
     }
 
-    updateAllowedItems(allowedItems: string[]) {
-        allowedItems.forEach((allowedItem) => {
-            if (!this.buttons.some((button) => {
-                return button.getName() === allowedItem;
-            })) {
-                this.createButton(allowedItem);
-            }
-        });
-        this.refreshButtons();
-        this.buttons.forEach((button) => {
-            if (allowedItems.indexOf(button.getName()) > -1) {
-                button.enable();
-            } else {
-                button.disable();
-            }
-        });
-    }
-
-    updateBuyableItems(buyableItems: string[]) {
-        this.buttons.forEach((button) => {
-            button.allowConstruct(buyableItems.indexOf(button.getName()) > -1);
-        });
-    }
-
-    resetButton(itemName: string) {
-        this.getButton(itemName).reset();
-    }
-
-    setPendingButton(itemName: string) {
-        this.getButton(itemName).setPending();
-    }
-
-    runProduction(itemName: string) {
-        this.getButton(itemName).runProduction(this.getConstructionTime(itemName));
+    update() {
+        this.createButtons(this.getPossibleButtons());
     }
 
     getPlayer(): Player {
         return this.player;
     }
 
-    getUIText(itemName: string) {
-        return itemName.split('').reduce((previousText, letter) => {
-            if (/^[A-Z]$/.test(letter)) {
-                if (previousText !== '') {
-                    return previousText + "\n" + letter;
-                } else {
-                    return letter;
-                }
-            } else {
-                return previousText + letter;
+    protected getButton(itemName: string): CreationButton {
+        for (let i = 0; i < this.buttons.length; i++) {
+            if (this.buttons[i].getName() === itemName) {
+                return this.buttons[i];
             }
-        }, '');
+        }
+
+        return null;
     }
 
     private createButton(itemName: string) {
@@ -121,72 +94,57 @@ export abstract class AbstractUICreator {
             this.x,
             this.getSpriteKey(itemName),
             this.getSpriteLayer(itemName),
-            this.onClickFunction,
-            this.onProductFinish
+            this.onClickFunction
         ));
-    }
-
-    private getButton(itemName: string): CreationButton {
-        for (let i = 0; i < this.buttons.length; i++) {
-            if (this.buttons[i].getName() === itemName) {
-                return this.buttons[i];
-            }
-        }
-
-        return null;
-    }
-
-    private enableBottomButton(value: boolean): void {
-        if (value) {
-            this.bottomButton.loadTexture(this.bottomButton.key, 1);
-        } else {
-            this.bottomButton.loadTexture(this.bottomButton.key, 3);
-        }
-        this.bottomButton.inputEnabled = value;
-    }
-
-    private enableTopButton(value: boolean): void {
-        if (value) {
-            this.topButton.loadTexture(this.bottomButton.key, 0);
-        } else {
-            this.topButton.loadTexture(this.bottomButton.key, 2);
-        }
-        this.topButton.inputEnabled = value;
     }
 
     private goDown() {
         this.index += 1;
-        this.refreshButtons();
         this.buttons.forEach((button) => {
             button.goUp();
         });
+        this.updateVisibleButtons();
     }
 
     private goUp() {
         this.index -= 1;
-        this.refreshButtons();
         this.buttons.forEach((button) => {
             button.goDown();
         });
+        this.updateVisibleButtons();
     }
 
-    private refreshButtons() {
+    private updateVisibleButtons() {
         let displayTop = false;
         let displayBottom = false;
         for (let i = 0; i < this.buttons.length; i++) {
             if (i < this.index) {
-                this.buttons[i].hide();
+                this.buttons[i].setVisible(false);
                 displayTop = true;
             } else if (i > this.index + 4) {
-                this.buttons[i].hide();
+                this.buttons[i].setVisible(false);
                 displayBottom = true;
             } else {
-                this.buttons[i].show();
+                this.buttons[i].setVisible(true);
             }
         }
 
-        this.enableTopButton(displayTop);
-        this.enableBottomButton(displayBottom);
+        this.topButton.loadTexture(this.topButton.key, displayTop ? 0 : 2);
+        this.topButton.inputEnabled = displayTop;
+
+        this.bottomButton.loadTexture(this.bottomButton.key, displayBottom ? 1 : 3);
+        this.bottomButton.inputEnabled = displayBottom;
+    }
+
+    private createButtons(itemNames: string[]) {
+        itemNames.forEach((itemName) => {
+            if (!this.buttons.some((button) => {
+                    return button.getName() === itemName;
+                })) {
+                this.createButton(itemName);
+            }
+        });
+        this.updateVisibleButtons();
     }
 }
 
@@ -195,8 +153,7 @@ class CreationButton {
     private itemName: string;
     private button: Phaser.Sprite;
     private itemSprite: Phaser.Sprite;
-    private onProductFinished: any;
-    private creator: AbstractUICreator;
+    private uiCreator: AbstractUICreator;
     private constructAllowed: boolean;
     private text: Phaser.Text;
 
@@ -209,12 +166,10 @@ class CreationButton {
         x: number,
         spriteKey: string,
         spriteLayer: number,
-        onClickFunction: any,
-        onProductFinished: any
+        onClickFunction: any
     ) {
         this.itemName = itemName;
-        this.onProductFinished = onProductFinished;
-        this.creator = creator;
+        this.uiCreator = creator;
 
         this.button = new Phaser.Sprite(game, x, top, 'buttons', 2);
         this.button.scale.setTo(SCALE, SCALE);
@@ -239,7 +194,7 @@ class CreationButton {
             game,
             x,
             top,
-            creator.getUIText(this.itemName),
+            AbstractUICreator.getUIText(this.itemName),
             { align: 'center', fill: "#ffffff", font: '14px 000webfont' }
         );
         group.add(this.text);
@@ -250,63 +205,22 @@ class CreationButton {
         this.constructAllowed = true;
     }
 
-    runProduction(constructionTime) {
-        this.button.loadTexture(this.button.key, 3);
-        const tween = this.progress.startProgress(constructionTime * Phaser.Timer.SECOND);
-        tween.onComplete.add(() => {
-            this.onProductFinished.bind(this.creator)(this.itemName);
-        }, this.creator);
+    updateProgress(percentage: number) {
+        this.setPending(percentage > 0);
+        this.progress.setProgress(percentage);
     }
 
     getName() {
         return this.itemName;
     }
 
-    reset() {
-        this.progress.resetProgress();
-        if (this.constructAllowed) {
-            this.button.loadTexture(this.button.key, 2);
-        } else {
-            this.button.loadTexture(this.button.key, 0);
-        }
+    setPending(value: boolean) {
+        this.button.loadTexture(this.button.key, value ? 3 : this.constructAllowed ? 2 : 0);
     }
 
-    setPending() {
-        this.button.loadTexture(this.button.key, 3);
-    }
-
-    allowConstruct(value: boolean) {
-        this.constructAllowed = value;
-        if (!value) {
-            if (this.button.frame === 2) {
-                this.button.loadTexture(this.button.key, 0);
-            }
-        } else {
-            this.button.loadTexture(this.button.key, 2);
-        }
-    }
-
-    disable() {
+    setVisible(value: boolean): void {
         this.applyAllElement((element) => {
-            element.alpha = 0.5;
-        });
-    }
-
-    enable() {
-        this.applyAllElement((element) => {
-            element.alpha = 1;
-        });
-    }
-
-    hide() {
-        this.applyAllElement((element) => {
-            element.visible = false;
-        });
-    }
-
-    show() {
-        this.applyAllElement((element) => {
-            element.visible = true;
+            element.visible = value;
         });
     }
 
@@ -320,6 +234,10 @@ class CreationButton {
         this.applyAllElement((element) => {
             element.y = element.y - HEIGHT * SCALE;
         });
+    }
+
+    setAvailable(value: boolean) {
+        this.constructAllowed = value;
     }
 
     private applyAllElement(a: any) {
@@ -348,12 +266,12 @@ class CreationButtonProgress extends Phaser.Sprite {
         this.crop(this.myCropRect, false);
     }
 
-    startProgress(time: number): Phaser.Tween {
-        return this.game.add.tween(this.cropRect).to({ width: WIDTH }, time, "Linear", true);
-    }
-
     resetProgress() {
         this.cropRect.width = 0;
         this.crop(this.myCropRect, false);
+    }
+
+    setProgress(percentage: number) {
+        this.cropRect.width = WIDTH * percentage;
     }
 }

@@ -1,7 +1,5 @@
-import {AbstractCreator} from "./AbstractCreator";
+import {AbstractCreator, ProductionStatus} from "./AbstractCreator";
 import {UnitProperties} from "../unit/UnitProperties";
-import {WorldKnowledge} from "../map/WorldKnowledge";
-import {Player} from "../player/Player";
 import {Harvester} from "../unit/Harvester";
 import {MediumTank} from "../unit/MediumTank";
 import {MCV} from "../unit/MCV";
@@ -11,23 +9,20 @@ import {Grenadier} from "../unit/Grenadier";
 import {RocketSoldier} from "../unit/RocketSoldier";
 
 export class UnitCreator extends AbstractCreator {
-    private inProductionUnits: string[];
-
-    constructor(worldKnowledge: WorldKnowledge, player: Player) {
-        super(worldKnowledge, player);
-        this.inProductionUnits = [];
+    canProduct(itemName: string): boolean {
+        return !this.isProducingAny() &&
+            this.isAllowed(itemName) &&
+            this.hasMineralsToProduct(itemName);
     }
 
-    getProducibles(): string[] {
-        return UnitProperties.getConstructableUnits();
+    getAllowedUnits() {
+        return UnitProperties.getConstructableUnits().filter((unitName) => {
+            return this.isAllowed(unitName);
+        });
     }
 
     getRequiredBuildings(itemName: string): string[] {
         return UnitProperties.getRequiredBuildings(itemName);
-    }
-
-    isProducing(itemName: string): boolean {
-        return this.inProductionUnits.indexOf(itemName) > -1;
     }
 
     hasMineralsToProduct(buildingName: string) {
@@ -35,16 +30,15 @@ export class UnitCreator extends AbstractCreator {
     }
 
     runProduction(unitName: string) {
-        this.inProductionUnits.push(unitName);
-        this.timerEvent.add(UnitProperties.getConstructionTime(unitName) * Phaser.Timer.SECOND, () => {
-            let index = this.inProductionUnits.indexOf(unitName);
-            if (index > -1) {
-                this.inProductionUnits.splice(index, 1);
-            }
+        this.player.removeMinerals(UnitProperties.getPrice(unitName));
+        this.productionStatus = new ProductionStatus(
+            unitName,
+            UnitProperties.getConstructionTime(unitName) * Phaser.Timer.SECOND,
+            this.game
+        );
 
-            if (this.uiCreator) {
-                this.uiCreator.resetButton(unitName);
-            }
+        this.timerEvent.add(UnitProperties.getConstructionTime(unitName) * Phaser.Timer.SECOND, () => {
+            this.productionStatus = null;
 
             const building = this.worldKnowledge.getCreatorOf(unitName, this.player);
             if (null == building) {
@@ -59,35 +53,31 @@ export class UnitCreator extends AbstractCreator {
             switch (unitName) {
                 case 'Harvester':
                     let harvester = new Harvester(this.worldKnowledge, cellPosition, this.player);
-                    this.worldKnowledge.addUnit(harvester);
+                    this.worldKnowledge.addUnit(harvester, true);
                     break;
                 case 'MediumTank':
                     let tank = new MediumTank(this.worldKnowledge, cellPosition, this.player);
-                    this.worldKnowledge.addUnit(tank);
+                    this.worldKnowledge.addUnit(tank, true);
                     break;
                 case 'MCV':
                     let mcv = new MCV(this.worldKnowledge, cellPosition, this.player);
-                    this.worldKnowledge.addUnit(mcv);
+                    this.worldKnowledge.addUnit(mcv, true);
                     break;
                 case 'MinigunInfantry':
                     let minigunInfantry = new MinigunInfantry(this.worldKnowledge, cellPosition, this.player);
-                    this.worldKnowledge.addUnit(minigunInfantry);
+                    this.worldKnowledge.addUnit(minigunInfantry, true);
                     break;
                 case 'Grenadier':
                     let grenadier = new Grenadier(this.worldKnowledge, cellPosition, this.player);
-                    this.worldKnowledge.addUnit(grenadier);
+                    this.worldKnowledge.addUnit(grenadier, true);
                     break;
                 case 'RocketSoldier':
                     let rocketSoldier = new RocketSoldier(this.worldKnowledge, cellPosition, this.player);
-                    this.worldKnowledge.addUnit(rocketSoldier);
+                    this.worldKnowledge.addUnit(rocketSoldier, true);
                     break;
                 default:
                     throw "Unable to build unit " + unitName;
             }
         });
-
-        if (this.uiCreator !== null) {
-            this.uiCreator.runProduction(unitName);
-        }
     }
 }

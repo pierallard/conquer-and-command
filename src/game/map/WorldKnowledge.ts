@@ -9,6 +9,9 @@ import {Shootable} from "../Shootable";
 import {MiniAppear} from "../sprite/MiniAppear";
 import {TiberiumPlant} from "../sprite/TiberiumPlant";
 import {BuildingProperties} from "../building/BuildingProperties";
+import {UnitCreator} from "../creator/UnitCreator";
+import {BuildingCreator} from "../creator/BuildingCreator";
+import {ProductionStatus} from "../creator/AbstractCreator";
 
 export class WorldKnowledge {
     private game: Phaser.Game;
@@ -18,6 +21,9 @@ export class WorldKnowledge {
     private effectsGroup: Phaser.Group;
     private unitRepository: UnitRepository;
     private buildingRepository: BuildingRepository;
+    private unitCreators: UnitCreator[];
+    private buildingCreators: BuildingCreator[];
+    private players: Player[];
     private groundRepository: TiberiumPlant[];
 
     constructor() {
@@ -25,6 +31,9 @@ export class WorldKnowledge {
         this.unitRepository = new UnitRepository();
         this.buildingRepository = new BuildingRepository();
         this.groundRepository = [];
+        this.unitCreators = [];
+        this.buildingCreators = [];
+        this.players = [];
     }
 
     create(game: Phaser.Game, startPositions: PIXI.Point[]) {
@@ -39,6 +48,13 @@ export class WorldKnowledge {
 
         this.effectsGroup = this.game.add.group();
         this.effectsGroup.fixedToCamera = false;
+
+        this.unitCreators.forEach((unitCreator) => {
+            unitCreator.create(game);
+        });
+        this.buildingCreators.forEach((buildingCreator) => {
+            buildingCreator.create(game);
+        });
     }
 
     update() {
@@ -198,5 +214,67 @@ export class WorldKnowledge {
         return START_POWER + this.getPlayerBuildings(player).reduce((power, building) => {
             return power + Math.max(0, BuildingProperties.getPower(building.constructor.name));
         }, 0);
+    }
+
+    addPlayer(player: Player) {
+        this.players.push(player);
+        this.unitCreators.push(player.getUnitCreator());
+        this.buildingCreators.push(player.getBuildingCreator());
+    }
+
+    getPlayers(): Player[] {
+        return this.players;
+    }
+
+    productUnit(player: Player, unitName: string) {
+        this.getPlayerUnitCreator(player).orderProduction(unitName);
+    }
+
+    productBuilding(player: Player, unitName: string) {
+        this.getPlayerBuildingCreator(player).orderProduction(unitName);
+    }
+
+    isBuildingProduced(player: Player, buildingName: string) {
+        return this.getPlayerBuildingCreator(player).isProduced(buildingName);
+    }
+
+    runBuildingCreation(player: Player, buildingName: string, cell: PIXI.Point) {
+        this.getPlayerBuildingCreator(player).runCreation(buildingName, cell);
+    }
+
+    getPlayerAllowedBuildings(player: Player): string[] {
+        return this.getPlayerBuildingCreator(player).getAllowedBuildings();
+    }
+
+    getPlayerAllowedUnits(player: Player) {
+        return this.getPlayerUnitCreator(player).getAllowedUnits();
+    }
+
+    getBuildingProductionStatus(player: Player): ProductionStatus {
+        return this.getPlayerBuildingCreator(player).getProductionStatus();
+    }
+
+    canProductBuilding(player: Player, buildingName: string) {
+        return this.getPlayerBuildingCreator(player).canProduct(buildingName);
+    }
+
+    getUnitProductionStatus(player: Player) {
+        return this.getPlayerUnitCreator(player).getProductionStatus();
+    }
+
+    canProductUnit(player: Player, unitName: string) {
+        return this.getPlayerUnitCreator(player).canProduct(unitName);
+    }
+
+    private getPlayerUnitCreator(player: Player): UnitCreator {
+        return this.unitCreators.filter((unitCreator) => {
+            return unitCreator.getPlayer() === player;
+        })[0];
+    }
+
+    private getPlayerBuildingCreator(player: Player): BuildingCreator {
+        return this.buildingCreators.filter((buildingCreator) => {
+            return buildingCreator.getPlayer() === player;
+        })[0];
     }
 }

@@ -42,8 +42,8 @@ export class UserInterface {
         interfaceSprite.scale.setTo(2);
         this.interfaceGroup.add(interfaceSprite);
 
-        this.UIUnitCreator.create(game, this.interfaceGroup, this.player.getUnitCreator());
-        this.UIBuildingCreator.create(game, this.interfaceGroup, this.player.getBuildingCreator());
+        this.UIUnitCreator.create(game, this.interfaceGroup);
+        this.UIBuildingCreator.create(game, this.interfaceGroup);
         this.miniMap.create(game);
 
         this.mineralText = new Phaser.Text(
@@ -63,5 +63,7 @@ export class UserInterface {
         this.miniMap.update();
         this.powerInterface.update();
         this.mineralText.text = this.player.getMinerals() + '';
+        this.UIUnitCreator.update();
+        this.UIBuildingCreator.update();
     }
 }

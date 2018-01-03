@@ -19,30 +19,29 @@ export class BuildingPositioner {
     }
 
     create(game: Phaser.Game) {
-        this.graphics = new BuildingPositionerGraphics(game, this.worldKnowledge);
+        this.graphics = new BuildingPositionerGraphics(game, this.worldKnowledge, this.player);
     }
 
-    activate(buildingCreator: BuildingCreator, buildingName: string) {
-        this.graphics.activate(buildingCreator, buildingName);
+    activate(buildingName: string) {
+        this.graphics.activate(buildingName);
     }
 }
 
 class BuildingPositionerGraphics extends Phaser.Graphics {
-    private buildingCreator: BuildingCreator;
     private buildingName: string = null;
     private worldKnowledge: WorldKnowledge;
+    private player: Player;
 
-    constructor(game: Phaser.Game, worldKnowledge: WorldKnowledge) {
+    constructor(game: Phaser.Game, worldKnowledge: WorldKnowledge, player: Player) {
         super(game, 0, 0);
 
         this.worldKnowledge = worldKnowledge;
-
+        this.player = player;
         this.scale.set(SCALE, SCALE);
         game.add.existing(this);
     }
 
-    activate(buildingCreator: BuildingCreator, buildingName: string) {
-        this.buildingCreator = buildingCreator;
+    activate(buildingName: string) {
         this.buildingName = buildingName;
     }
 
@@ -59,7 +58,7 @@ class BuildingPositionerGraphics extends Phaser.Graphics {
 
                 const allowedToBuild = this.isAccessible(cellX, cellY);
                 if (allowedToBuild && this.game.input.activePointer.leftButton.isDown) {
-                    this.buildingCreator.runCreation(this.buildingName, new PIXI.Point(cellX, cellY));
+                    this.worldKnowledge.runBuildingCreation(this.player, this.buildingName, new PIXI.Point(cellX, cellY));
                     this.deactivate();
                     return;
                 }
