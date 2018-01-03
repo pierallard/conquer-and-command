@@ -218,8 +218,8 @@ export class WorldKnowledge {
 
     addPlayer(player: Player) {
         this.players.push(player);
-        this.unitCreators.push(new UnitCreator(this, player));
-        this.buildingCreators.push(new BuildingCreator(this, player));
+        this.unitCreators.push(player.getUnitCreator());
+        this.buildingCreators.push(player.getBuildingCreator());
     }
 
     getPlayers(): Player[] {

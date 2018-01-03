@@ -4,8 +4,6 @@ import {MCV} from "../unit/MCV";
 import {Unit} from "../unit/Unit";
 import {UnitCreator} from "../creator/UnitCreator";
 import {BuildingCreator} from "../creator/BuildingCreator";
-import {BuildingProperties} from "../building/BuildingProperties";
-import {UnitProperties} from "../unit/UnitProperties";
 
 export class CommandCenter {
     private worldKnowledge: WorldKnowledge;
@@ -18,6 +16,14 @@ export class CommandCenter {
         this.player = player;
         this.unitCreator = new UnitCreator(this.worldKnowledge, this.player);
         this.buildingCreator = new BuildingCreator(this.worldKnowledge, this.player);
+    }
+
+    getUnitCreator() {
+        return this.unitCreator;
+    }
+
+    getBuildingCreator() {
+        return this.buildingCreator;
     }
 
     expand(mcv: MCV) {
@@ -33,27 +39,16 @@ export class CommandCenter {
     }
 
     productBuilding(buildingName: string) {
-        if (this.buildingCreator.isAllowed(buildingName) &&
-            !this.buildingCreator.isProducing(buildingName) &&
-            this.buildingCreator.hasMineralsToProduct(buildingName)
-        ) {
-            this.buildingCreator.runProduction(buildingName);
-        }
+        this.buildingCreator.orderProduction(buildingName);
+    }
+
+    productUnit(unitName: string) {
+        this.unitCreator.orderProduction(unitName);
     }
 
     createBuilding(buildingName: string, cell: PIXI.Point) {
         if (this.buildingCreator.isProduced(buildingName)) {
             this.buildingCreator.runCreation(buildingName, cell);
-        }
-    }
-
-    productUnit(unitName: string) {
-        if (this.unitCreator.isAllowed(unitName) &&
-            !this.unitCreator.isProducing(unitName) &&
-            this.unitCreator.hasMineralsToProduct(unitName)
-        ) {
-            this.player.removeMinerals(UnitProperties.getPrice(unitName));
-            this.unitCreator.runProduction(unitName);
         }
     }
 }

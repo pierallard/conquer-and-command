@@ -78,13 +78,13 @@ export default class Play extends Phaser.State {
             ));
         });
 
-        // this.game.time.events.loop(5000, () => {
-        //     this.worldKnowledge.getPlayers().filter((player) => {
-        //         if (player.constructor.name === 'ComputerPlayer') {
-        //             (<ComputerPlayer> player).update();
-        //         }
-        //     });
-        // });
+        this.game.time.events.loop(5000, () => {
+            this.worldKnowledge.getPlayers().filter((player) => {
+                if (player.constructor.name === 'ComputerPlayer') {
+                    (<ComputerPlayer> player).update();
+                }
+            });
+        });
     }
 
     update() {

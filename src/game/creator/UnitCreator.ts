@@ -1,7 +1,5 @@
 import {AbstractCreator, ProductionStatus} from "./AbstractCreator";
 import {UnitProperties} from "../unit/UnitProperties";
-import {WorldKnowledge} from "../map/WorldKnowledge";
-import {Player} from "../player/Player";
 import {Harvester} from "../unit/Harvester";
 import {MediumTank} from "../unit/MediumTank";
 import {MCV} from "../unit/MCV";

@@ -41,4 +41,12 @@ export abstract class Player {
     getMinerals(): number {
         return this.minerals;
     }
+
+    getUnitCreator() {
+        return this.commandCenter.getUnitCreator();
+    }
+
+    getBuildingCreator() {
+        return this.commandCenter.getBuildingCreator();
+    }
 }

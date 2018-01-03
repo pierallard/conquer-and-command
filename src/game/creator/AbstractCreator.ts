@@ -57,11 +57,6 @@ export abstract class AbstractCreator {
             this.productionStatus.percentage >= 1;
     }
 
-    isProducing(itemName: string) {
-        return this.productionStatus &&
-            this.productionStatus.getItemName() === itemName;
-    }
-
     isProducingAny() {
         return null !== this.productionStatus;
     }
