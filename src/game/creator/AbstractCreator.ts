@@ -31,8 +31,12 @@ export abstract class AbstractCreator {
     }
 
     orderProduction(itemName) {
-        if (this.canProduct(itemName)) {
-            return this.runProduction(itemName);
+        if (this.productionStatus && this.productionStatus.getItemName() === itemName) {
+            this.productionStatus.unHold();
+        } else {
+            if (this.canProduct(itemName)) {
+                return this.runProduction(itemName);
+            }
         }
     }
 
@@ -60,21 +64,40 @@ export abstract class AbstractCreator {
     isProducingAny() {
         return null !== this.productionStatus;
     }
+
+    isProducing(itemName: string) {
+        return this.productionStatus && this.productionStatus.getItemName() === itemName;
+    }
+
+    hold(itemName: string) {
+        if (this.productionStatus && this.productionStatus.getItemName() === itemName) {
+            this.productionStatus.hold();
+        }
+    }
 }
 
 export class ProductionStatus {
     public percentage: number;
     private itemName: string;
+    private tween: Phaser.Tween;
 
     constructor(itemName: string, duration: number, game: Phaser.Game) {
         this.itemName = itemName;
         this.percentage = 0;
-        game.add.tween(this).to({
+        this.tween = game.add.tween(this).to({
             percentage: 1,
         }, duration, Phaser.Easing.Default, true);
     }
 
     getItemName(): string {
         return this.itemName;
+    }
+
+    hold() {
+        this.tween.pause();
+    }
+
+    unHold() {
+        this.tween.resume();
     }
 }

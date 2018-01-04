@@ -1,6 +1,7 @@
 import {Player} from "../player/Player";
 import {WorldKnowledge} from "../map/WorldKnowledge";
 import {SCALE} from "../game_state/Play";
+import {ProductionStatus} from "./AbstractCreator";
 
 const WIDTH = 33;
 const HEIGHT = 36;
@@ -39,14 +40,6 @@ export abstract class AbstractUICreator {
         this.index = 0;
     }
 
-    abstract getSpriteKey(itemName: string): string;
-
-    abstract getSpriteLayer(itemName: string): number;
-
-    abstract onClickFunction(itemName: string);
-
-    abstract getPossibleButtons(): string[];
-
     create(game: Phaser.Game, group: Phaser.Group) {
         this.game = game;
         this.group = group;
@@ -68,21 +61,35 @@ export abstract class AbstractUICreator {
 
     update() {
         this.createButtons(this.getPossibleButtons());
+
+        const productionStatus = this.getProductionStatus();
+        this.buttons.forEach((button) => {
+            if (productionStatus && button.getName() === productionStatus.getItemName()) {
+                button.updateProgress(productionStatus.percentage);
+            } else {
+                button.setAvailable(this.canProduct(button.getName()));
+                button.updateProgress(0);
+            }
+        });
     }
 
     getPlayer(): Player {
         return this.player;
     }
 
-    protected getButton(itemName: string): CreationButton {
-        for (let i = 0; i < this.buttons.length; i++) {
-            if (this.buttons[i].getName() === itemName) {
-                return this.buttons[i];
-            }
-        }
+    protected abstract getSpriteKey(itemName: string): string;
 
-        return null;
-    }
+    protected abstract getSpriteLayer(itemName: string): number;
+
+    protected abstract onClickFunction(itemName: string);
+
+    protected abstract onRightClickFunction(itemName: string);
+
+    protected abstract getPossibleButtons(): string[];
+
+    protected abstract getProductionStatus(): ProductionStatus;
+
+    protected abstract canProduct(itemName: string): boolean;
 
     private createButton(itemName: string) {
         this.buttons.push(new CreationButton(
@@ -94,7 +101,8 @@ export abstract class AbstractUICreator {
             this.x,
             this.getSpriteKey(itemName),
             this.getSpriteLayer(itemName),
-            this.onClickFunction
+            this.onClickFunction,
+            this.onRightClickFunction
         ));
     }
 
@@ -166,7 +174,8 @@ class CreationButton {
         x: number,
         spriteKey: string,
         spriteLayer: number,
-        onClickFunction: any
+        onClickFunction: any,
+        onRightClickFunction: any
     ) {
         this.itemName = itemName;
         this.uiCreator = creator;
@@ -174,8 +183,12 @@ class CreationButton {
         this.button = new Phaser.Sprite(game, x, top, 'buttons', 2);
         this.button.scale.setTo(SCALE, SCALE);
         this.button.inputEnabled = true;
-        this.button.events.onInputDown.add(() => {
-            onClickFunction.bind(creator)(this.itemName);
+        this.button.events.onInputDown.add((input) => {
+            if (game.input.activePointer.rightButton.isDown) {
+                onRightClickFunction.bind(creator)(this.itemName);
+            } else {
+                onClickFunction.bind(creator)(this.itemName);
+            }
         }, creator);
         group.add(this.button);
 

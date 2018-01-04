@@ -3,6 +3,7 @@ import {WorldKnowledge} from "../map/WorldKnowledge";
 import {Player} from "../player/Player";
 import {BuildingPositioner} from "../interface/BuildingPositionner";
 import {BuildingProperties} from "../building/BuildingProperties";
+import {ProductionStatus} from "./AbstractCreator";
 
 const X = 1202 - 66;
 
@@ -15,37 +16,37 @@ export class UIBuildingCreator extends AbstractUICreator {
         this.buildingPositioner = buildingPositionner;
     }
 
-    update() {
-        super.update();
-
-        const productionStatus = this.worldKnowledge.getBuildingProductionStatus(this.player);
-        this.buttons.forEach((button) => {
-            if (productionStatus && button.getName() === productionStatus.getItemName()) {
-                button.updateProgress(productionStatus.percentage);
-            } else {
-                button.setAvailable(this.worldKnowledge.canProductBuilding(this.player, button.getName()));
-                button.updateProgress(0);
-            }
-        });
-    }
-
-    getPossibleButtons(): string[] {
+    protected getPossibleButtons(): string[] {
         return this.worldKnowledge.getPlayerAllowedBuildings(this.player);
     }
 
-    getSpriteKey(itemName: string): string {
+    protected getSpriteKey(itemName: string): string {
         return BuildingProperties.getSpriteKey(itemName);
     }
 
-    getSpriteLayer(itemName: string): number {
+    protected getSpriteLayer(itemName: string): number {
         return BuildingProperties.getSpriteLayer(itemName);
     }
 
-    onClickFunction(itemName: string) {
+    protected onClickFunction(itemName: string) {
         if (this.worldKnowledge.isBuildingProduced(this.player, itemName)) {
             this.buildingPositioner.activate(itemName);
         } else {
             this.worldKnowledge.productBuilding(this.player, itemName);
         }
+    }
+
+    protected onRightClickFunction(itemName: string) {
+        if (this.worldKnowledge.isBuildingProducing(this.player, itemName)) {
+            this.worldKnowledge.holdBuilding(this.player, itemName);
+        }
+    }
+
+    protected getProductionStatus(): ProductionStatus {
+        return this.worldKnowledge.getBuildingProductionStatus(this.player);
+    }
+
+    protected canProduct(itemName: string): boolean {
+        return this.worldKnowledge.canProductBuilding(this.player, itemName);
     }
 }
