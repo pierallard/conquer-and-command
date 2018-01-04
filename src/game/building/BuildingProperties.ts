@@ -130,6 +130,27 @@ const DATA = {
         ],
         constructable: false,
     },
+    WeaponsFactory: {
+        cellPositions: [
+            [0, 0],
+            [1, 0],
+            [0, -1],
+            [1, -1],
+        ],
+        constructable: true,
+        constructable_units: [
+            'HummVee', 'MediumTank', 'RocketLauncher', 'MCV', 'MamoothTank', 'Harvester',
+        ],
+        construction_time: 133,
+        life: 200,
+        power: -30,
+        price: 2000,
+        requireds: [
+            'TiberiumRefinery',
+        ],
+        sprite: 'Base',
+        sprite_layer: 0,
+    }
 };
 
 /**

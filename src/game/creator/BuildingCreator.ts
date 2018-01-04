@@ -10,6 +10,7 @@ import {AlternativePosition} from "../computing/AlternativePosition";
 import {ConcreteBarrier} from "../building/ConcreteBarrier";
 import {AdvancedPowerPlant} from "../building/AdvancedPowerPlant";
 import {GuardTower} from "../building/GuardTower";
+import {WeaponsFactory} from "../building/WeaponsFactory";
 
 export class BuildingCreator extends AbstractCreator {
     constructor(worldKnowledge: WorldKnowledge, player: Player) {
@@ -78,6 +79,10 @@ export class BuildingCreator extends AbstractCreator {
             case 'GuardTower':
                 let guardTower = new GuardTower(this.worldKnowledge, cell, this.player);
                 this.worldKnowledge.addBuilding(guardTower, true);
+                break;
+            case 'WeaponsFactory':
+                let weaponsFactory = new WeaponsFactory(this.worldKnowledge, cell, this.player);
+                this.worldKnowledge.addBuilding(weaponsFactory, true);
                 break;
             default:
                 throw "Unable to build building " + buildingName;
