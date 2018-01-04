@@ -43,8 +43,7 @@ export class MCV extends Unit {
                 this.worldKnowledge,
                 new PIXI.Point(this.cellPosition.x - 1, this.cellPosition.y),
                 this.player
-            ),
-            true
+            )
         );
         this.worldKnowledge.removeUnit(this, 1000);
     }

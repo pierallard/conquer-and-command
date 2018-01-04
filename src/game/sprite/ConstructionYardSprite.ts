@@ -1,14 +1,16 @@
 import {BuildingSprite} from "./BuildingSprite";
 
 export class ConstructionYardSprite extends BuildingSprite {
-    private animationPump: Phaser.Animation;
-    private animationElec: Phaser.Animation;
-
     constructor(game: Phaser.Game, group: Phaser.Group, x: number, y: number, key: string) {
         super(game, group, x, y, key);
-        this.anchor.setTo(1 / 6, 5 / 6);
-        this.animationPump = this.animations.add('toto', [0, 1, 2, 3, 2, 1]);
-        this.animationElec = this.animations.add('toto', [5, 6, 7]);
-        this.animationElec.play(10, true, false);
+        this.anchor.setTo(1 / 4, 5 / 6);
+        let animationOpen = this.animations.add(
+            'toto',
+            [0, 1, 2, 3, 4, 5, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+        );
+        animationOpen.play(10, false, false);
+        animationOpen.onComplete.add(() => {
+            this.loadTexture(this.key, 19);
+        });
     }
 }

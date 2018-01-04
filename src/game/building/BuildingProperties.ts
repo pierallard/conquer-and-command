@@ -56,8 +56,6 @@ const DATA = {
         cellPositions: [
             [0, 0],
             [1, 0],
-            [0, -1],
-            [1, -1],
         ],
         constructable: false,
         constructable_units: [],
@@ -146,7 +144,7 @@ const DATA = {
  * - repair facility      : TradPlat
  * - guard tower          : Turret
  * - helipad              : Starport
- * - weapons factory      : ConstructionYard
+ * - weapons factory      : Base
  * - silo                 : Storage1
  * - advanced guard tower : Artilery2
  */

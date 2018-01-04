@@ -15,7 +15,7 @@ export class ConstructionYard extends ConstructableBuilding {
             group,
             Cell.cellToReal(this.cellPosition.x),
             Cell.cellToReal(this.cellPosition.y),
-            'Base'
+            'MinerAni'
         );
     }
 }
