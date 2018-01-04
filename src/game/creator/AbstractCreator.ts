@@ -15,8 +15,6 @@ export abstract class AbstractCreator {
 
     abstract getRequiredBuildings(itemName: string): string[];
 
-    abstract hasMineralsToProduct(itemName: string): boolean;
-
     abstract canProduct(itemName: string): boolean;
 
     abstract runProduction(itemName: string): void;
@@ -80,13 +78,22 @@ export class ProductionStatus {
     public percentage: number;
     private itemName: string;
     private tween: Phaser.Tween;
+    private previousPercentage: number;
 
-    constructor(itemName: string, duration: number, game: Phaser.Game) {
+    constructor(itemName: string, duration: number, price: number, player: Player, game: Phaser.Game) {
         this.itemName = itemName;
         this.percentage = 0;
+        this.previousPercentage = 0;
         this.tween = game.add.tween(this).to({
             percentage: 1,
         }, duration, Phaser.Easing.Default, true);
+        this.tween.onComplete.add(() => {
+            player.removeMinerals((this.percentage - this.previousPercentage) * price);
+        });
+        this.tween.onUpdateCallback(() => {
+            player.removeMinerals((this.percentage - this.previousPercentage) * price);
+            this.previousPercentage = this.percentage;
+        });
     }
 
     getItemName(): string {

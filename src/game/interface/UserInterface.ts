@@ -62,7 +62,7 @@ export class UserInterface {
         this.selector.update();
         this.miniMap.update();
         this.powerInterface.update();
-        this.mineralText.text = this.player.getMinerals() + '';
+        this.mineralText.text = Math.floor(this.player.getMinerals()) + '';
         this.UIUnitCreator.update();
         this.UIBuildingCreator.update();
     }

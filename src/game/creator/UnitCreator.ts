@@ -10,9 +10,7 @@ import {RocketSoldier} from "../unit/RocketSoldier";
 
 export class UnitCreator extends AbstractCreator {
     canProduct(itemName: string): boolean {
-        return !this.isProducingAny() &&
-            this.isAllowed(itemName) &&
-            this.hasMineralsToProduct(itemName);
+        return !this.isProducingAny() && this.isAllowed(itemName);
     }
 
     getAllowedUnits() {
@@ -25,15 +23,12 @@ export class UnitCreator extends AbstractCreator {
         return UnitProperties.getRequiredBuildings(itemName);
     }
 
-    hasMineralsToProduct(buildingName: string) {
-        return this.player.getMinerals() >= UnitProperties.getPrice(buildingName);
-    }
-
     runProduction(unitName: string) {
-        this.player.removeMinerals(UnitProperties.getPrice(unitName));
         this.productionStatus = new ProductionStatus(
             unitName,
             UnitProperties.getConstructionTime(unitName) * Phaser.Timer.SECOND,
+            UnitProperties.getPrice(unitName),
+            this.player,
             this.game
         );
 

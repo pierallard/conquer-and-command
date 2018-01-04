@@ -27,22 +27,17 @@ export class BuildingCreator extends AbstractCreator {
     }
 
     canProduct(itemName: string): boolean {
-        return !this.isProducingAny() &&
-            this.isAllowed(itemName) &&
-            this.hasMineralsToProduct(itemName);
+        return !this.isProducingAny() && this.isAllowed(itemName);
     }
 
     runProduction(buildingName: string) {
-        this.player.removeMinerals(BuildingProperties.getPrice(buildingName));
         this.productionStatus = new ProductionStatus(
             buildingName,
             BuildingProperties.getConstructionTime(buildingName) * Phaser.Timer.SECOND,
+            BuildingProperties.getPrice(buildingName),
+            this.player,
             this.game
         );
-    }
-
-    hasMineralsToProduct(buildingName: string) {
-        return this.player.getMinerals() >= BuildingProperties.getPrice(buildingName);
     }
 
     runCreation(buildingName: string, cell: PIXI.Point) {

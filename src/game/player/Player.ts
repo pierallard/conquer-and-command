@@ -31,11 +31,11 @@ export abstract class Player {
     }
 
     addMinerals(amount: number) {
-        this.minerals = Math.round(this.minerals + amount);
+        this.minerals = this.minerals + amount;
     }
 
     removeMinerals(amount: number) {
-        this.minerals = Math.round(this.minerals - amount);
+        this.minerals = this.minerals - amount;
     }
 
     getMinerals(): number {
