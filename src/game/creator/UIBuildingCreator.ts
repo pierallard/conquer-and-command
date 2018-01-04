@@ -38,7 +38,11 @@ export class UIBuildingCreator extends AbstractUICreator {
 
     protected onRightClickFunction(itemName: string) {
         if (this.worldKnowledge.isBuildingProducing(this.player, itemName)) {
-            this.worldKnowledge.holdBuilding(this.player, itemName);
+            if (this.worldKnowledge.isBuildingHold(this.player, itemName)) {
+                this.worldKnowledge.cancelBuilding(this.player, itemName);
+            } else {
+                this.worldKnowledge.holdBuilding(this.player, itemName);
+            }
         }
     }
 

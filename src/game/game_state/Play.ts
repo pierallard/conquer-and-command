@@ -6,7 +6,7 @@ import {ComputerPlayer} from "../player/ComputerPlayer";
 import {GROUND_HEIGHT, GROUND_WIDTH} from "../map/GeneratedGround";
 import {TiberiumSource} from "../building/TiberiumSource";
 
-export const _DEBUG_FAST_CONSTRUCT = true;
+export const _DEBUG_FAST_CONSTRUCT = false;
 export const SCALE = 2;
 export const MOVE = 3 * SCALE;
 export const PANEL_WIDTH = 80;

@@ -37,7 +37,11 @@ export class UIUnitCreator extends AbstractUICreator {
 
     protected onRightClickFunction(itemName: string) {
         if (this.worldKnowledge.isUnitProducing(this.player, itemName)) {
-            this.worldKnowledge.holdUnit(this.player, itemName);
+            if (this.worldKnowledge.isUnitHold(this.player, itemName)) {
+                this.worldKnowledge.cancelUnit(this.player, itemName);
+            } else {
+                this.worldKnowledge.holdUnit(this.player, itemName);
+            }
         }
     }
 }

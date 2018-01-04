@@ -73,6 +73,19 @@ export abstract class AbstractCreator {
         }
     }
 
+    isHold(itemName: string) {
+        return this.productionStatus &&
+            this.productionStatus.getItemName() === itemName &&
+            this.productionStatus.isHold();
+    }
+
+    cancel(itemName: string) {
+        if (this.isHold(itemName)) {
+            this.productionStatus.cancel();
+            this.productionStatus = null;
+        }
+    }
+
     unHoldProductionStatus() {
         if (this.productionStatus) {
             this.productionStatus.unHold();
@@ -130,6 +143,15 @@ export class ProductionStatus {
 
     unHold() {
         this.tween.resume();
+    }
+
+    isHold() {
+        return this.isHoldPlayer && this.tween.isPaused;
+    }
+
+    cancel() {
+        this.tween.stop(false);
+        this.player.addMinerals(this.percentage * this.price);
     }
 
     private diffMinerals() {
