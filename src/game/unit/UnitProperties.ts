@@ -147,7 +147,7 @@ export class UnitProperties {
         if (_DEBUG_FAST_CONSTRUCT) {
             return DATA[unitName].construction_time / 50;
         }
-        return DATA[unitName].construction_time;
+        return DATA[unitName].construction_time / 6;
     }
 
     static getPrice(unitName: string): number {

@@ -183,7 +183,7 @@ export class BuildingProperties {
         if (_DEBUG_FAST_CONSTRUCT) {
             return DATA[buildingName].construction_time / 50;
         }
-        return DATA[buildingName].construction_time;
+        return DATA[buildingName].construction_time / 6;
     }
 
     static getPrice(buildingName: string): number {
