@@ -29,50 +29,51 @@ export class UnitCreator extends AbstractCreator {
             UnitProperties.getConstructionTime(unitName) * Phaser.Timer.SECOND,
             UnitProperties.getPrice(unitName),
             this.player,
+            this.runCreation.bind(this),
             this.game
         );
+    }
 
-        this.timerEvent.add(UnitProperties.getConstructionTime(unitName) * Phaser.Timer.SECOND, () => {
-            this.productionStatus = null;
+    runCreation(unitName) {
+        this.productionStatus = null;
 
-            const building = this.worldKnowledge.getCreatorOf(unitName, this.player);
-            if (null == building) {
-                return;
-            }
+        const building = this.worldKnowledge.getCreatorOf(unitName, this.player);
+        if (null == building) {
+            return;
+        }
 
-            const cellPosition = AlternativePosition.getClosestAvailable(
-                building.getCellPositions()[0],
-                building.getCellPositions()[0],
-                this.worldKnowledge.isCellAccessible.bind(this.worldKnowledge)
-            );
-            switch (unitName) {
-                case 'Harvester':
-                    let harvester = new Harvester(this.worldKnowledge, cellPosition, this.player);
-                    this.worldKnowledge.addUnit(harvester, true);
-                    break;
-                case 'MediumTank':
-                    let tank = new MediumTank(this.worldKnowledge, cellPosition, this.player);
-                    this.worldKnowledge.addUnit(tank, true);
-                    break;
-                case 'MCV':
-                    let mcv = new MCV(this.worldKnowledge, cellPosition, this.player);
-                    this.worldKnowledge.addUnit(mcv, true);
-                    break;
-                case 'MinigunInfantry':
-                    let minigunInfantry = new MinigunInfantry(this.worldKnowledge, cellPosition, this.player);
-                    this.worldKnowledge.addUnit(minigunInfantry, true);
-                    break;
-                case 'Grenadier':
-                    let grenadier = new Grenadier(this.worldKnowledge, cellPosition, this.player);
-                    this.worldKnowledge.addUnit(grenadier, true);
-                    break;
-                case 'RocketSoldier':
-                    let rocketSoldier = new RocketSoldier(this.worldKnowledge, cellPosition, this.player);
-                    this.worldKnowledge.addUnit(rocketSoldier, true);
-                    break;
-                default:
-                    throw "Unable to build unit " + unitName;
-            }
-        });
+        const cellPosition = AlternativePosition.getClosestAvailable(
+            building.getCellPositions()[0],
+            building.getCellPositions()[0],
+            this.worldKnowledge.isCellAccessible.bind(this.worldKnowledge)
+        );
+        switch (unitName) {
+            case 'Harvester':
+                let harvester = new Harvester(this.worldKnowledge, cellPosition, this.player);
+                this.worldKnowledge.addUnit(harvester, true);
+                break;
+            case 'MediumTank':
+                let tank = new MediumTank(this.worldKnowledge, cellPosition, this.player);
+                this.worldKnowledge.addUnit(tank, true);
+                break;
+            case 'MCV':
+                let mcv = new MCV(this.worldKnowledge, cellPosition, this.player);
+                this.worldKnowledge.addUnit(mcv, true);
+                break;
+            case 'MinigunInfantry':
+                let minigunInfantry = new MinigunInfantry(this.worldKnowledge, cellPosition, this.player);
+                this.worldKnowledge.addUnit(minigunInfantry, true);
+                break;
+            case 'Grenadier':
+                let grenadier = new Grenadier(this.worldKnowledge, cellPosition, this.player);
+                this.worldKnowledge.addUnit(grenadier, true);
+                break;
+            case 'RocketSoldier':
+                let rocketSoldier = new RocketSoldier(this.worldKnowledge, cellPosition, this.player);
+                this.worldKnowledge.addUnit(rocketSoldier, true);
+                break;
+            default:
+                throw "Unable to build unit " + unitName;
+        }
     }
 }

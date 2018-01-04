@@ -36,6 +36,7 @@ export class BuildingCreator extends AbstractCreator {
             BuildingProperties.getConstructionTime(buildingName) * Phaser.Timer.SECOND,
             BuildingProperties.getPrice(buildingName),
             this.player,
+            () => {},
             this.game
         );
     }

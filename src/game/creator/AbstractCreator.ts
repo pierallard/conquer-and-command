@@ -30,7 +30,7 @@ export abstract class AbstractCreator {
 
     orderProduction(itemName) {
         if (this.productionStatus && this.productionStatus.getItemName() === itemName) {
-            this.productionStatus.unHold();
+            this.productionStatus.playerUnHold();
         } else {
             if (this.canProduct(itemName)) {
                 return this.runProduction(itemName);
@@ -69,7 +69,13 @@ export abstract class AbstractCreator {
 
     hold(itemName: string) {
         if (this.productionStatus && this.productionStatus.getItemName() === itemName) {
-            this.productionStatus.hold();
+            this.productionStatus.playerHold();
+        }
+    }
+
+    unHoldProductionStatus() {
+        if (this.productionStatus) {
+            this.productionStatus.unHold();
         }
     }
 }
@@ -79,19 +85,31 @@ export class ProductionStatus {
     private itemName: string;
     private tween: Phaser.Tween;
     private previousPercentage: number;
+    private price: number;
+    private player: Player;
+    private isHoldPlayer: boolean;
 
-    constructor(itemName: string, duration: number, price: number, player: Player, game: Phaser.Game) {
+    constructor(itemName: string, duration: number, price: number, player: Player, callBack: any, game: Phaser.Game) {
         this.itemName = itemName;
         this.percentage = 0;
         this.previousPercentage = 0;
+        this.price = price;
+        this.player = player;
+        this.isHoldPlayer = false;
         this.tween = game.add.tween(this).to({
             percentage: 1,
         }, duration, Phaser.Easing.Default, true);
         this.tween.onComplete.add(() => {
-            player.removeMinerals((this.percentage - this.previousPercentage) * price);
+            player.removeMinerals(this.diffMinerals());
+            player.removeMinerals(this.diffMinerals());
+            callBack(this.itemName);
         });
         this.tween.onUpdateCallback(() => {
-            player.removeMinerals((this.percentage - this.previousPercentage) * price);
+            if (this.player.getMinerals() - this.diffMinerals() > 0) {
+                player.removeMinerals(this.diffMinerals());
+            } else {
+                this.hold();
+            }
             this.previousPercentage = this.percentage;
         });
     }
@@ -100,11 +118,25 @@ export class ProductionStatus {
         return this.itemName;
     }
 
-    hold() {
-        this.tween.pause();
+    playerHold() {
+        this.isHoldPlayer = true;
+        this.hold();
+    }
+
+    playerUnHold() {
+        this.isHoldPlayer = false;
+        this.unHold();
     }
 
     unHold() {
         this.tween.resume();
+    }
+
+    private diffMinerals() {
+        return (this.percentage - this.previousPercentage) * this.price;
+    }
+
+    private hold() {
+        this.tween.pause();
     }
 }
