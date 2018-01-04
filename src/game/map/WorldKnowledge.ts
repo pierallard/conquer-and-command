@@ -266,6 +266,38 @@ export class WorldKnowledge {
         return this.getPlayerUnitCreator(player).canProduct(unitName);
     }
 
+    holdBuilding(player: Player, itemName: string) {
+        return this.getPlayerBuildingCreator(player).hold(itemName);
+    }
+
+    holdUnit(player: Player, itemName: string) {
+        return this.getPlayerUnitCreator(player).hold(itemName);
+    }
+
+    isBuildingProducing(player: Player, itemName: string) {
+        return this.getPlayerBuildingCreator(player).isProducing(itemName);
+    }
+
+    isBuildingHold(player: Player, itemName: string) {
+        return this.getPlayerBuildingCreator(player).isHold(itemName);
+    }
+
+    isUnitHold(player: Player, itemName: string) {
+        return this.getPlayerUnitCreator(player).isHold(itemName);
+    }
+
+    isUnitProducing(player: Player, itemName: string) {
+        return this.getPlayerUnitCreator(player).isProducing(itemName);
+    }
+
+    cancelBuilding(player: Player, itemName: string) {
+        return this.getPlayerBuildingCreator(player).cancel(itemName);
+    }
+
+    cancelUnit(player: Player, itemName: string) {
+        return this.getPlayerUnitCreator(player).cancel(itemName);
+    }
+
     private getPlayerUnitCreator(player: Player): UnitCreator {
         return this.unitCreators.filter((unitCreator) => {
             return unitCreator.getPlayer() === player;

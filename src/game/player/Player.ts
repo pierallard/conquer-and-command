@@ -1,7 +1,7 @@
 import {WorldKnowledge} from "../map/WorldKnowledge";
 import {CommandCenter} from "./CommandCenter";
 
-const START_MINERALS = 10000;
+const START_MINERALS = 5000;
 export const START_POWER = 10;
 
 export abstract class Player {
@@ -31,11 +31,13 @@ export abstract class Player {
     }
 
     addMinerals(amount: number) {
-        this.minerals = Math.round(this.minerals + amount);
+        this.minerals = this.minerals + amount;
+        this.getUnitCreator().unHoldProductionStatus();
+        this.getBuildingCreator().unHoldProductionStatus();
     }
 
     removeMinerals(amount: number) {
-        this.minerals = Math.round(this.minerals - amount);
+        this.minerals = this.minerals - amount;
     }
 
     getMinerals(): number {

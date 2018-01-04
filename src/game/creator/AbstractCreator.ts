@@ -15,8 +15,6 @@ export abstract class AbstractCreator {
 
     abstract getRequiredBuildings(itemName: string): string[];
 
-    abstract hasMineralsToProduct(itemName: string): boolean;
-
     abstract canProduct(itemName: string): boolean;
 
     abstract runProduction(itemName: string): void;
@@ -31,8 +29,12 @@ export abstract class AbstractCreator {
     }
 
     orderProduction(itemName) {
-        if (this.canProduct(itemName)) {
-            return this.runProduction(itemName);
+        if (this.productionStatus && this.productionStatus.getItemName() === itemName) {
+            this.productionStatus.playerUnHold();
+        } else {
+            if (this.canProduct(itemName)) {
+                return this.runProduction(itemName);
+            }
         }
     }
 
@@ -60,21 +62,103 @@ export abstract class AbstractCreator {
     isProducingAny() {
         return null !== this.productionStatus;
     }
+
+    isProducing(itemName: string) {
+        return this.productionStatus && this.productionStatus.getItemName() === itemName;
+    }
+
+    hold(itemName: string) {
+        if (this.productionStatus && this.productionStatus.getItemName() === itemName) {
+            this.productionStatus.playerHold();
+        }
+    }
+
+    isHold(itemName: string) {
+        return this.productionStatus &&
+            this.productionStatus.getItemName() === itemName &&
+            this.productionStatus.isHold();
+    }
+
+    cancel(itemName: string) {
+        if (this.isHold(itemName)) {
+            this.productionStatus.cancel();
+            this.productionStatus = null;
+        }
+    }
+
+    unHoldProductionStatus() {
+        if (this.productionStatus) {
+            this.productionStatus.unHold();
+        }
+    }
 }
 
 export class ProductionStatus {
     public percentage: number;
     private itemName: string;
+    private tween: Phaser.Tween;
+    private previousPercentage: number;
+    private price: number;
+    private player: Player;
+    private isHoldPlayer: boolean;
 
-    constructor(itemName: string, duration: number, game: Phaser.Game) {
+    constructor(itemName: string, duration: number, price: number, player: Player, callBack: any, game: Phaser.Game) {
         this.itemName = itemName;
         this.percentage = 0;
-        game.add.tween(this).to({
+        this.previousPercentage = 0;
+        this.price = price;
+        this.player = player;
+        this.isHoldPlayer = false;
+        this.tween = game.add.tween(this).to({
             percentage: 1,
         }, duration, Phaser.Easing.Default, true);
+        this.tween.onComplete.add(() => {
+            player.removeMinerals(this.diffMinerals());
+            player.removeMinerals(this.diffMinerals());
+            callBack(this.itemName);
+        });
+        this.tween.onUpdateCallback(() => {
+            if (this.player.getMinerals() - this.diffMinerals() > 0) {
+                player.removeMinerals(this.diffMinerals());
+            } else {
+                this.hold();
+            }
+            this.previousPercentage = this.percentage;
+        });
     }
 
     getItemName(): string {
         return this.itemName;
+    }
+
+    playerHold() {
+        this.isHoldPlayer = true;
+        this.hold();
+    }
+
+    playerUnHold() {
+        this.isHoldPlayer = false;
+        this.unHold();
+    }
+
+    unHold() {
+        this.tween.resume();
+    }
+
+    isHold() {
+        return this.isHoldPlayer && this.tween.isPaused;
+    }
+
+    cancel() {
+        this.tween.stop(false);
+        this.player.addMinerals(this.percentage * this.price);
+    }
+
+    private diffMinerals() {
+        return (this.percentage - this.previousPercentage) * this.price;
+    }
+
+    private hold() {
+        this.tween.pause();
     }
 }
