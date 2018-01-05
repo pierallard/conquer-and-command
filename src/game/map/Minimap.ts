@@ -17,6 +17,7 @@ export class MiniMap {
     private hasRenderedRecently: boolean = false;
     private layer: Phaser.TilemapLayer;
     private timerEvents: Phaser.Timer;
+    private scale: number;
 
     constructor(worldKnowledge: WorldKnowledge) {
         this.worldKnowledge = worldKnowledge;
@@ -41,17 +42,28 @@ export class MiniMap {
         map.addTilesetImage('Stn2SnwB', 'Stn2SnwB', TILE_SIZE, TILE_SIZE, 0, 0, 900);
         this.layer = map.createLayer(0, GROUND_WIDTH * IDONTKNOW, GROUND_HEIGHT * IDONTKNOW, group);
 
-        let scale = SIZE / Math.max(map.widthInPixels, map.heightInPixels) * 2;
-        this.layer.scale.setTo(scale, scale);
+        this.scale = SIZE / Math.max(GROUND_WIDTH, GROUND_HEIGHT) * SCALE;
+        this.layer.scale.setTo(this.scale, this.scale);
         this.layer.fixedToCamera = false;
-        this.layer.position.setTo(X * 2, Y * 2);
+        this.layer.position.setTo(X * SCALE, Y * SCALE);
         this.layer.scrollFactorX = 0;
         this.layer.scrollFactorY = 0;
 
         this.graphics = new Phaser.Graphics(game);
-        this.graphics.position.setTo(X * 2, Y * 2);
+        this.graphics.position.setTo(X * SCALE, Y * SCALE);
         this.graphics.fixedToCamera = true;
         game.add.existing(this.graphics);
+
+        this.layer.inputEnabled = true;
+        this.layer.events.onInputDown.add(() => {
+            const scaleCamera = this.scale / SCALE / GROUND_SIZE;
+            const cameraView = this.layer.game.camera.view;
+            const cameraWidth = (cameraView.width - INTERFACE_WIDTH) * scaleCamera;
+            const cameraHeight = cameraView.height * scaleCamera;
+            const x = (game.input.mousePointer.x - X * SCALE - cameraWidth / 2) / this.scale * GROUND_SIZE * SCALE;
+            const y = (game.input.mousePointer.y - Y * SCALE - cameraHeight / 2) / this.scale * GROUND_SIZE * SCALE;
+            game.camera.setPosition(x, y);
+        });
     }
 
     update() {
@@ -59,8 +71,7 @@ export class MiniMap {
             return;
         }
         const cameraView = this.layer.game.camera.view;
-        const scale = SIZE / Math.max(GROUND_WIDTH, GROUND_HEIGHT) * SCALE;
-        const scaleCamera = SIZE / Math.max(GROUND_WIDTH, GROUND_HEIGHT) / GROUND_SIZE;
+        const scaleCamera = this.scale / SCALE / GROUND_SIZE;
 
         this.graphics.clear();
 
@@ -68,7 +79,7 @@ export class MiniMap {
             this.graphics.beginFill(unit.getPlayer().getColor());
             this.graphics.lineStyle(1, unit.getPlayer().getColor());
             unit.getCellPositions().forEach((cellPosition) => {
-                this.graphics.drawRect(cellPosition.x * scale, cellPosition.y * scale, 1, 1);
+                this.graphics.drawRect(cellPosition.x * this.scale, cellPosition.y * this.scale, 1, 1);
             });
         });
 
@@ -77,7 +88,7 @@ export class MiniMap {
                 this.graphics.beginFill(building.getPlayer().getColor());
                 this.graphics.lineStyle(1, building.getPlayer().getColor());
                 building.getCellPositions().forEach((cellPosition) => {
-                    this.graphics.drawRect(cellPosition.x * scale, cellPosition.y * scale, 1, 1);
+                    this.graphics.drawRect(cellPosition.x * this.scale, cellPosition.y * this.scale, 1, 1);
                 });
             }
         });
