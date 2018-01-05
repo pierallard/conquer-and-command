@@ -3,14 +3,16 @@ import {Explosion} from "./Explosion";
 
 export class BuildingSprite extends Phaser.Sprite {
     protected group: Phaser.Group;
+    protected effectsGroup: Phaser.Group;
     private timerEvents: Phaser.Timer;
 
-    constructor(game: Phaser.Game, group: Phaser.Group, x: number, y: number, key: string) {
+    constructor(game: Phaser.Game, group: Phaser.Group, effectsGroup: Phaser.Group, x: number, y: number, key: string) {
         super(game, x, y, key);
         this.group = group;
         this.scale.setTo(SCALE);
         this.group.add(this);
         this.timerEvents = game.time.events;
+        this.effectsGroup = effectsGroup;
     }
 
     doDestroy() {

@@ -98,7 +98,6 @@ export abstract class Unit implements Shootable, Positionnable {
                     Cell.cellToReal(closestEnemyPosition.y)
                 ));
         }
-
     }
 
     lostLife(life: number) {

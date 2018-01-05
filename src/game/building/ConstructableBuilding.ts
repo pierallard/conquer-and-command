@@ -19,7 +19,7 @@ export abstract class ConstructableBuilding implements Building, Shootable {
         this.life = BuildingProperties.getLife(this.constructor.name);
     }
 
-    abstract create(game: Phaser.Game, group: Phaser.Group): void;
+    abstract create(game: Phaser.Game, group: Phaser.Group, effectsGroup: Phaser.Group): void;
 
     setVisible(value: boolean) {
         this.sprite.alpha = value ? 1 : 0;

@@ -83,12 +83,12 @@ export class WorldKnowledge {
 
     addBuilding(newBuilding: Building, appear: boolean = false) {
         this.buildingRepository.add(newBuilding);
-        newBuilding.create(this.game, this.unitBuildingGroup);
+        newBuilding.create(this.game, this.unitBuildingGroup, this.effectsGroup);
         if (appear) {
             newBuilding.setVisible(false);
             let appearSprite = new Appear(newBuilding.getCellPositions()[0]);
             appearSprite.create(this.game, this.unitBuildingGroup);
-            this.game.time.events.add(Phaser.Timer.SECOND * 1.5, () => {
+            this.game.time.events.add(Phaser.Timer.SECOND * 1.2, () => {
                 newBuilding.setVisible(true);
             }, this);
         }

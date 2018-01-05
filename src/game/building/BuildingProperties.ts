@@ -1,6 +1,27 @@
 import {_DEBUG_FAST_CONSTRUCT} from "../game_state/Play";
 
 const DATA = {
+    AdvancedGuardTower: {
+        cellPositions: [
+            [0, 0],
+        ],
+        constructable: true,
+        constructable_units: [],
+        construction_time: 66,
+        life: 300,
+        options: {
+            shoot_cooldown: 40,
+            shoot_distance: 6,
+            shoot_power: 60,
+        },
+        power: -20,
+        price: 1000,
+        requireds: [
+            'CommunicationCenter',
+        ],
+        sprite: 'Artilery2',
+        sprite_layer: 5,
+    },
     AdvancedPowerPlant: {
         cellPositions: [
             [0, 0],
@@ -39,6 +60,23 @@ const DATA = {
             'PowerPlant',
         ],
         sprite: 'Module',
+        sprite_layer: 0,
+    },
+    CommunicationCenter: {
+        cellPositions: [
+            [0, 0],
+            [1, 0],
+        ],
+        constructable: true,
+        constructable_units: [],
+        construction_time: 66,
+        life: 500,
+        power: -40,
+        price: 1000,
+        requireds: [
+            'TiberiumRefinery',
+        ],
+        sprite: 'Silo',
         sprite_layer: 0,
     },
     ConcreteBarrier: {
