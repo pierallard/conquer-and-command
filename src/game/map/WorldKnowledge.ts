@@ -140,6 +140,10 @@ export class WorldKnowledge {
         return this.unitRepository.getUnits();
     }
 
+    getBuildings() {
+        return this.buildingRepository.getBuildings();
+    }
+
     getSelectedUnits() {
         return this.unitRepository.getSelectedUnits();
     }

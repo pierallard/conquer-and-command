@@ -1,11 +1,13 @@
 import {WorldKnowledge} from "./WorldKnowledge";
 import {SCALE} from "../game_state/Play";
 import {GROUND_HEIGHT, GROUND_WIDTH} from "./GeneratedGround";
+import {INTERFACE_WIDTH} from "../interface/UserInterface";
+import {GROUND_SIZE} from "./Ground";
 
 const SIZE = 60;
 const X = 571;
 const Y = 9;
-const REFRESH_TIME = 0.5 * Phaser.Timer.SECOND;
+const REFRESH_TIME = 0.25 * Phaser.Timer.SECOND;
 const TILE_SIZE = 20;
 const IDONTKNOW = 1;
 
@@ -46,9 +48,7 @@ export class MiniMap {
         this.layer.scrollFactorX = 0;
         this.layer.scrollFactorY = 0;
 
-        let scale2 = SIZE / Math.max(map.width, map.height) * SCALE;
         this.graphics = new Phaser.Graphics(game);
-        this.graphics.scale.set(scale2, scale2);
         this.graphics.position.setTo(X * 2, Y * 2);
         this.graphics.fixedToCamera = true;
         game.add.existing(this.graphics);
@@ -58,14 +58,38 @@ export class MiniMap {
         if (this.hasRenderedRecently) {
             return;
         }
+        const cameraView = this.layer.game.camera.view;
+        const scale = SIZE / Math.max(GROUND_WIDTH, GROUND_HEIGHT) * SCALE;
+        const scaleCamera = SIZE / Math.max(GROUND_WIDTH, GROUND_HEIGHT) / GROUND_SIZE;
 
         this.graphics.clear();
+
         this.worldKnowledge.getUnits().forEach((unit) => {
             this.graphics.beginFill(unit.getPlayer().getColor());
+            this.graphics.lineStyle(1, unit.getPlayer().getColor());
             unit.getCellPositions().forEach((cellPosition) => {
-                this.graphics.drawRect(cellPosition.x, cellPosition.y, 1, 1);
+                this.graphics.drawRect(cellPosition.x * scale, cellPosition.y * scale, 1, 1);
             });
         });
+
+        this.worldKnowledge.getBuildings().forEach((building) => {
+            if (building.getPlayer()) {
+                this.graphics.beginFill(building.getPlayer().getColor());
+                this.graphics.lineStyle(1, building.getPlayer().getColor());
+                building.getCellPositions().forEach((cellPosition) => {
+                    this.graphics.drawRect(cellPosition.x * scale, cellPosition.y * scale, 1, 1);
+                });
+            }
+        });
+
+        this.graphics.lineStyle(1, 0xffffff);
+        this.graphics.endFill();
+        this.graphics.drawRect(
+            cameraView.x * scaleCamera,
+            cameraView.y * scaleCamera,
+            (cameraView.width - INTERFACE_WIDTH) * scaleCamera,
+            cameraView.height * scaleCamera
+        );
 
         this.hasRenderedRecently = true;
         this.timerEvents.add(REFRESH_TIME, () => {
