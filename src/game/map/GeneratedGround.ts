@@ -1,8 +1,8 @@
 import {SCALE} from "../game_state/Play";
 import {AlternativePosition} from "../computing/AlternativePosition";
 
-export const GROUND_WIDTH = 56;
-export const GROUND_HEIGHT = 35;
+export const GROUND_WIDTH = 156;
+export const GROUND_HEIGHT = 156;
 
 enum TERRAIN {
     SNOW = 312,

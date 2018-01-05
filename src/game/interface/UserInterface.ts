@@ -44,7 +44,7 @@ export class UserInterface {
 
         this.UIUnitCreator.create(game, this.interfaceGroup);
         this.UIBuildingCreator.create(game, this.interfaceGroup);
-        this.miniMap.create(game);
+        this.miniMap.create(game, this.interfaceGroup);
 
         this.mineralText = new Phaser.Text(
             game,

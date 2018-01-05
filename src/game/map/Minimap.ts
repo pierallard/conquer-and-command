@@ -6,6 +6,8 @@ const SIZE = 60;
 const X = 571;
 const Y = 9;
 const REFRESH_TIME = 0.5 * Phaser.Timer.SECOND;
+const TILE_SIZE = 20;
+const IDONTKNOW = 1;
 
 export class MiniMap {
     private graphics: Phaser.Graphics;
@@ -18,33 +20,31 @@ export class MiniMap {
         this.worldKnowledge = worldKnowledge;
     }
 
-    create(game: Phaser.Game) {
+    create(game: Phaser.Game, group: Phaser.Group) {
         this.timerEvents = game.time.events;
 
         let data = this.worldKnowledge.getGroundCSV();
 
         game.cache.addTilemap('minimap', null, data, Phaser.Tilemap.CSV);
-        let map = game.add.tilemap('minimap', 20, 20, GROUND_WIDTH, GROUND_HEIGHT);
-        map.addTilesetImage('GrasClif', 'GrasClif', 20, 20, 0, 0, 0);
-        map.addTilesetImage('GrssMisc', 'GrssMisc', 20, 20, 0, 0, 100);
-        map.addTilesetImage('Ice2Snow', 'Ice2Snow', 20, 20, 0, 0, 200);
-        map.addTilesetImage('Snow', 'Snow', 20, 20, 0, 0, 300);
-        map.addTilesetImage('Snw2Crtb', 'Snw2Crtb', 20, 20, 0, 0, 400);
-        map.addTilesetImage('IceBrk2', 'IceBrk2', 20, 20, 0, 0, 500);
-        map.addTilesetImage('Grs2Watr', 'Grs2Watr', 20, 20, 0, 0, 600);
-        map.addTilesetImage('Grs2Mnt', 'Grs2Mnt', 20, 20, 0, 0, 700);
-        map.addTilesetImage('Snw2Mnt', 'Snw2Mnt', 20, 20, 0, 0, 800);
-        map.addTilesetImage('Stn2SnwB', 'Stn2SnwB', 20, 20, 0, 0, 900);
-        this.layer = map.createLayer(0, 60 * 20, 60 * 20);
+        let map = game.add.tilemap('minimap', IDONTKNOW, IDONTKNOW, GROUND_WIDTH * 2, GROUND_HEIGHT * 2);
+        map.addTilesetImage('GrasClif', 'GrasClif', TILE_SIZE, TILE_SIZE, 0, 0, 0);
+        map.addTilesetImage('GrssMisc', 'GrssMisc', TILE_SIZE, TILE_SIZE, 0, 0, 100);
+        map.addTilesetImage('Ice2Snow', 'Ice2Snow', TILE_SIZE, TILE_SIZE, 0, 0, 200);
+        map.addTilesetImage('Snow', 'Snow', TILE_SIZE, TILE_SIZE, 0, 0, 300);
+        map.addTilesetImage('Snw2Crtb', 'Snw2Crtb', TILE_SIZE, TILE_SIZE, 0, 0, 400);
+        map.addTilesetImage('IceBrk2', 'IceBrk2', TILE_SIZE, TILE_SIZE, 0, 0, 500);
+        map.addTilesetImage('Grs2Watr', 'Grs2Watr', TILE_SIZE, TILE_SIZE, 0, 0, 600);
+        map.addTilesetImage('Grs2Mnt', 'Grs2Mnt', TILE_SIZE, TILE_SIZE, 0, 0, 700);
+        map.addTilesetImage('Snw2Mnt', 'Snw2Mnt', TILE_SIZE, TILE_SIZE, 0, 0, 800);
+        map.addTilesetImage('Stn2SnwB', 'Stn2SnwB', TILE_SIZE, TILE_SIZE, 0, 0, 900);
+        this.layer = map.createLayer(0, GROUND_WIDTH * IDONTKNOW, GROUND_HEIGHT * IDONTKNOW, group);
 
         let scale = SIZE / Math.max(map.widthInPixels, map.heightInPixels) * 2;
         this.layer.scale.setTo(scale, scale);
-        this.layer.fixedToCamera = true;
-        this.layer.cameraOffset.setTo(X * 2, Y * 2);
+        this.layer.fixedToCamera = false;
+        this.layer.position.setTo(X * 2, Y * 2);
         this.layer.scrollFactorX = 0;
         this.layer.scrollFactorY = 0;
-
-        game.add.existing(this.layer);
 
         let scale2 = SIZE / Math.max(map.width, map.height) * SCALE;
         this.graphics = new Phaser.Graphics(game);
