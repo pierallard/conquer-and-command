@@ -7,6 +7,7 @@ import {AlternativePosition} from "../computing/AlternativePosition";
 import {MinigunInfantry} from "../unit/MinigunInfantry";
 import {Grenadier} from "../unit/Grenadier";
 import {RocketSoldier} from "../unit/RocketSoldier";
+import {HummVee} from "../unit/HummVee";
 
 export class UnitCreator extends AbstractCreator {
     canProduct(itemName: string): boolean {
@@ -71,6 +72,10 @@ export class UnitCreator extends AbstractCreator {
             case 'RocketSoldier':
                 let rocketSoldier = new RocketSoldier(this.worldKnowledge, cellPosition, this.player);
                 this.worldKnowledge.addUnit(rocketSoldier, true);
+                break;
+            case 'HummVee':
+                let hummVee = new HummVee(this.worldKnowledge, cellPosition, this.player);
+                this.worldKnowledge.addUnit(hummVee, true);
                 break;
             default:
                 throw "Unable to build unit " + unitName;

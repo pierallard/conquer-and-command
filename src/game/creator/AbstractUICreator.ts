@@ -95,7 +95,7 @@ export abstract class AbstractUICreator {
         this.buttons.push(new CreationButton(
             this,
             this.game,
-            TOP + this.buttons.length * HEIGHT * SCALE,
+            this.buttons.length > 0 ? this.buttons[this.buttons.length - 1].getTop() + HEIGHT * SCALE : TOP,
             itemName,
             this.group,
             this.x,
@@ -183,7 +183,7 @@ class CreationButton {
         this.button = new Phaser.Sprite(game, x, top, 'buttons', 2);
         this.button.scale.setTo(SCALE, SCALE);
         this.button.inputEnabled = true;
-        this.button.events.onInputDown.add((input) => {
+        this.button.events.onInputDown.add(() => {
             if (game.input.activePointer.rightButton.isDown) {
                 onRightClickFunction.bind(creator)(this.itemName);
             } else {
@@ -251,6 +251,10 @@ class CreationButton {
 
     setAvailable(value: boolean) {
         this.constructAllowed = value;
+    }
+
+    getTop(): number {
+        return this.button.y;
     }
 
     private applyAllElement(a: any) {
