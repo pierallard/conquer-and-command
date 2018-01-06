@@ -3,6 +3,7 @@ import {Cell} from "../computing/Cell";
 import {WorldKnowledge} from "../map/WorldKnowledge";
 
 export class Selector {
+    private camera: Phaser.Camera;
     private isDoubleClick: boolean;
     private corner: PIXI.Point = null;
     private worldKnowledge: WorldKnowledge;
@@ -10,7 +11,6 @@ export class Selector {
     private timerDoubleClick: Phaser.TimerEvent;
     private graphics: Phaser.Graphics;
     private mousePointer: Phaser.Pointer;
-    private cameraPosition: Phaser.Point;
     private leftButton: Phaser.DeviceButton;
     private rightButton: Phaser.DeviceButton;
     private gameWidth: number;
@@ -24,7 +24,7 @@ export class Selector {
 
     create(game: Phaser.Game) {
         this.mousePointer = game.input.mousePointer;
-        this.cameraPosition = game.camera.position;
+        this.camera = game.camera;
         this.leftButton = game.input.activePointer.leftButton;
         this.rightButton = game.input.activePointer.rightButton;
         this.graphics = game.add.graphics(0, 0);
@@ -42,14 +42,15 @@ export class Selector {
 
     getMousePointer(): PIXI.Point {
         return new PIXI.Point(
-            this.mousePointer.x + this.cameraPosition.x,
-            this.mousePointer.y + this.cameraPosition.y
+            this.mousePointer.x + this.camera.position.x,
+            this.mousePointer.y + this.camera.position.y
         );
     }
 
     update() {
         if (null === this.corner && this.leftButton.isDown) {
             this.corner = this.getMousePointer();
+            console.log(this.corner);
         }
 
         if (this.corner !== null && this.leftButton.isUp) {
@@ -63,10 +64,10 @@ export class Selector {
                 }
                 if (unitUnderPointer && this.isDoubleClick) {
                     this.selectUnitsInside(
-                        new PIXI.Point(this.cameraPosition.x, this.cameraPosition.y),
+                        new PIXI.Point(this.camera.position.x, this.camera.position.y),
                         new PIXI.Point(
-                            this.cameraPosition.x + this.gameWidth,
-                            this.cameraPosition.y + this.gameHeight,
+                            this.camera.position.x + this.gameWidth,
+                            this.camera.position.y + this.gameHeight,
                         ),
                         unitUnderPointer.constructor
                     );

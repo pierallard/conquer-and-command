@@ -6,6 +6,7 @@ import {ComputerPlayer} from "../player/ComputerPlayer";
 import {GROUND_HEIGHT, GROUND_WIDTH} from "../map/GeneratedGround";
 import {TiberiumSource} from "../building/TiberiumSource";
 import {AdvancedGuardTower} from "../building/AdvancedGuardTower";
+import {AlternativePosition} from "../computing/AlternativePosition";
 
 export const _DEBUG_FAST_CONSTRUCT = true;
 export const SCALE = 2;
@@ -87,9 +88,7 @@ export default class Play extends Phaser.State {
             });
         });
 
-        this.worldKnowledge.addBuilding(
-            new AdvancedGuardTower(this.worldKnowledge, new PIXI.Point(this.startPositions[1].x - 15, this.startPositions[1].y - 3), this.worldKnowledge.getPlayers()[0]), true
-        );
+        AlternativePosition.getZones(this.worldKnowledge.isCellAccessible.bind(this.worldKnowledge));
     }
 
     update() {
