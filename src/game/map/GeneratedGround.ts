@@ -4,6 +4,11 @@ import {AlternativePosition} from "../computing/AlternativePosition";
 export const GROUND_WIDTH = 100;
 export const GROUND_HEIGHT = 140;
 
+enum TYPE {
+    NORMAL,
+    VARIATION,
+}
+
 enum TERRAIN {
     SNOW = 312,
     ICE = 212,
@@ -111,7 +116,7 @@ export class GeneratedGround {
     private static randToTexture(rand: number): number {
         let val = TERRAINS[TERRAINS.length - 1];
         if (rand < MIN) {
-            return TERRAINS[0]
+            return TERRAINS[0];
         }
         for (let i = 0; i < TERRAINS.length; i++) {
             if (rand >= MIN + i * STEP && rand <= MIN + (i + 1) * STEP) {
@@ -135,13 +140,21 @@ export class GeneratedGround {
 
     constructor() {
         this.tiles = {
-            312: [TERRAIN.SNOW, TERRAIN.SNOW, TERRAIN.SNOW, TERRAIN.SNOW],
-            212: [TERRAIN.ICE, TERRAIN.ICE, TERRAIN.ICE, TERRAIN.ICE],
-            412: [TERRAIN.CRATER, TERRAIN.CRATER, TERRAIN.CRATER, TERRAIN.CRATER],
-            640: [TERRAIN.GRASS, TERRAIN.GRASS, TERRAIN.GRASS, TERRAIN.GRASS],
-            612: [TERRAIN.WATER, TERRAIN.WATER, TERRAIN.WATER, TERRAIN.WATER],
-            712: [TERRAIN.MOUNTAIN, TERRAIN.MOUNTAIN, TERRAIN.MOUNTAIN, TERRAIN.MOUNTAIN],
-            930: [TERRAIN.STONE, TERRAIN.STONE, TERRAIN.STONE, TERRAIN.STONE],
+            // Plain tiles
+            312: [TERRAIN.SNOW, TERRAIN.SNOW, TERRAIN.SNOW, TERRAIN.SNOW, TYPE.NORMAL],
+            212: [TERRAIN.ICE, TERRAIN.ICE, TERRAIN.ICE, TERRAIN.ICE, TYPE.NORMAL],
+            412: [TERRAIN.CRATER, TERRAIN.CRATER, TERRAIN.CRATER, TERRAIN.CRATER, TYPE.NORMAL],
+            640: [TERRAIN.GRASS, TERRAIN.GRASS, TERRAIN.GRASS, TERRAIN.GRASS, TYPE.NORMAL],
+            612: [TERRAIN.WATER, TERRAIN.WATER, TERRAIN.WATER, TERRAIN.WATER, TYPE.NORMAL],
+            712: [TERRAIN.MOUNTAIN, TERRAIN.MOUNTAIN, TERRAIN.MOUNTAIN, TERRAIN.MOUNTAIN, TYPE.NORMAL],
+            930: [TERRAIN.STONE, TERRAIN.STONE, TERRAIN.STONE, TERRAIN.STONE, TYPE.NORMAL],
+
+            // Variations
+            118: [TERRAIN.GRASS, TERRAIN.GRASS, TERRAIN.GRASS, TERRAIN.GRASS, TYPE.VARIATION],
+            120: [TERRAIN.GRASS, TERRAIN.GRASS, TERRAIN.GRASS, TERRAIN.GRASS, TYPE.VARIATION],
+            132: [TERRAIN.GRASS, TERRAIN.GRASS, TERRAIN.GRASS, TERRAIN.GRASS, TYPE.VARIATION],
+            134: [TERRAIN.GRASS, TERRAIN.GRASS, TERRAIN.GRASS, TERRAIN.GRASS, TYPE.VARIATION],
+            136: [TERRAIN.GRASS, TERRAIN.GRASS, TERRAIN.GRASS, TERRAIN.GRASS, TYPE.VARIATION],
         };
         this.collisions.push(TERRAIN.WATER);
         this.initializeTiles();
@@ -241,18 +254,18 @@ export class GeneratedGround {
         isCollision: boolean = false
     ) {
         let result = {};
-        result[startNumber] = [terrain1, terrain1, terrain2, terrain1];
-        result[startNumber + 2] = [terrain1, terrain1, terrain2, terrain2];
-        result[startNumber + 4] = [terrain1, terrain1, terrain1, terrain2];
-        result[startNumber + 10] = [terrain1, terrain2, terrain2, terrain1];
-        result[startNumber + 14] = [terrain2, terrain1, terrain1, terrain2];
-        result[startNumber + 20] = [terrain1, terrain2, terrain1, terrain1];
-        result[startNumber + 22] = [terrain2, terrain2, terrain1, terrain1];
-        result[startNumber + 24] = [terrain2, terrain1, terrain1, terrain1];
-        result[startNumber + (rightGap ? 32 : 30)] = [terrain1, terrain2, terrain2, terrain2];
-        result[startNumber + (rightGap ? 34 : 32)] = [terrain2, terrain1, terrain2, terrain2];
-        result[startNumber + (rightGap ? 42 : 40)] = [terrain2, terrain2, terrain2, terrain1];
-        result[startNumber + (rightGap ? 44 : 42)] = [terrain2, terrain2, terrain1, terrain2];
+        result[startNumber] = [terrain1, terrain1, terrain2, terrain1, TYPE.NORMAL];
+        result[startNumber + 2] = [terrain1, terrain1, terrain2, terrain2, TYPE.NORMAL];
+        result[startNumber + 4] = [terrain1, terrain1, terrain1, terrain2, TYPE.NORMAL];
+        result[startNumber + 10] = [terrain1, terrain2, terrain2, terrain1, TYPE.NORMAL];
+        result[startNumber + 14] = [terrain2, terrain1, terrain1, terrain2, TYPE.NORMAL];
+        result[startNumber + 20] = [terrain1, terrain2, terrain1, terrain1, TYPE.NORMAL];
+        result[startNumber + 22] = [terrain2, terrain2, terrain1, terrain1, TYPE.NORMAL];
+        result[startNumber + 24] = [terrain2, terrain1, terrain1, terrain1, TYPE.NORMAL];
+        result[startNumber + (rightGap ? 32 : 30)] = [terrain1, terrain2, terrain2, terrain2, TYPE.NORMAL];
+        result[startNumber + (rightGap ? 34 : 32)] = [terrain2, terrain1, terrain2, terrain2, TYPE.NORMAL];
+        result[startNumber + (rightGap ? 42 : 40)] = [terrain2, terrain2, terrain2, terrain1, TYPE.NORMAL];
+        result[startNumber + (rightGap ? 44 : 42)] = [terrain2, terrain2, terrain1, terrain2, TYPE.NORMAL];
 
         if (isCollision) {
             this.collisions.push(startNumber);
@@ -295,16 +308,29 @@ export class GeneratedGround {
     }
 
     private getTileNumber(param: number[]): number {
+        let normals = [];
+        let variations = [];
         const keys = Object.keys(this.tiles);
         for (let i = 0; i < keys.length; i++) {
             if (this.tiles[keys[i]][0] === param[0] &&
                 this.tiles[keys[i]][1] === param[1] &&
                 this.tiles[keys[i]][2] === param[2] &&
                 this.tiles[keys[i]][3] === param[3]) {
-                return parseInt(keys[i]);
+                if (this.tiles[keys[i]][4] === TYPE.NORMAL) {
+                    normals.push(parseInt(keys[i]));
+                } else {
+                    variations.push(parseInt(keys[i]));
+                }
             }
         }
 
-        return null;
+        if (normals.length === 0 && variations.length === 0) {
+            return null;
+        }
+
+        if (Math.random() > 0.97 && variations.length !== 0 || normals.length === 0) {
+            return variations[Math.floor(Math.random() * variations.length)];
+        }
+        return normals[Math.floor(Math.random() * normals.length)];
     }
 }
