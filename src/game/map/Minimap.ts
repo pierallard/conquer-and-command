@@ -3,6 +3,7 @@ import {SCALE} from "../game_state/Play";
 import {GROUND_HEIGHT, GROUND_WIDTH} from "./GeneratedGround";
 import {INTERFACE_WIDTH} from "../interface/UserInterface";
 import {GROUND_SIZE} from "./Ground";
+import {Player} from "../player/Player";
 
 const SIZE = 60;
 const X = 571;
@@ -12,15 +13,19 @@ const TILE_SIZE = 20;
 const IDONTKNOW = 1;
 
 export class MiniMap {
-    private graphics: Phaser.Graphics;
+    private unitAndBuildingGraphics: Phaser.Graphics;
+    private fogGraphics: Phaser.Graphics;
+    private rectGraphics: Phaser.Graphics;
     private worldKnowledge: WorldKnowledge;
     private hasRenderedRecently: boolean = false;
     private layer: Phaser.TilemapLayer;
     private timerEvents: Phaser.Timer;
     private scale: number;
+    private player: Player;
 
-    constructor(worldKnowledge: WorldKnowledge) {
+    constructor(worldKnowledge: WorldKnowledge, player: Player) {
         this.worldKnowledge = worldKnowledge;
+        this.player = player;
     }
 
     create(game: Phaser.Game, group: Phaser.Group) {
@@ -49,10 +54,20 @@ export class MiniMap {
         this.layer.scrollFactorX = 0;
         this.layer.scrollFactorY = 0;
 
-        this.graphics = new Phaser.Graphics(game);
-        this.graphics.position.setTo(X * SCALE, Y * SCALE);
-        this.graphics.fixedToCamera = true;
-        game.add.existing(this.graphics);
+        this.unitAndBuildingGraphics = new Phaser.Graphics(game);
+        this.unitAndBuildingGraphics.position.setTo(X * SCALE, Y * SCALE);
+        this.unitAndBuildingGraphics.fixedToCamera = true;
+        game.add.existing(this.unitAndBuildingGraphics);
+
+        this.fogGraphics = new Phaser.Graphics(game);
+        this.fogGraphics.position.setTo(X * SCALE, Y * SCALE);
+        this.fogGraphics.fixedToCamera = true;
+        game.add.existing(this.fogGraphics);
+
+        this.rectGraphics = new Phaser.Graphics(game);
+        this.rectGraphics.position.setTo(X * SCALE, Y * SCALE);
+        this.rectGraphics.fixedToCamera = true;
+        game.add.existing(this.rectGraphics);
 
         this.layer.inputEnabled = true;
         this.layer.events.onInputDown.add(() => {
@@ -70,41 +85,77 @@ export class MiniMap {
         if (this.hasRenderedRecently) {
             return;
         }
-        const cameraView = this.layer.game.camera.view;
-        const scaleCamera = this.scale / SCALE / GROUND_SIZE;
 
-        this.graphics.clear();
-
-        this.worldKnowledge.getUnits().forEach((unit) => {
-            this.graphics.beginFill(unit.getPlayer().getColor());
-            this.graphics.lineStyle(1, unit.getPlayer().getColor());
-            unit.getCellPositions().forEach((cellPosition) => {
-                this.graphics.drawRect(cellPosition.x * this.scale, cellPosition.y * this.scale, 1, 1);
-            });
-        });
-
-        this.worldKnowledge.getBuildings().forEach((building) => {
-            if (building.getPlayer()) {
-                this.graphics.beginFill(building.getPlayer().getColor());
-                this.graphics.lineStyle(1, building.getPlayer().getColor());
-                building.getCellPositions().forEach((cellPosition) => {
-                    this.graphics.drawRect(cellPosition.x * this.scale, cellPosition.y * this.scale, 1, 1);
-                });
-            }
-        });
-
-        this.graphics.lineStyle(1, 0xffffff);
-        this.graphics.endFill();
-        this.graphics.drawRect(
-            cameraView.x * scaleCamera,
-            cameraView.y * scaleCamera,
-            (cameraView.width - INTERFACE_WIDTH) * scaleCamera,
-            cameraView.height * scaleCamera
-        );
+        this.updateUnitAndBuildingGraphics();
+        this.updateFogGraphics();
+        this.udpateRectGraphics();
 
         this.hasRenderedRecently = true;
         this.timerEvents.add(REFRESH_TIME, () => {
             this.hasRenderedRecently = false;
         }, this);
+    }
+
+    private updateUnitAndBuildingGraphics() {
+
+        this.unitAndBuildingGraphics.clear();
+
+        this.worldKnowledge.getUnits().forEach((unit) => {
+            this.unitAndBuildingGraphics.beginFill(unit.getPlayer().getColor());
+            this.unitAndBuildingGraphics.lineStyle(1, unit.getPlayer().getColor());
+            unit.getCellPositions().forEach((cellPosition) => {
+                this.unitAndBuildingGraphics.drawRect(
+                    cellPosition.x * this.scale,
+                    cellPosition.y * this.scale,
+                    1,
+                    1
+                );
+            });
+        });
+
+        this.worldKnowledge.getBuildings().forEach((building) => {
+            if (building.getPlayer()) {
+                this.unitAndBuildingGraphics.beginFill(building.getPlayer().getColor());
+                this.unitAndBuildingGraphics.lineStyle(1, building.getPlayer().getColor());
+                building.getCellPositions().forEach((cellPosition) => {
+                    this.unitAndBuildingGraphics.drawRect(
+                        cellPosition.x * this.scale,
+                        cellPosition.y * this.scale,
+                        1,
+                        1
+                    );
+                });
+            }
+        });
+    }
+
+    private updateFogGraphics() {
+        this.fogGraphics.clear();
+        this.fogGraphics.beginFill(0x000000);
+
+        const fogKnownCells = this.worldKnowledge.getFogKnownCells(this.player);
+        for (let y = 0; y < fogKnownCells.length; y++) {
+            for (let x = 0; x < fogKnownCells[y].length; x++) {
+                if (!fogKnownCells[y][x]) {
+                    this.fogGraphics.drawRect(x, y, 1, 1);
+                }
+            }
+        }
+    }
+
+    private udpateRectGraphics() {
+        this.rectGraphics.clear();
+
+        const cameraView = this.layer.game.camera.view;
+        const scaleCamera = this.scale / SCALE / GROUND_SIZE;
+
+        this.rectGraphics.lineStyle(1, 0xffffff);
+        this.rectGraphics.endFill();
+        this.rectGraphics.drawRect(
+            cameraView.x * scaleCamera,
+            cameraView.y * scaleCamera,
+            (cameraView.width - INTERFACE_WIDTH) * scaleCamera,
+            cameraView.height * scaleCamera
+        );
     }
 }

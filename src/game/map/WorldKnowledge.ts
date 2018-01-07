@@ -316,6 +316,12 @@ export class WorldKnowledge {
         return this.getPlayerUnitCreator(player).cancel(itemName);
     }
 
+    getFogKnownCells(player: Player): boolean[][] {
+        return this.fogs.filter((fog) => {
+            return fog.getPlayer() === player;
+        })[0].getKnownCells();
+    }
+
     private getPlayerUnitCreator(player: Player): UnitCreator {
         return this.unitCreators.filter((unitCreator) => {
             return unitCreator.getPlayer() === player;

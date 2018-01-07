@@ -4,7 +4,7 @@ import {GROUND_HEIGHT, GROUND_WIDTH} from "./map/GeneratedGround";
 import {Distance} from "./computing/Distance";
 import {FogSprite} from "./sprite/FogSprite";
 
-const REFRESH_TIME = 2 * Phaser.Timer.SECOND;
+const REFRESH_TIME = 0.25 * Phaser.Timer.SECOND;
 
 export class Fog {
     private worldKnowledge: WorldKnowledge;
@@ -57,6 +57,10 @@ export class Fog {
 
     getPlayer() {
         return this.player;
+    }
+
+    getKnownCells(): boolean[][] {
+        return this.knownCells;
     }
 
     private updateKnownCells() {
