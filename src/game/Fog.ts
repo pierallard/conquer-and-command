@@ -59,15 +59,27 @@ export class Fog {
             return;
         }
 
-        const units = this.worldKnowledge.getPlayerUnits(this.player);
-        const buildings = this.worldKnowledge.getPlayerBuildings(this.player);
-        for (let y = 0; y < GROUND_HEIGHT; y++) {
-            for (let x = 0; x < GROUND_WIDTH; x++) {
-                if (!this.knownCells[y][x] && Fog.unitShowCell(units, buildings, x, y)) {
-                    this.knownCells[y][x] = true;
-                }
-            }
-        }
+        this.worldKnowledge.getPlayerUnits(this.player).forEach((unit) => {
+            unit.getCellPositions().forEach((unitCell) => {
+                Distance.getDisc(4).forEach((cell) => {
+                    this.knownCells[unitCell.y + cell.y][unitCell.x + cell.x] = true;
+                });
+            });
+        });
+
+        this.worldKnowledge.getPlayerBuildings(this.player).forEach((building) => {
+            building.getCellPositions().forEach((buildingCell) => {
+                Distance.getDisc(4).forEach((cell) => {
+                    const y = buildingCell.y + cell.y;
+                    if (undefined !== this.knownCells[y]) {
+                        const x = buildingCell.x + cell.x;
+                        if (undefined !== this.knownCells[y][x]) {
+                            this.knownCells[y][x] = true;
+                        }
+                    }
+                });
+            });
+        });
 
         if (this.sprite) {
             this.sprite.update(this.knownCells);
