@@ -1,30 +1,12 @@
 import {Player} from "./player/Player";
 import {WorldKnowledge} from "./map/WorldKnowledge";
 import {GROUND_HEIGHT, GROUND_WIDTH} from "./map/GeneratedGround";
-import {Unit} from "./unit/Unit";
 import {Distance} from "./computing/Distance";
-import {Building} from "./building/Building";
 import {FogSprite} from "./sprite/FogSprite";
 
-const REFRESH_TIME = 0.5 * Phaser.Timer.SECOND;
+const REFRESH_TIME = 2 * Phaser.Timer.SECOND;
 
 export class Fog {
-    private static unitShowCell(units: Unit[], buildings: Building[], x: number, y: number): boolean {
-        for (let i = 0; i < units.length; i++) {
-            if (Distance.to(units[i].getCellPositions(), new PIXI.Point(x, y)) < 10) {
-                return true;
-            }
-        }
-
-        for (let i = 0; i < buildings.length; i++) {
-            if (Distance.to(buildings[i].getCellPositions(), new PIXI.Point(x, y)) < 10) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     private worldKnowledge: WorldKnowledge;
     private player: Player;
     private knownCells: boolean[][];
@@ -55,14 +37,39 @@ export class Fog {
     }
 
     update() {
-        if (this.hasRenderedRecently) {
-            return;
-        }
+        if (!this.hasRenderedRecently) {
+            this.updateKnownCells();
 
+            this.hasRenderedRecently = true;
+            this.timeEvents.add(REFRESH_TIME, () => {
+                this.hasRenderedRecently = false;
+            }, this);
+
+            if (this.sprite) {
+                this.sprite.update(this.knownCells, true);
+            }
+        } else {
+            if (this.sprite) {
+                this.sprite.update(this.knownCells, false);
+            }
+        }
+    }
+
+    getPlayer() {
+        return this.player;
+    }
+
+    private updateKnownCells() {
         this.worldKnowledge.getPlayerUnits(this.player).forEach((unit) => {
             unit.getCellPositions().forEach((unitCell) => {
                 Distance.getDisc(4).forEach((cell) => {
-                    this.knownCells[unitCell.y + cell.y][unitCell.x + cell.x] = true;
+                    const y = unitCell.y + cell.y;
+                    if (undefined !== this.knownCells[y]) {
+                        const x = unitCell.x + cell.x;
+                        if (undefined !== this.knownCells[y][x]) {
+                            this.knownCells[y][x] = true;
+                        }
+                    }
                 });
             });
         });
@@ -80,18 +87,5 @@ export class Fog {
                 });
             });
         });
-
-        if (this.sprite) {
-            this.sprite.update(this.knownCells);
-        }
-
-        this.hasRenderedRecently = true;
-        this.timeEvents.add(REFRESH_TIME, () => {
-            this.hasRenderedRecently = false;
-        }, this);
-    }
-
-    getPlayer() {
-        return this.player;
     }
 }

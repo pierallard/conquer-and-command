@@ -51,7 +51,7 @@ export class Distance {
             for (let x = -distance; x <= distance; x++) {
                 for (let y = -distance; y <= distance; y++) {
                     const point = new PIXI.Point(x, y);
-                    if (Distance.to(new PIXI.Point(0, 0), point) <= distance) {
+                    if (Distance.to(new PIXI.Point(0, 0), point) < distance) {
                         result.push(point);
                     }
                 }
