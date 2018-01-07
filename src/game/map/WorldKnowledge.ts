@@ -12,6 +12,7 @@ import {BuildingProperties} from "../building/BuildingProperties";
 import {UnitCreator} from "../creator/UnitCreator";
 import {BuildingCreator} from "../creator/BuildingCreator";
 import {ProductionStatus} from "../creator/AbstractCreator";
+import {Fog} from "../Fog";
 
 export class WorldKnowledge {
     private game: Phaser.Game;
@@ -25,6 +26,8 @@ export class WorldKnowledge {
     private buildingCreators: BuildingCreator[];
     private players: Player[];
     private groundRepository: TiberiumPlant[];
+    private fogs: Fog[];
+    private fogGroup: Phaser.Group;
 
     constructor() {
         this.ground = new GeneratedGround();
@@ -34,9 +37,10 @@ export class WorldKnowledge {
         this.unitCreators = [];
         this.buildingCreators = [];
         this.players = [];
+        this.fogs = [];
     }
 
-    create(game: Phaser.Game, startPositions: PIXI.Point[]) {
+    create(game: Phaser.Game, startPositions: PIXI.Point[], player: Player) {
         this.game = game;
         this.ground.create(this.game, startPositions);
 
@@ -55,6 +59,12 @@ export class WorldKnowledge {
         this.buildingCreators.forEach((buildingCreator) => {
             buildingCreator.create(game);
         });
+
+        this.fogGroup = this.game.add.group();
+
+        this.fogs.forEach((fog) => {
+            fog.create(game, this.fogGroup, fog.getPlayer() === player);
+        });
     }
 
     update() {
@@ -64,6 +74,9 @@ export class WorldKnowledge {
         });
         this.buildingRepository.getBuildings().forEach((building) => {
             building.update();
+        });
+        this.fogs.forEach((fog) => {
+            fog.update();
         });
     }
 
@@ -224,6 +237,7 @@ export class WorldKnowledge {
         this.players.push(player);
         this.unitCreators.push(player.getUnitCreator());
         this.buildingCreators.push(player.getBuildingCreator());
+        this.fogs.push(new Fog(this, player));
     }
 
     getPlayers(): Player[] {
