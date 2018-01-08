@@ -54,14 +54,17 @@ export class MiniMap {
         this.layer.scrollFactorX = 0;
         this.layer.scrollFactorY = 0;
 
+        const secondScale = SIZE * SCALE / Math.max(GROUND_WIDTH, GROUND_HEIGHT);
         this.unitAndBuildingGraphics = new Phaser.Graphics(game);
         this.unitAndBuildingGraphics.position.setTo(X * SCALE, Y * SCALE);
         this.unitAndBuildingGraphics.fixedToCamera = true;
+        this.unitAndBuildingGraphics.scale.set(secondScale, secondScale);
         game.add.existing(this.unitAndBuildingGraphics);
 
         this.fogGraphics = new Phaser.Graphics(game);
         this.fogGraphics.position.setTo(X * SCALE, Y * SCALE);
         this.fogGraphics.fixedToCamera = true;
+        this.fogGraphics.scale.set(secondScale, secondScale);
         game.add.existing(this.fogGraphics);
 
         this.rectGraphics = new Phaser.Graphics(game);
@@ -97,7 +100,6 @@ export class MiniMap {
     }
 
     private updateUnitAndBuildingGraphics() {
-
         this.unitAndBuildingGraphics.clear();
 
         this.worldKnowledge.getUnits().forEach((unit) => {
@@ -105,8 +107,8 @@ export class MiniMap {
             this.unitAndBuildingGraphics.lineStyle(1, unit.getPlayer().getColor());
             unit.getCellPositions().forEach((cellPosition) => {
                 this.unitAndBuildingGraphics.drawRect(
-                    cellPosition.x * this.scale,
-                    cellPosition.y * this.scale,
+                    cellPosition.x,
+                    cellPosition.y,
                     1,
                     1
                 );
@@ -119,8 +121,8 @@ export class MiniMap {
                 this.unitAndBuildingGraphics.lineStyle(1, building.getPlayer().getColor());
                 building.getCellPositions().forEach((cellPosition) => {
                     this.unitAndBuildingGraphics.drawRect(
-                        cellPosition.x * this.scale,
-                        cellPosition.y * this.scale,
+                        cellPosition.x,
+                        cellPosition.y,
                         1,
                         1
                     );
