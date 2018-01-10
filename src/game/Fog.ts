@@ -33,6 +33,9 @@ export class Fog {
         if (addSprite) {
             this.sprite = new FogSprite();
             this.sprite.create(game, group);
+
+            this.updateKnownCells();
+            this.sprite.initialize(this.knownCells);
         }
     }
 
@@ -66,7 +69,7 @@ export class Fog {
     private updateKnownCells() {
         this.worldKnowledge.getPlayerUnits(this.player).forEach((unit) => {
             unit.getCellPositions().forEach((unitCell) => {
-                Distance.getDisc(4).forEach((cell) => {
+                Distance.getDisc(6).forEach((cell) => {
                     const y = unitCell.y + cell.y;
                     if (undefined !== this.knownCells[y]) {
                         const x = unitCell.x + cell.x;

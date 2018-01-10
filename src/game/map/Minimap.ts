@@ -90,7 +90,7 @@ export class MiniMap {
         }
 
         this.updateUnitAndBuildingGraphics();
-        this.updateFogGraphics();
+        // this.updateFogGraphics();
         this.udpateRectGraphics();
 
         this.hasRenderedRecently = true;
