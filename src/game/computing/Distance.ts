@@ -1,4 +1,6 @@
 export class Distance {
+    static discCache: PIXI.Point[][] = [];
+
     static to(from: PIXI.Point | PIXI.Point[], to: PIXI.Point | PIXI.Point[]): number {
         let toArray = (<PIXI.Point[]> ((!(to instanceof Array)) ? [to] : to));
         let fromArray = (<PIXI.Point[]> ((!(from instanceof Array)) ? [from] : from));
@@ -41,6 +43,23 @@ export class Distance {
         }
 
         return closest;
+    }
+
+    static getDisc(distance: number): PIXI.Point[] {
+        if (!this.discCache[distance]) {
+            let result = [];
+            for (let x = -distance; x <= distance; x++) {
+                for (let y = -distance; y <= distance; y++) {
+                    const point = new PIXI.Point(x, y);
+                    if (Distance.to(new PIXI.Point(0, 0), point) < distance) {
+                        result.push(point);
+                    }
+                }
+            }
+            this.discCache[distance] = result;
+        }
+
+        return this.discCache[distance];
     }
 
     private static distance(posTo: PIXI.Point, posFrom: PIXI.Point) {

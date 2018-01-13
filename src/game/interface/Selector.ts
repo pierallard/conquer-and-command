@@ -50,7 +50,6 @@ export class Selector {
     update() {
         if (null === this.corner && this.leftButton.isDown) {
             this.corner = this.getMousePointer();
-            console.log(this.corner);
         }
 
         if (this.corner !== null && this.leftButton.isUp) {

@@ -27,7 +27,7 @@ export class UserInterface {
         this.buildingPositionner = new BuildingPositioner(worldKnowledge, this.player);
         this.UIBuildingCreator = new UIBuildingCreator(worldKnowledge, this.player, this.buildingPositionner);
         this.UIUnitCreator = new UIUnitCreator(worldKnowledge, this.player);
-        this.miniMap = new MiniMap(worldKnowledge);
+        this.miniMap = new MiniMap(worldKnowledge, this.player);
         this.powerInterface = new PowerInterface(worldKnowledge, this.player);
     }
 

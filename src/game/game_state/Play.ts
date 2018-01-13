@@ -46,7 +46,11 @@ export default class Play extends Phaser.State {
     }
 
     public create() {
-        this.worldKnowledge.create(this.game, this.startPositions.concat(this.startTiberiums));
+        this.worldKnowledge.create(
+            this.game,
+            this.startPositions.concat(this.startTiberiums),
+            this.worldKnowledge.getPlayers()[0]
+        );
         this.userInterface.create(this.game);
 
         this.world.setBounds(0, 0, this.worldKnowledge.getGroundWidth(), this.worldKnowledge.getGroundHeight());
