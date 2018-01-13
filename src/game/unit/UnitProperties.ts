@@ -14,6 +14,7 @@ const DATA = {
         shoot_distance: 3.25,
         shoot_power: 50,
         shoot_type: 'default',
+        sight: 1,
         speed: 10,
         sprite_layer: 20,
         sprites: ['Tank5', 'Tank5'],
@@ -30,6 +31,7 @@ const DATA = {
         },
         price: 1400,
         shoot_distance: -1,
+        sight: 2,
         speed: 12,
         sprite_layer: 6,
         sprites: ['Builder2', 'Builder2'],
@@ -44,6 +46,7 @@ const DATA = {
         shoot_distance: 4,
         shoot_power: 15,
         shoot_type: 'default',
+        sight: 2,
         speed: 30,
         sprite_layer: 6,
         sprites: ['Tank7', 'Tank7'],
@@ -55,6 +58,7 @@ const DATA = {
         life: 600,
         price: 5000,
         shoot_distance: -1,
+        sight: 2,
         speed: 12,
         sprite_layer: 6,
         sprites: ['Transprt', 'Transprt'],
@@ -69,6 +73,7 @@ const DATA = {
         shoot_distance: 4.75,
         shoot_power: 30,
         shoot_type: 'default',
+        sight: 3,
         speed: 18,
         sprite_layer: 6,
         sprites: ['Tank11', 'Tank12'],
@@ -83,6 +88,7 @@ const DATA = {
         shoot_distance: 2,
         shoot_power: 15,
         shoot_type: 'default',
+        sight: 1,
         speed: 8,
         sprite_layer: 6,
         sprites: ['Scout2', 'Scout2'],
@@ -97,6 +103,7 @@ const DATA = {
         shoot_distance: 4,
         shoot_power: 30,
         shoot_type: 'rocket',
+        sight: 2,
         speed: 6,
         sprite_layer: 14,
         sprites: ['Tank3', 'Tank3'],
@@ -178,5 +185,9 @@ export class UnitProperties {
 
     static getShootType(unitName: string) {
         return DATA[unitName].shoot_type;
+    }
+
+    static getSight(buildingName: string): number {
+        return DATA[buildingName].sight || 0;
     }
 }

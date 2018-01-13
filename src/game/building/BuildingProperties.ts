@@ -19,6 +19,7 @@ const DATA = {
         requireds: [
             'CommunicationCenter',
         ],
+        sight: 4,
         sprite: 'Artilery2',
         sprite_layer: 5,
     },
@@ -38,6 +39,7 @@ const DATA = {
         requireds: [
             'PowerPlant',
         ],
+        sight: 2,
         sprite: 'Generator',
         sprite_layer: 0,
     },
@@ -59,6 +61,7 @@ const DATA = {
         requireds: [
             'PowerPlant',
         ],
+        sight: 3,
         sprite: 'Module',
         sprite_layer: 0,
     },
@@ -76,6 +79,7 @@ const DATA = {
         requireds: [
             'TiberiumRefinery',
         ],
+        sight: 10,
         sprite: 'Silo',
         sprite_layer: 0,
     },
@@ -87,6 +91,7 @@ const DATA = {
         life: 1,
         price: 100,
         requireds: ['ConstructionYard'],
+        sight: 0,
         sprite: 'Wall',
         sprite_layer: 0,
     },
@@ -98,6 +103,7 @@ const DATA = {
         constructable: false,
         constructable_units: [],
         life: 400,
+        sight: 3,
         power: -20,
     },
     GuardTower: {
@@ -119,6 +125,7 @@ const DATA = {
         requireds: [
             'Barracks',
         ],
+        sight: 2,
         sprite: 'Turret',
         sprite_layer: 5,
     },
@@ -138,6 +145,7 @@ const DATA = {
         requireds: [
             'ConstructionYard',
         ],
+        sight: 2,
         sprite: 'Factory2',
         sprite_layer: 0,
     },
@@ -159,6 +167,7 @@ const DATA = {
         requireds: [
             'PowerPlant',
         ],
+        sight: 4,
         sprite: 'Factory3',
         sprite_layer: 0,
     },
@@ -186,6 +195,7 @@ const DATA = {
         requireds: [
             'TiberiumRefinery',
         ],
+        sight: 3,
         sprite: 'Base',
         sprite_layer: 0,
     }
@@ -257,5 +267,9 @@ export class BuildingProperties {
 
     static getPower(buildingName: string): number {
         return DATA[buildingName].power || 0;
+    }
+
+    static getSight(buildingName: string): number {
+        return DATA[buildingName].sight || 0;
     }
 }

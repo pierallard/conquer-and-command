@@ -3,8 +3,11 @@ import {WorldKnowledge} from "./map/WorldKnowledge";
 import {GROUND_HEIGHT, GROUND_WIDTH} from "./map/GeneratedGround";
 import {Distance} from "./computing/Distance";
 import {FogSprite} from "./sprite/FogSprite";
+import {UnitProperties} from "./unit/UnitProperties";
+import {BuildingProperties} from "./building/BuildingProperties";
 
 const REFRESH_TIME = 0.25 * Phaser.Timer.SECOND;
+const SIGHT_RATIO = 3;
 
 export class Fog {
     private worldKnowledge: WorldKnowledge;
@@ -69,7 +72,7 @@ export class Fog {
     private updateKnownCells() {
         this.worldKnowledge.getPlayerUnits(this.player).forEach((unit) => {
             unit.getCellPositions().forEach((unitCell) => {
-                Distance.getDisc(6).forEach((cell) => {
+                Distance.getDisc(UnitProperties.getSight(unit.constructor.name) * SIGHT_RATIO).forEach((cell) => {
                     const y = unitCell.y + cell.y;
                     if (undefined !== this.knownCells[y]) {
                         const x = unitCell.x + cell.x;
@@ -83,7 +86,7 @@ export class Fog {
 
         this.worldKnowledge.getPlayerBuildings(this.player).forEach((building) => {
             building.getCellPositions().forEach((buildingCell) => {
-                Distance.getDisc(4).forEach((cell) => {
+                Distance.getDisc(BuildingProperties.getSight(building.constructor.name) * SIGHT_RATIO).forEach((cell) => {
                     const y = buildingCell.y + cell.y;
                     if (undefined !== this.knownCells[y]) {
                         const x = buildingCell.x + cell.x;
