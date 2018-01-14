@@ -39,4 +39,9 @@ export class LifeRectangle extends Phaser.Graphics {
         this.percentage = percentage;
         this.render();
     }
+
+    setAnchor(x: number, y: number) {
+        this.x = (0.5 - x) * this.unitWidth;
+        this.y = (0.5 - y) * this.unitHeight;
+    }
 }

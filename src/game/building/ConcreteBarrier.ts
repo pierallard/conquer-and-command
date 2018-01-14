@@ -1,12 +1,18 @@
 import {ConstructableBuilding} from "./ConstructableBuilding";
 import {Cell} from "../computing/Cell";
 import {SCALE} from "../game_state/Play";
+import {GROUND_WIDTH} from "../map/GeneratedGround";
+import {GROUND_SIZE} from "../map/Ground";
+import {LifeRectangle} from "../sprite/LifeRectangle";
+import {SelectRectangle} from "../sprite/SelectRectangle";
 
 export class ConcreteBarrier extends ConstructableBuilding {
     private topLeftSprite: Phaser.Sprite;
     private topRightSprite: Phaser.Sprite;
     private bottomRightSprite: Phaser.Sprite;
     private bottomLeftSprite: Phaser.Sprite;
+    private lifeRectangle: LifeRectangle;
+    private selectedRectable: SelectRectangle;
 
     create(game: Phaser.Game, group: Phaser.Group) {
         const positionX = Cell.cellToReal(this.cellPosition.x);
@@ -26,6 +32,12 @@ export class ConcreteBarrier extends ConstructableBuilding {
         });
 
         this.updateConcretes();
+
+        this.selectedRectable = new SelectRectangle(game, GROUND_SIZE / SCALE, GROUND_SIZE / SCALE);
+        group.add(this.selectedRectable);
+
+        this.lifeRectangle = new LifeRectangle(game, GROUND_SIZE / SCALE, GROUND_SIZE / SCALE);
+        group.add(this.lifeRectangle);
     }
 
     updateTileLayers() {
@@ -41,6 +53,19 @@ export class ConcreteBarrier extends ConstructableBuilding {
         });
 
         this.updateConcretes();
+    }
+
+    isInside(left: number, right: number, top: number, bottom: number): boolean {
+        return this.topLeftSprite.x + GROUND_SIZE / 2 > left &&
+            this.topLeftSprite.x - GROUND_SIZE / 2 < right &&
+            this.topLeftSprite.y + GROUND_SIZE / 2 > top &&
+            this.topLeftSprite.y - GROUND_SIZE / 2 < bottom;
+    }
+
+    setSelected(value: boolean): void {
+        this.selected = value;
+        this.selectedRectable.setVisible(value);
+        this.lifeRectangle.setVisible(value);
     }
 
     private getSprites(): Phaser.Sprite[] {

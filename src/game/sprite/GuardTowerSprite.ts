@@ -5,5 +5,7 @@ export class GuardTowerSprite extends AbstractShootingBuildingSprite {
         super(game, group, effectsGroup, x, y, key);
         this.group = group;
         this.anchor.setTo(1 / 4, 3 / 4);
+        this.lifeRectangle.setAnchor(1 / 4, 3 / 4);
+        this.selectedRectable.setAnchor(1 / 4, 3 / 4);
     }
 }

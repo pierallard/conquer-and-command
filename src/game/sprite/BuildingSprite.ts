@@ -6,9 +6,9 @@ import {SelectRectangle} from "./SelectRectangle";
 export class BuildingSprite extends Phaser.Sprite {
     protected group: Phaser.Group;
     protected effectsGroup: Phaser.Group;
+    protected lifeRectangle: LifeRectangle;
+    protected selectedRectable: SelectRectangle;
     private timerEvents: Phaser.Timer;
-    private lifeRectangle: LifeRectangle;
-    private selectedRectable: SelectRectangle;
 
     constructor(game: Phaser.Game, group: Phaser.Group, effectsGroup: Phaser.Group, x: number, y: number, key: string) {
         super(game, x, y, key);

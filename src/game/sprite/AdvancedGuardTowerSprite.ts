@@ -6,5 +6,7 @@ export class AdvancedGuardTowerSprite extends AbstractShootingBuildingSprite {
         this.group = group;
         this.loadTexture(this.key, 4);
         this.anchor.setTo(3 / 8, 5 / 6);
+        this.lifeRectangle.setAnchor(3 / 8, 5 / 6);
+        this.selectedRectable.setAnchor(3 / 8, 5 / 6);
     }
 }

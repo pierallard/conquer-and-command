@@ -36,4 +36,9 @@ export class SelectRectangle extends Phaser.Graphics {
         this.isVisible = value;
         this.render();
     }
+
+    setAnchor(x: number, y: number) {
+        this.x = (0.5 - x) * this.unitWidth;
+        this.y = (0.5 - y) * this.unitHeight;
+    }
 }

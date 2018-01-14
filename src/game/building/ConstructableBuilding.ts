@@ -10,7 +10,7 @@ export abstract class ConstructableBuilding implements Building {
     protected sprite: BuildingSprite;
     protected life: number = 100;
     protected worldKnowledge: WorldKnowledge;
-    private selected: boolean = false;
+    protected selected: boolean = false;
 
     constructor(worldKnowledge: WorldKnowledge, cellPosition: PIXI.Point, player: Player) {
         this.worldKnowledge = worldKnowledge;
