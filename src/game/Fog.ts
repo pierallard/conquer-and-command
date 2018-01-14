@@ -5,6 +5,7 @@ import {Distance} from "./computing/Distance";
 import {FogSprite} from "./sprite/FogSprite";
 import {UnitProperties} from "./unit/UnitProperties";
 import {BuildingProperties} from "./building/BuildingProperties";
+import {Unit} from "./unit/Unit";
 
 const REFRESH_TIME = 0.25 * Phaser.Timer.SECOND;
 const SIGHT_RATIO = 3;
@@ -70,26 +71,17 @@ export class Fog {
     }
 
     private updateKnownCells() {
-        this.worldKnowledge.getPlayerUnits(this.player).forEach((unit) => {
+        this.worldKnowledge.getPlayerArmies(this.player).forEach((unit) => {
+            const sight = (
+                (unit instanceof Unit) ?
+                    UnitProperties.getSight(unit.constructor.name) :
+                    BuildingProperties.getSight(unit.constructor.name)
+                ) * SIGHT_RATIO;
             unit.getCellPositions().forEach((unitCell) => {
-                Distance.getDisc(UnitProperties.getSight(unit.constructor.name) * SIGHT_RATIO).forEach((cell) => {
+                Distance.getDisc(sight).forEach((cell) => {
                     const y = unitCell.y + cell.y;
                     if (undefined !== this.knownCells[y]) {
                         const x = unitCell.x + cell.x;
-                        if (undefined !== this.knownCells[y][x]) {
-                            this.knownCells[y][x] = true;
-                        }
-                    }
-                });
-            });
-        });
-
-        this.worldKnowledge.getPlayerBuildings(this.player).forEach((building) => {
-            building.getCellPositions().forEach((buildingCell) => {
-                Distance.getDisc(BuildingProperties.getSight(building.constructor.name) * SIGHT_RATIO).forEach((cell) => {
-                    const y = buildingCell.y + cell.y;
-                    if (undefined !== this.knownCells[y]) {
-                        const x = buildingCell.x + cell.x;
                         if (undefined !== this.knownCells[y][x]) {
                             this.knownCells[y][x] = true;
                         }

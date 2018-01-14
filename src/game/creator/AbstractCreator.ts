@@ -41,7 +41,7 @@ export abstract class AbstractCreator {
     isAllowed(itemName: string): boolean {
         let found = true;
         this.getRequiredBuildings(itemName).forEach((requiredBuildingName) => {
-            if (this.worldKnowledge.getPlayerBuildings(this.player, requiredBuildingName).length === 0) {
+            if (this.worldKnowledge.getPlayerArmies(this.player, requiredBuildingName).length === 0) {
                 found = false;
             }
         });

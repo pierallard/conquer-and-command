@@ -85,7 +85,7 @@ export class TiberiumSource implements Building {
 
     getFreePlants(harvester: Harvester): TiberiumPlant[] {
         return this.plants.filter((plant) => {
-            const unit = this.worldKnowledge.getUnitAt(plant.getCellPositions()[0]);
+            const unit = this.worldKnowledge.getArmyAt(plant.getCellPositions()[0]);
 
             return unit === null || unit === harvester;
         });
@@ -98,5 +98,27 @@ export class TiberiumSource implements Building {
 
     update(): void {
         // TODO Do Spread every x seconds
+    }
+
+    isSelected(): boolean {
+        return false;
+    }
+
+    setSelected(b: boolean): void {
+    }
+
+    updateStateAfterClick(point: PIXI.Point): void {
+    }
+
+    isInside(left: number, right: number, top: number, bottom: number): boolean {
+        return false;
+    }
+
+    lostLife(life: number): void {
+        throw new Error('Method not implemented.');
+    }
+
+    isAlive(): boolean {
+        throw new Error('Method not implemented.');
     }
 }

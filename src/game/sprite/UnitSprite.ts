@@ -1,6 +1,5 @@
 import {SCALE} from "../game_state/Play";
 import {Explosion} from "./Explosion";
-import {Shoot} from "./Shoot";
 import {Cell} from "../computing/Cell";
 import {SelectRectangle} from "./SelectRectangle";
 import {LifeRectangle} from "./LifeRectangle";
@@ -14,7 +13,7 @@ export enum IMAGE_FORMAT {
 
 export class UnitSprite extends Phaser.Sprite {
     private lifeRectangle: LifeRectangle;
-    private selectedRectable: SelectRectangle;
+    private selectedRectangle: SelectRectangle;
     private group: Phaser.Group;
     private imageFormat: IMAGE_FORMAT;
 
@@ -35,8 +34,8 @@ export class UnitSprite extends Phaser.Sprite {
         this.scale.setTo(SCALE, SCALE);
         this.anchor.setTo(0.5, 0.5);
 
-        this.selectedRectable = new SelectRectangle(game, this.width / SCALE, this.height / SCALE);
-        this.addChild(this.selectedRectable);
+        this.selectedRectangle = new SelectRectangle(game, this.width / SCALE, this.height / SCALE);
+        this.addChild(this.selectedRectangle);
 
         this.lifeRectangle = new LifeRectangle(game, this.width / SCALE, this.height / SCALE);
         this.addChild(this.lifeRectangle);
@@ -66,7 +65,7 @@ export class UnitSprite extends Phaser.Sprite {
     }
 
     setSelected(value: boolean = true) {
-        this.selectedRectable.setVisible(value);
+        this.selectedRectangle.setVisible(value);
         this.lifeRectangle.setVisible(value);
     }
 

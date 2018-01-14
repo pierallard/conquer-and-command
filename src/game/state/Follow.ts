@@ -2,13 +2,14 @@ import {State} from "./State";
 import {Unit} from "../unit/Unit";
 import {AlternativePosition} from "../computing/AlternativePosition";
 import {WorldKnowledge} from "../map/WorldKnowledge";
+import {Army} from "../Army";
 
 export class Follow implements State {
     private worldKnowledge: WorldKnowledge;
     private unit: Unit;
-    private goal: Unit;
+    private goal: Army;
 
-    constructor(worldKnowledge: WorldKnowledge, unit: Unit, goal: Unit) {
+    constructor(worldKnowledge: WorldKnowledge, unit: Unit, goal: Army) {
         this.worldKnowledge = worldKnowledge;
         this.unit = unit;
         this.goal = goal;

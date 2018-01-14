@@ -54,7 +54,7 @@ export class Selector {
 
         if (this.corner !== null && this.leftButton.isUp) {
             if (this.corner.x === this.getMousePointer().x && this.corner.y === this.getMousePointer().y) {
-                let unitUnderPointer = this.worldKnowledge.getUnitAt(new PIXI.Point(
+                let unitUnderPointer = this.worldKnowledge.getArmyAt(new PIXI.Point(
                     Cell.realToCell(this.corner.x),
                     Cell.realToCell(this.corner.y)
                 ));
@@ -71,8 +71,8 @@ export class Selector {
                         unitUnderPointer.constructor
                     );
                 } else {
-                    this.worldKnowledge.getUnits().forEach((unit) => {
-                        unit.setSelected(unit === unitUnderPointer);
+                    this.worldKnowledge.getArmies().forEach((army) => {
+                        army.setSelected(army === unitUnderPointer);
                     });
                 }
 
@@ -119,7 +119,7 @@ export class Selector {
         const top = Math.min(corner.y, mousePointer.y);
         const bottom = Math.max(corner.y, mousePointer.y);
 
-        this.worldKnowledge.getUnits().forEach((unit) => {
+        this.worldKnowledge.getArmies().forEach((unit) => {
             let isInside = false;
             if (unit.getPlayer() === this.player && (null === constructor || unit.constructor === constructor)) {
                 isInside = unit.isInside(left, right, top, bottom);

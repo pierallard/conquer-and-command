@@ -8,7 +8,7 @@ export class AStar {
     ): Path {
         let goal = AlternativePosition.getClosestAvailable(cellGoal, cellPosition, isPositionAccessible);
 
-        return this.getPath(cellPosition, goal, isPositionAccessible)
+        return this.getPath(cellPosition, goal, isPositionAccessible);
     }
 
     static getPath(
@@ -16,9 +16,6 @@ export class AStar {
         cellGoal: PIXI.Point,
         isPositionAccessible: (position: PIXI.Point) => boolean
     ): Path {
-        if (null === cellGoal) {
-            debugger;
-        }
         let firstPath = new Path(cellGoal);
         firstPath.add(cellPosition);
         let paths = new Paths();
