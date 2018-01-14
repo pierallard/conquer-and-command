@@ -24,14 +24,13 @@ export default class Preload extends Phaser.State {
 
     private loadGameImages() {
         // Units
-        this.load.spritesheet('Tank11', 'assets/Tank11.png', 19, 19, 9, 1, 1);
-        this.load.spritesheet('Tank5', 'assets/Tank5.png', 19, 19, 25, 1, 1);
-        this.load.spritesheet('Tank3', 'assets/Tank3.png', 19, 19, 75, 1, 1);
-        this.load.spritesheet('Tank12', 'assets/Tank12.png', 19, 19, 9, 1, 1);
-        this.load.spritesheet('Builder2', 'assets/Builder2.png', 19, 19, 9, 1, 1);
-        this.load.spritesheet('Tank5c', 'assets/Tank5c.png', 19, 19, 25, 1, 1);
-        this.load.spritesheet('Transprt', 'assets/Transprt.png', 39, 39, 9, 1, 1);
-        this.load.spritesheet('Scout2', 'assets/Scout2.png', 19, 19, 9, 1, 1);
+        this.load.spritesheet('Tank11', 'assets/Tank11.png', 20, 20, 9, 0, 0);
+        this.load.spritesheet('Tank5', 'assets/Tank5.png', 20, 20, 25, 0, 0);
+        this.load.spritesheet('Tank3', 'assets/Tank3.png', 20, 20, 75, 0, 0);
+        this.load.spritesheet('Tank12', 'assets/Tank12.png', 20, 20, 9, 0, 0);
+        this.load.spritesheet('Builder2', 'assets/Builder2.png', 20, 20, 9, 0, 0);
+        this.load.spritesheet('Transprt', 'assets/Transprt.png', 40, 40, 9, 0, 0);
+        this.load.spritesheet('Scout2', 'assets/Scout2.png', 20, 20, 9, 0, 0);
         this.load.spritesheet('Tank7', 'assets/Tank7.png', 20, 20, 9, 0, 0);
 
         // Tiles
