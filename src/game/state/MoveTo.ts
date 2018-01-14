@@ -5,9 +5,9 @@ import {Unit} from "../unit/Unit";
 import {WorldKnowledge} from "../map/WorldKnowledge";
 
 export class MoveTo implements State {
+    protected unit: Unit;
+    protected goal: PIXI.Point;
     private worldKnowledge: WorldKnowledge;
-    private unit: Unit;
-    private goal: PIXI.Point;
     private standUpCounter: number;
     private lastPosition: PIXI.Point;
 

@@ -66,6 +66,8 @@ export default class Play extends Phaser.State {
     }
 
     public start() {
+        AlternativePosition.getZones(this.worldKnowledge.isCellAccessible.bind(this.worldKnowledge));
+
         this.worldKnowledge.addArmy(new MCV(
             this.worldKnowledge,
             this.startPositions[0],
@@ -90,8 +92,6 @@ export default class Play extends Phaser.State {
                 }
             });
         });
-
-        AlternativePosition.getZones(this.worldKnowledge.isCellAccessible.bind(this.worldKnowledge));
     }
 
     update() {

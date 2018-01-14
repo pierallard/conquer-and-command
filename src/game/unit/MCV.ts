@@ -1,6 +1,4 @@
 import {Unit} from "./Unit";
-import {Player} from "../player/Player";
-import {WorldKnowledge} from "../map/WorldKnowledge";
 import {MoveTo} from "../state/MoveTo";
 import {Follow} from "../state/Follow";
 import {Stand} from "../state/Stand";
@@ -8,10 +6,6 @@ import {ConstructionYard} from "../building/ConstructionYard";
 
 export class MCV extends Unit {
     private expanded: boolean = false;
-
-    constructor(worldKnowledge: WorldKnowledge, cellPosition: PIXI.Point, player: Player) {
-        super(worldKnowledge, cellPosition, player);
-    }
 
     orderExpand() {
         this.state = new Stand(this);
