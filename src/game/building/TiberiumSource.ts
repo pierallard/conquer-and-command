@@ -115,10 +115,9 @@ export class TiberiumSource implements Building {
     }
 
     lostLife(life: number): void {
-        throw new Error('Method not implemented.');
     }
 
     isAlive(): boolean {
-        throw new Error('Method not implemented.');
+        return true;
     }
 }
