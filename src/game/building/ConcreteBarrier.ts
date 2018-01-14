@@ -1,7 +1,6 @@
 import {ConstructableBuilding} from "./ConstructableBuilding";
 import {Cell} from "../computing/Cell";
 import {SCALE} from "../game_state/Play";
-import {GROUND_WIDTH} from "../map/GeneratedGround";
 import {GROUND_SIZE} from "../map/Ground";
 import {LifeRectangle} from "../sprite/LifeRectangle";
 import {SelectRectangle} from "../sprite/SelectRectangle";

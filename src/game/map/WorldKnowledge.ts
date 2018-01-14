@@ -1,6 +1,5 @@
 import {Player, START_POWER} from "../player/Player";
 import {Building} from "../building/Building";
-import {Unit} from "../unit/Unit";
 import {ArmyRepository} from "../repository/ArmyRepository";
 import {GeneratedGround} from "./GeneratedGround";
 import {MiniAppear} from "../sprite/MiniAppear";

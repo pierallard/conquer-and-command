@@ -283,11 +283,6 @@ class CreationButtonProgress extends Phaser.Sprite {
         this.crop(this.myCropRect, false);
     }
 
-    resetProgress() {
-        this.cropRect.width = 0;
-        this.crop(this.myCropRect, false);
-    }
-
     setProgress(percentage: number) {
         this.cropRect.width = WIDTH * percentage;
     }

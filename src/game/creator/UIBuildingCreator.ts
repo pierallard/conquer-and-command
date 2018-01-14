@@ -10,10 +10,10 @@ const X = 1202 - 66;
 export class UIBuildingCreator extends AbstractUICreator {
     private buildingPositioner: BuildingPositioner;
 
-    constructor(worldKnowledge: WorldKnowledge, player: Player, buildingPositionner: BuildingPositioner) {
+    constructor(worldKnowledge: WorldKnowledge, player: Player, buildingPositioner: BuildingPositioner) {
         super(worldKnowledge, player, X);
 
-        this.buildingPositioner = buildingPositionner;
+        this.buildingPositioner = buildingPositioner;
     }
 
     protected getPossibleButtons(): string[] {

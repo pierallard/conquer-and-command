@@ -5,7 +5,6 @@ import {HumanPlayer} from "../player/HumanPlayer";
 import {ComputerPlayer} from "../player/ComputerPlayer";
 import {GROUND_HEIGHT, GROUND_WIDTH} from "../map/GeneratedGround";
 import {TiberiumSource} from "../building/TiberiumSource";
-import {AdvancedGuardTower} from "../building/AdvancedGuardTower";
 import {AlternativePosition} from "../computing/AlternativePosition";
 
 export const _DEBUG_FAST_CONSTRUCT = true;

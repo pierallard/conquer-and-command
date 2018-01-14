@@ -103,8 +103,8 @@ const DATA = {
         constructable: false,
         constructable_units: [],
         life: 400,
-        sight: 3,
         power: -20,
+        sight: 3,
     },
     GuardTower: {
         cellPositions: [
