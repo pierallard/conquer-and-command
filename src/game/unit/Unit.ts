@@ -15,6 +15,7 @@ import {Rocket} from "../shoot/Rocket";
 import {Cell} from "../computing/Cell";
 import {Bullet} from "../shoot/Bullet";
 import {Army} from "../Army";
+import {MoveTo} from "../state/MoveTo";
 
 export abstract class Unit implements Army, Shootable, Positionnable {
     protected life: number;
@@ -181,7 +182,7 @@ export abstract class Unit implements Army, Shootable, Positionnable {
                 this.state = new Follow(this.worldKnowledge, this, unit);
             }
         } else {
-            this.state = new MoveAttack(this.worldKnowledge, this, cell);
+            this.state = new MoveTo(this.worldKnowledge, this, cell);
         }
     }
 
