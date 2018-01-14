@@ -11,6 +11,7 @@ import {BuildingCreator} from "../creator/BuildingCreator";
 import {ProductionStatus} from "../creator/AbstractCreator";
 import {Fog} from "../Fog";
 import {Army} from "../Army";
+import {Appear} from "../sprite/Appear";
 
 export class WorldKnowledge {
     private game: Phaser.Game;
@@ -85,14 +86,16 @@ export class WorldKnowledge {
         return this.ground.getGroundHeight();
     }
 
-    addArmy(army: Army, appear: boolean = false) {
+    addArmy(army: Army, appear: boolean = false, appearSize: number = 1) {
         this.armyRepository.add(army);
         army.create(this.game, this.unitBuildingGroup, this.effectsGroup);
         if (appear) {
             army.setVisible(false);
-            let appearSprite = new MiniAppear(army.getCellPositions()[0]);
+            let appearSprite = appearSize === 1 ?
+                new MiniAppear(army.getCellPositions()[0]) :
+                new Appear(army.getCellPositions()[0]);
             appearSprite.create(this.game, this.unitBuildingGroup);
-            this.game.time.events.add(Phaser.Timer.SECOND * 2, () => {
+            this.game.time.events.add(Phaser.Timer.SECOND * (appearSize === 1 ? 2 : 1.2), () => {
                 army.setVisible(true);
             }, this);
         }

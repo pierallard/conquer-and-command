@@ -50,19 +50,19 @@ export class BuildingCreator extends AbstractCreator {
         switch (buildingName) {
             case 'PowerPlant':
                 let powerPlant = new PowerPlant(this.worldKnowledge, cell, this.player);
-                this.worldKnowledge.addArmy(powerPlant, true);
+                this.worldKnowledge.addArmy(powerPlant, true, 2);
                 break;
             case 'AdvancedPowerPlant':
                 let advancedPowerPlant = new AdvancedPowerPlant(this.worldKnowledge, cell, this.player);
-                this.worldKnowledge.addArmy(advancedPowerPlant, true);
+                this.worldKnowledge.addArmy(advancedPowerPlant, true, 2);
                 break;
             case 'Barracks':
                 let barracks = new Barracks(this.worldKnowledge, cell, this.player);
-                this.worldKnowledge.addArmy(barracks, true);
+                this.worldKnowledge.addArmy(barracks, true, 2);
                 break;
             case 'TiberiumRefinery':
                 let tiberiumRefinery = new TiberiumRefinery(this.worldKnowledge, cell, this.player);
-                this.worldKnowledge.addArmy(tiberiumRefinery, true);
+                this.worldKnowledge.addArmy(tiberiumRefinery, true, 2);
                 const cellHarvester = AlternativePosition.getClosestAvailable(
                     cell,
                     cell,
@@ -80,19 +80,19 @@ export class BuildingCreator extends AbstractCreator {
                 break;
             case 'GuardTower':
                 let guardTower = new GuardTower(this.worldKnowledge, cell, this.player);
-                this.worldKnowledge.addArmy(guardTower, true);
+                this.worldKnowledge.addArmy(guardTower, true, 2);
                 break;
             case 'AdvancedGuardTower':
                 let advancedGuardTower = new AdvancedGuardTower(this.worldKnowledge, cell, this.player);
-                this.worldKnowledge.addArmy(advancedGuardTower, true);
+                this.worldKnowledge.addArmy(advancedGuardTower, true, 2);
                 break;
             case 'CommunicationCenter':
                 let communicationCenter = new CommunicationCenter(this.worldKnowledge, cell, this.player);
-                this.worldKnowledge.addArmy(communicationCenter, true);
+                this.worldKnowledge.addArmy(communicationCenter, true, 2);
                 break;
             case 'WeaponsFactory':
                 let weaponsFactory = new WeaponsFactory(this.worldKnowledge, cell, this.player);
-                this.worldKnowledge.addArmy(weaponsFactory, true);
+                this.worldKnowledge.addArmy(weaponsFactory, true, 2);
                 break;
             default:
                 throw "Unable to build building " + buildingName;
