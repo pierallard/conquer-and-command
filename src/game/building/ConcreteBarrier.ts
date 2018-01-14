@@ -146,7 +146,7 @@ export class ConcreteBarrier extends ConstructableBuilding {
     }
 
     private hasConcreteNeighbourAt(cell: PIXI.Point): boolean {
-        const building = this.worldKnowledge.getBuildingAt(cell);
+        const building = this.worldKnowledge.getArmyAt(cell);
 
         return (
             null !== building &&
@@ -156,7 +156,7 @@ export class ConcreteBarrier extends ConstructableBuilding {
     }
 
     private updateConcretes() {
-        this.worldKnowledge.getPlayerBuildings(this.player, this.constructor.name).forEach((building) => {
+        this.worldKnowledge.getPlayerArmies(this.player, this.constructor.name).forEach((building) => {
             const concreteBarrier = <ConcreteBarrier> building;
             if (concreteBarrier !== this) {
                 concreteBarrier.updateTileLayers();

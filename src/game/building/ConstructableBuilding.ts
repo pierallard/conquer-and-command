@@ -3,14 +3,14 @@ import {Player} from "../player/Player";
 import {BuildingProperties} from "./BuildingProperties";
 import {BuildingSprite} from "../sprite/BuildingSprite";
 import {WorldKnowledge} from "../map/WorldKnowledge";
-import {Shootable} from "../Shootable";
 
-export abstract class ConstructableBuilding implements Building, Shootable {
+export abstract class ConstructableBuilding implements Building {
     protected player: Player;
     protected cellPosition: PIXI.Point;
     protected sprite: BuildingSprite;
     protected life: number = 100;
     protected worldKnowledge: WorldKnowledge;
+    private selected: boolean = false;
 
     constructor(worldKnowledge: WorldKnowledge, cellPosition: PIXI.Point, player: Player) {
         this.worldKnowledge = worldKnowledge;
@@ -42,7 +42,7 @@ export abstract class ConstructableBuilding implements Building, Shootable {
     lostLife(life: number) {
         this.life -= life;
         if (!this.isAlive()) {
-            this.worldKnowledge.removeBuilding(this);
+            this.worldKnowledge.removeArmy(this);
             this.destroy();
         }
     }
@@ -50,7 +50,23 @@ export abstract class ConstructableBuilding implements Building, Shootable {
     update(): void {
     }
 
-    private isAlive(): boolean {
+    isSelected(): boolean {
+        return this.selected;
+    }
+
+    setSelected(value: boolean): void {
+        this.selected = value;
+        this.sprite.setSelected(value);
+    }
+
+    updateStateAfterClick(point: PIXI.Point): void {
+    }
+
+    isInside(left: number, right: number, top: number, bottom: number): boolean {
+        return this.sprite.isInside(left, right, top, bottom);
+    }
+
+    isAlive(): boolean {
         return this.life > 0;
     }
 }

@@ -49,7 +49,7 @@ export abstract class AbstractShootingBuilding extends ConstructableBuilding {
     }
 
     private getClosestShootable(): Shootable {
-        const enemies = this.worldKnowledge.getEnemies(this.player);
+        const enemies = this.worldKnowledge.getEnemyArmies(this.player);
         let minDistance = null;
         let closest = null;
         for (let i = 0; i < enemies.length; i++) {

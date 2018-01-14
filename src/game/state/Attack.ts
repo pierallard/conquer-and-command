@@ -4,13 +4,14 @@ import {Stand} from "./Stand";
 import {AlternativePosition} from "../computing/AlternativePosition";
 import {Distance} from "../computing/Distance";
 import {WorldKnowledge} from "../map/WorldKnowledge";
+import {Shootable} from "../Shootable";
 
 export class Attack implements State {
     private worldKnowledge: WorldKnowledge;
     private unit: Unit;
-    private goal: Unit;
+    private goal: Shootable;
 
-    constructor(worldKnowledge: WorldKnowledge, unit: Unit, goal: Unit) {
+    constructor(worldKnowledge: WorldKnowledge, unit: Unit, goal: Shootable) {
         this.worldKnowledge = worldKnowledge;
         this.unit = unit;
         this.goal = goal;

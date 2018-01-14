@@ -1,11 +1,8 @@
-import {BuildingRepository} from "../repository/BuildingRepository";
 import {Player, START_POWER} from "../player/Player";
 import {Building} from "../building/Building";
 import {Unit} from "../unit/Unit";
-import {UnitRepository} from "../repository/UnitRepository";
-import {Appear} from "../sprite/Appear";
+import {ArmyRepository} from "../repository/ArmyRepository";
 import {GeneratedGround} from "./GeneratedGround";
-import {Shootable} from "../Shootable";
 import {MiniAppear} from "../sprite/MiniAppear";
 import {TiberiumPlant} from "../sprite/TiberiumPlant";
 import {BuildingProperties} from "../building/BuildingProperties";
@@ -13,6 +10,7 @@ import {UnitCreator} from "../creator/UnitCreator";
 import {BuildingCreator} from "../creator/BuildingCreator";
 import {ProductionStatus} from "../creator/AbstractCreator";
 import {Fog} from "../Fog";
+import {Army} from "../Army";
 
 export class WorldKnowledge {
     private game: Phaser.Game;
@@ -20,8 +18,7 @@ export class WorldKnowledge {
     private groundGroup: Phaser.Group;
     private unitBuildingGroup: Phaser.Group;
     private effectsGroup: Phaser.Group;
-    private unitRepository: UnitRepository;
-    private buildingRepository: BuildingRepository;
+    private armyRepository: ArmyRepository;
     private unitCreators: UnitCreator[];
     private buildingCreators: BuildingCreator[];
     private players: Player[];
@@ -31,8 +28,7 @@ export class WorldKnowledge {
 
     constructor() {
         this.ground = new GeneratedGround();
-        this.unitRepository = new UnitRepository();
-        this.buildingRepository = new BuildingRepository();
+        this.armyRepository = new ArmyRepository();
         this.groundRepository = [];
         this.unitCreators = [];
         this.buildingCreators = [];
@@ -69,11 +65,8 @@ export class WorldKnowledge {
 
     update() {
         this.unitBuildingGroup.sort('y');
-        this.unitRepository.getUnits().forEach((unit) => {
-            unit.update();
-        });
-        this.buildingRepository.getBuildings().forEach((building) => {
-            building.update();
+        this.armyRepository.getItems().forEach((army) => {
+            army.update();
         });
         this.fogs.forEach((fog) => {
             fog.update();
@@ -81,9 +74,7 @@ export class WorldKnowledge {
     }
 
     isCellAccessible(position: PIXI.Point) {
-        return this.ground.isCellAccessible(position) &&
-            this.unitRepository.isCellNotOccupied(position) &&
-            this.buildingRepository.isCellNotOccupied(position);
+        return this.ground.isCellAccessible(position) && this.armyRepository.isCellNotOccupied(position);
     }
 
     getGroundWidth() {
@@ -94,48 +85,31 @@ export class WorldKnowledge {
         return this.ground.getGroundHeight();
     }
 
-    addBuilding(newBuilding: Building, appear: boolean = false) {
-        this.buildingRepository.add(newBuilding);
-        newBuilding.create(this.game, this.unitBuildingGroup, this.effectsGroup);
+    addArmy(army: Army, appear: boolean = false) {
+        this.armyRepository.add(army);
+        army.create(this.game, this.unitBuildingGroup, this.effectsGroup);
         if (appear) {
-            newBuilding.setVisible(false);
-            let appearSprite = new Appear(newBuilding.getCellPositions()[0]);
-            appearSprite.create(this.game, this.unitBuildingGroup);
-            this.game.time.events.add(Phaser.Timer.SECOND * 1.2, () => {
-                newBuilding.setVisible(true);
-            }, this);
-        }
-    }
-
-    addUnit(newUnit: Unit, appear: boolean = false) {
-        this.unitRepository.add(newUnit);
-        newUnit.create(this.game, this.unitBuildingGroup, this.effectsGroup);
-        if (appear) {
-            newUnit.setVisible(false);
-            let appearSprite = new MiniAppear(newUnit.getCellPositions()[0]);
+            army.setVisible(false);
+            let appearSprite = new MiniAppear(army.getCellPositions()[0]);
             appearSprite.create(this.game, this.unitBuildingGroup);
             this.game.time.events.add(Phaser.Timer.SECOND * 2, () => {
-                newUnit.setVisible(true);
+                army.setVisible(true);
             }, this);
         }
     }
 
-    removeUnit(unit: Unit, delay: number = 0) {
+    removeArmy(army: Army, delay: number = 0) {
         if (delay === 0) {
-            this.unitRepository.removeUnit(unit);
+            this.armyRepository.removeArmy(army);
         } else {
             this.game.time.events.add(delay, () => {
-                this.unitRepository.removeUnit(unit);
+                this.armyRepository.removeArmy(army);
             });
         }
     }
 
-    getUnitAt(cell: PIXI.Point) {
-        return this.unitRepository.unitAt(cell);
-    }
-
-    getBuildingAt(cell: PIXI.Point) {
-        return this.buildingRepository.buildingAt(cell);
+    getArmyAt(cell: PIXI.Point) {
+        return this.armyRepository.itemAt(cell);
     }
 
     getGroundAt(cell: PIXI.Point): TiberiumPlant {
@@ -149,63 +123,31 @@ export class WorldKnowledge {
         return null;
     }
 
-    getUnits() {
-        return this.unitRepository.getUnits();
+    getArmies(): Army[] {
+        return this.armyRepository.getItems();
     }
 
-    getBuildings() {
-        return this.buildingRepository.getBuildings();
+    getSelectedUnits(): Army[] {
+        return this.armyRepository.getSelectedUnits();
     }
 
-    getSelectedUnits() {
-        return this.unitRepository.getSelectedUnits();
-    }
-
-    getPlayerBuildings(player: Player, type: string = null): Building[] {
-        return this.buildingRepository.getBuildings(type).filter((building) => {
-            return building.getPlayer() === player;
+    getPlayerArmies(player: Player, type: string = null): Army[] {
+        return this.armyRepository.getItems(type).filter((army) => {
+            return army.getPlayer() === player;
         });
     }
 
-    getEnemyBuildings(player: Player, type: string = null): Building[] {
-        return this.buildingRepository.getBuildings(type).filter((building) => {
-            return building.getPlayer() !== null && building.getPlayer() !== player;
-        });
-    }
-
-    getPlayerUnits(player: Player, type: string = null): Unit[] {
-        return this.unitRepository.getUnits(type).filter((unit) => {
-            return unit.getPlayer() === player;
-        });
-    }
-
-    getEnemyUnits(player: Player, type: string = null): Unit[] {
-        return this.unitRepository.getUnits(type).filter((unit) => {
-            return unit.getPlayer() !== null && unit.getPlayer() !== player;
+    getEnemyArmies(player: Player, type: string = null): Army[] {
+        return this.armyRepository.getItems(type).filter((army) => {
+            return army.getPlayer() !== null && army.getPlayer() !== player;
         });
     }
 
     getCreatorOf(buildingName: string, player: Player): Building {
-        const creators = this.buildingRepository.getCreatorOf(buildingName).filter((building) => {
+        const creators = this.armyRepository.getCreatorOf(buildingName).filter((building) => {
             return building.getPlayer() === player;
         });
         return creators.length > 0 ? creators[0] : null;
-    }
-
-    getEnemies(player: Player): (Shootable)[] {
-        let result = [];
-        this.getEnemyUnits(player).forEach((unit) => {
-            result.push(unit);
-        });
-        this.getEnemyBuildings(player).forEach((building) => {
-            result.push(building);
-        });
-
-        return result;
-    }
-
-    removeBuilding(building: Building) {
-        this.buildingRepository.removeBuilding(building);
     }
 
     getGroundCSV() {
@@ -222,13 +164,13 @@ export class WorldKnowledge {
     }
 
     getPlayerNeededPower(player: Player): number {
-        return -this.getPlayerBuildings(player).reduce((power, building) => {
+        return -this.getPlayerArmies(player).reduce((power, building) => {
             return power + Math.min(0, BuildingProperties.getPower(building.constructor.name));
         }, 0);
     }
 
     getPlayerProvidedPower(player: Player): number {
-        return START_POWER + this.getPlayerBuildings(player).reduce((power, building) => {
+        return START_POWER + this.getPlayerArmies(player).reduce((power, building) => {
             return power + Math.max(0, BuildingProperties.getPower(building.constructor.name));
         }, 0);
     }

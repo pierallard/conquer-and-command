@@ -102,24 +102,11 @@ export class MiniMap {
     private updateUnitAndBuildingGraphics() {
         this.unitAndBuildingGraphics.clear();
 
-        this.worldKnowledge.getUnits().forEach((unit) => {
-            this.unitAndBuildingGraphics.beginFill(unit.getPlayer().getColor());
-            this.unitAndBuildingGraphics.lineStyle(1, unit.getPlayer().getColor());
-            unit.getCellPositions().forEach((cellPosition) => {
-                this.unitAndBuildingGraphics.drawRect(
-                    cellPosition.x,
-                    cellPosition.y,
-                    1,
-                    1
-                );
-            });
-        });
-
-        this.worldKnowledge.getBuildings().forEach((building) => {
-            if (building.getPlayer()) {
-                this.unitAndBuildingGraphics.beginFill(building.getPlayer().getColor());
-                this.unitAndBuildingGraphics.lineStyle(1, building.getPlayer().getColor());
-                building.getCellPositions().forEach((cellPosition) => {
+        this.worldKnowledge.getArmies().forEach((unit) => {
+            if (null !== unit.getPlayer()) {
+                this.unitAndBuildingGraphics.beginFill(unit.getPlayer().getColor());
+                this.unitAndBuildingGraphics.lineStyle(1, unit.getPlayer().getColor());
+                unit.getCellPositions().forEach((cellPosition) => {
                     this.unitAndBuildingGraphics.drawRect(
                         cellPosition.x,
                         cellPosition.y,

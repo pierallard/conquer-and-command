@@ -40,12 +40,6 @@ export class BuildingRepository {
         });
     }
 
-    getCreatorOf(unit: string): Building[] {
-        return this.buildings.filter((building) => {
-            return (BuildingProperties.getConstructableUnits(building.constructor.name).indexOf(unit) > -1);
-        });
-    }
-
     removeBuilding(building: Building) {
         building.destroy();
         const index = this.buildings.indexOf(building);

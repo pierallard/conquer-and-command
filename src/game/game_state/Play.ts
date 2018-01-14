@@ -67,18 +67,18 @@ export default class Play extends Phaser.State {
     }
 
     public start() {
-        this.worldKnowledge.addUnit(new MCV(
+        this.worldKnowledge.addArmy(new MCV(
             this.worldKnowledge,
             this.startPositions[0],
             this.worldKnowledge.getPlayers()[0]
         ));
-        this.worldKnowledge.addUnit(new MCV(
+        this.worldKnowledge.addArmy(new MCV(
             this.worldKnowledge,
             this.startPositions[1],
             this.worldKnowledge.getPlayers()[1]
         ));
         this.startTiberiums.forEach((tiberiumPosition) => {
-            this.worldKnowledge.addBuilding(new TiberiumSource(
+            this.worldKnowledge.addArmy(new TiberiumSource(
                 this.worldKnowledge,
                 tiberiumPosition
             ));

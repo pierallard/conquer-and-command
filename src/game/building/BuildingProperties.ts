@@ -239,7 +239,7 @@ export class BuildingProperties {
     }
 
     static getConstructableUnits(buildingName: string): string[] {
-        return DATA[buildingName].constructable_units || [];
+        return DATA[buildingName] ? DATA[buildingName].constructable_units || [] : [];
     }
 
     static getRequiredBuildings(buildingName: string): string[] {
@@ -266,7 +266,7 @@ export class BuildingProperties {
     }
 
     static getPower(buildingName: string): number {
-        return DATA[buildingName].power || 0;
+        return DATA[buildingName] ? (DATA[buildingName].power || 0) : 0;
     }
 
     static getSight(buildingName: string): number {

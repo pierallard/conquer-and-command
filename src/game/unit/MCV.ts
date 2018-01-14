@@ -20,7 +20,7 @@ export class MCV extends Unit {
 
     updateStateAfterClick(cell: PIXI.Point) {
         if (!this.expanded) {
-            const unit = this.worldKnowledge.getUnitAt(cell);
+            const unit = this.worldKnowledge.getArmyAt(cell);
             if (null !== unit) {
                 if (unit === this) {
                     this.orderExpand();
@@ -38,13 +38,13 @@ export class MCV extends Unit {
 
     private expand() {
         this.expanded = true;
-        this.worldKnowledge.addBuilding(
+        this.worldKnowledge.addArmy(
             new ConstructionYard(
                 this.worldKnowledge,
                 new PIXI.Point(this.cellPosition.x - 1, this.cellPosition.y),
                 this.player
             )
         );
-        this.worldKnowledge.removeUnit(this, 1000);
+        this.worldKnowledge.removeArmy(this, 1000);
     }
 }

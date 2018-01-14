@@ -29,7 +29,7 @@ export class Harvester extends Unit {
     }
 
     updateStateAfterClick(cell: PIXI.Point) {
-        const unit = this.worldKnowledge.getUnitAt(cell);
+        const unit = this.worldKnowledge.getArmyAt(cell);
         if (null !== unit) {
             if (this.getPlayer() !== unit.getPlayer()) {
                 this.state = new Attack(this.worldKnowledge, this, unit);
@@ -49,7 +49,7 @@ export class Harvester extends Unit {
     getClosestRefinery(): TiberiumRefinery {
         return Distance.getClosestItem(
             this.getCellPositions()[0],
-            this.worldKnowledge.getPlayerBuildings(this.player, 'TiberiumRefinery')
+            this.worldKnowledge.getPlayerArmies(this.player, 'TiberiumRefinery')
         );
     }
 

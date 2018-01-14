@@ -14,8 +14,9 @@ import {Positionnable} from "../Positionnable";
 import {Rocket} from "../shoot/Rocket";
 import {Cell} from "../computing/Cell";
 import {Bullet} from "../shoot/Bullet";
+import {Army} from "../Army";
 
-export abstract class Unit implements Shootable, Positionnable {
+export abstract class Unit implements Army, Shootable, Positionnable {
     protected life: number;
     protected maxLife: number;
     protected unitSprite: UnitSprite;
@@ -104,14 +105,14 @@ export abstract class Unit implements Shootable, Positionnable {
         this.life -= life;
         if (!this.isAlive()) {
             this.unitSprite.doDestroy();
-            this.worldKnowledge.removeUnit(this);
+            this.worldKnowledge.removeArmy(this);
         }
 
         this.unitSprite.updateLife(this.life, this.maxLife);
     }
 
     getClosestShootable(): Shootable {
-        const enemies = this.worldKnowledge.getEnemies(this.player);
+        const enemies = this.worldKnowledge.getEnemyArmies(this.player);
         let minDistance = null;
         let closest = null;
         for (let i = 0; i < enemies.length; i++) {
@@ -172,7 +173,7 @@ export abstract class Unit implements Shootable, Positionnable {
     }
 
     updateStateAfterClick(cell: PIXI.Point) {
-        const unit = this.worldKnowledge.getUnitAt(cell);
+        const unit = this.worldKnowledge.getArmyAt(cell);
         if (null !== unit) {
             if (this.getPlayer() !== unit.getPlayer()) {
                 this.state = new Attack(this.worldKnowledge, this, unit);

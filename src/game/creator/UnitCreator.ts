@@ -51,31 +51,31 @@ export class UnitCreator extends AbstractCreator {
         switch (unitName) {
             case 'Harvester':
                 let harvester = new Harvester(this.worldKnowledge, cellPosition, this.player);
-                this.worldKnowledge.addUnit(harvester, true);
+                this.worldKnowledge.addArmy(harvester, true);
                 break;
             case 'MediumTank':
                 let tank = new MediumTank(this.worldKnowledge, cellPosition, this.player);
-                this.worldKnowledge.addUnit(tank, true);
+                this.worldKnowledge.addArmy(tank, true);
                 break;
             case 'MCV':
                 let mcv = new MCV(this.worldKnowledge, cellPosition, this.player);
-                this.worldKnowledge.addUnit(mcv, true);
+                this.worldKnowledge.addArmy(mcv, true);
                 break;
             case 'MinigunInfantry':
                 let minigunInfantry = new MinigunInfantry(this.worldKnowledge, cellPosition, this.player);
-                this.worldKnowledge.addUnit(minigunInfantry, true);
+                this.worldKnowledge.addArmy(minigunInfantry, true);
                 break;
             case 'Grenadier':
                 let grenadier = new Grenadier(this.worldKnowledge, cellPosition, this.player);
-                this.worldKnowledge.addUnit(grenadier, true);
+                this.worldKnowledge.addArmy(grenadier, true);
                 break;
             case 'RocketSoldier':
                 let rocketSoldier = new RocketSoldier(this.worldKnowledge, cellPosition, this.player);
-                this.worldKnowledge.addUnit(rocketSoldier, true);
+                this.worldKnowledge.addArmy(rocketSoldier, true);
                 break;
             case 'HummVee':
                 let hummVee = new HummVee(this.worldKnowledge, cellPosition, this.player);
-                this.worldKnowledge.addUnit(hummVee, true);
+                this.worldKnowledge.addArmy(hummVee, true);
                 break;
             default:
                 throw "Unable to build unit " + unitName;
