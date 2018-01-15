@@ -129,8 +129,8 @@ export class WorldKnowledge {
         return this.armyRepository.getItems();
     }
 
-    getSelectedUnits(): Army[] {
-        return this.armyRepository.getSelectedUnits();
+    getSelectedArmies(): Army[] {
+        return this.armyRepository.getSelectedArmies();
     }
 
     getPlayerArmies(player: Player, type: string = null): Army[] {

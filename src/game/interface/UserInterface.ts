@@ -31,7 +31,7 @@ export class UserInterface {
         this.UIUnitCreator = new UIUnitCreator(worldKnowledge, this.player);
         this.miniMap = new MiniMap(worldKnowledge, this.player);
         this.powerInterface = new PowerInterface(worldKnowledge, this.player);
-        this.cursor = new Cursor();
+        this.cursor = new Cursor(worldKnowledge, this.player);
     }
 
     create(game: Phaser.Game) {

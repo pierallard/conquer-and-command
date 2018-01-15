@@ -50,7 +50,7 @@ export class ArmyRepository {
         return null;
     }
 
-    getSelectedUnits(): Army[] {
+    getSelectedArmies(): Army[] {
         return this.items.filter((unit) => {
             return unit.isSelected();
         });

@@ -92,7 +92,7 @@ export class Selector {
         }
 
         if (this.rightButton.isDown) {
-            this.worldKnowledge.getSelectedUnits().forEach((source) => {
+            this.worldKnowledge.getSelectedArmies().forEach((source) => {
                 source.updateStateAfterClick(new PIXI.Point(
                     Cell.realToCell(this.getMousePointer().x),
                     Cell.realToCell(this.getMousePointer().y)
