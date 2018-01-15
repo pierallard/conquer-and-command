@@ -16,6 +16,9 @@ export class AStar {
         cellGoal: PIXI.Point,
         isPositionAccessible: (position: PIXI.Point) => boolean
     ): Path {
+        if (null === cellGoal) {
+            debugger;
+        }
         let firstPath = new Path(cellGoal);
         firstPath.add(cellPosition);
         let paths = new Paths();
