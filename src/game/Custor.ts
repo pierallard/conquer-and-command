@@ -5,11 +5,14 @@ import {Cell} from "./computing/Cell";
 import {Player} from "./player/Player";
 import {GAME_WIDTH} from "../app";
 import {INTERFACE_WIDTH} from "./interface/UserInterface";
+import {MCV} from "./unit/MCV";
+import {Army} from "./Army";
 
 enum ACTION {
     DEFAULT,
     MOVE,
     ATTACK,
+    SPECIAL,
 }
 
 export class Cursor {
@@ -47,9 +50,17 @@ export class Cursor {
         mouse.anchor.setTo(0, 0);
         game.add.existing(mouse);
 
+        let special = new Phaser.Sprite(game, 0, 0, 'Selected', 9);
+        special.scale.setTo(SCALE, SCALE);
+        special.fixedToCamera = true;
+        special.anchor.setTo(0.5, 0.5);
+        special.animations.add('fou', [9, 10, 11], 100).play(10, true, false);
+        game.add.existing(special);
+
         this.cursors[ACTION.DEFAULT] = mouse;
         this.cursors[ACTION.MOVE] = green;
         this.cursors[ACTION.ATTACK] = red;
+        this.cursors[ACTION.SPECIAL] = special;
 
         this.showCursor(ACTION.DEFAULT);
     }
@@ -79,7 +90,7 @@ export class Cursor {
         if (!this.hasUnitSelected()) {
             return ACTION.DEFAULT;
         }
-        
+
         const unitAt = this.worldKnowledge.getArmyAt(new PIXI.Point(
             Cell.realToCell(this.mousePointer.x + this.camera.position.x),
             Cell.realToCell(this.mousePointer.y + this.camera.position.y)
@@ -87,6 +98,9 @@ export class Cursor {
         if (unitAt && unitAt.getPlayer() !== this.player) {
             return ACTION.ATTACK;
         } else {
+            if (this.isMCVExpanding(unitAt)) {
+                return ACTION.SPECIAL;
+            }
             return ACTION.MOVE;
         }
     }
@@ -100,5 +114,12 @@ export class Cursor {
         }
 
         return false;
+    }
+
+    private isMCVExpanding(unitAt: Army) {
+        const selecteds = this.worldKnowledge.getSelectedArmies();
+        return selecteds.length === 1 &&
+                selecteds[0] instanceof MCV &&
+                selecteds[0] === unitAt;
     }
 }
