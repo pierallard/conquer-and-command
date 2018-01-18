@@ -1,6 +1,7 @@
 import {Player} from "./Player";
 import {MCV} from "../unit/MCV";
 import {MinigunInfantry} from "../unit/MinigunInfantry";
+import {BUILDING_POSITIONNER_MIN_DIST, BuildingPositioner} from "../interface/BuildingPositionner";
 
 export class ComputerPlayer extends Player {
     update() {
@@ -25,23 +26,40 @@ export class ComputerPlayer extends Player {
         }
     }
 
-    private getRandomCellNearBase(): PIXI.Point {
+    private getRandomCellNearBase(buildingName: string): PIXI.Point {
         const constructionYard = this.worldKnowledge.getPlayerArmies(this, 'ConstructionYard')[0];
         if (!constructionYard) {
             return null;
         }
         const cellPos = constructionYard.getCellPositions()[0];
-        return new PIXI.Point(
-            cellPos.x + (2 + Math.floor(Math.random() * 3)) * (Math.random() > 0.5 ? -1 : 1),
-            cellPos.y + (2 + Math.floor(Math.random() * 3)) * (Math.random() > 0.5 ? -1 : 1)
-        );
+
+        let tries = 10;
+        while (tries > 0) {
+            const test = new PIXI.Point(
+                cellPos.x + (
+                    BUILDING_POSITIONNER_MIN_DIST / 2 + Math.floor(Math.random() * BUILDING_POSITIONNER_MIN_DIST)
+                ),
+                cellPos.y + (
+                    BUILDING_POSITIONNER_MIN_DIST / 2 + Math.floor(Math.random() * BUILDING_POSITIONNER_MIN_DIST)
+                )
+            );
+            if (BuildingPositioner.isAccessible(test, buildingName, this.worldKnowledge, this)) {
+                return test;
+            }
+
+            tries--;
+        }
+
+        console.log('NO TFIND');
+        return null;
     }
 
     private constructWhenYouCan(buildingName: string) {
         if (this.worldKnowledge.getPlayerArmies(this, buildingName).length === 0) {
             if (this.worldKnowledge.isBuildingProduced(this, buildingName)) {
-                if (this.getRandomCellNearBase()) {
-                    this.order().createBuilding(buildingName, this.getRandomCellNearBase());
+                const randomCell = this.getRandomCellNearBase(buildingName);
+                if (randomCell) {
+                    this.order().createBuilding(buildingName, randomCell);
                 }
             } else {
                 this.order().productBuilding(buildingName);

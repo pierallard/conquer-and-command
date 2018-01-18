@@ -6,8 +6,45 @@ import {GROUND_SIZE} from "../map/Ground";
 import {GAME_WIDTH} from "../../app";
 import {INTERFACE_WIDTH} from "./UserInterface";
 import {Player} from "../player/Player";
+import {Distance} from "../computing/Distance";
+import {ConstructableBuilding} from "../building/ConstructableBuilding";
+
+export const BUILDING_POSITIONNER_MIN_DIST = 6;
 
 export class BuildingPositioner {
+    public static isAccessible(cell: PIXI.Point, buildingName: string, worldKnowledge: WorldKnowledge, player: Player) {
+        return this.isCellClose(cell, worldKnowledge, player) &&
+            this.isCellAccessible(cell, worldKnowledge, buildingName);
+    }
+
+    private static isCellClose(cell: PIXI.Point, worldKnowledge: WorldKnowledge, player: Player) {
+        const armies = worldKnowledge.getPlayerArmies(player);
+        for (let i = 0; i < armies.length; i++) {
+            const army = armies[i];
+            if (army instanceof ConstructableBuilding) {
+                const distance = Distance.to(cell, army.getCellPositions());
+                if (distance < BUILDING_POSITIONNER_MIN_DIST) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private static isCellAccessible(cell: PIXI.Point, worldKnowledge: WorldKnowledge, buildingName: string) {
+        const cellPositions = BuildingProperties.getCellPositions(buildingName);
+        for (let i = 0; i < cellPositions.length; i++) {
+            const position = cellPositions[i];
+            let newCell = new PIXI.Point(cell.x + position.x, cell.y + position.y);
+            if (!worldKnowledge.isCellAccessible(newCell)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private graphics: BuildingPositionerGraphics;
     private worldKnowledge: WorldKnowledge;
     private player: Player;
@@ -59,7 +96,12 @@ class BuildingPositionerGraphics extends Phaser.Graphics {
                 let cellX = Cell.realToCell(this.game.input.mousePointer.x + this.game.camera.position.x);
                 let cellY = Cell.realToCell(this.game.input.mousePointer.y + this.game.camera.position.y);
 
-                const allowedToBuild = this.isAccessible(cellX, cellY);
+                const allowedToBuild = BuildingPositioner.isAccessible(
+                    new PIXI.Point(cellX, cellY),
+                    this.buildingName,
+                    this.worldKnowledge,
+                    this.player
+                );
                 if (allowedToBuild && this.game.input.activePointer.leftButton.isDown) {
                     this.worldKnowledge.runBuildingCreation(
                         this.player,
@@ -100,18 +142,5 @@ class BuildingPositionerGraphics extends Phaser.Graphics {
                 });
             }
         }
-    }
-
-    private isAccessible(cellX: number, cellY: number) {
-        const cellPositions = BuildingProperties.getCellPositions(this.buildingName);
-        for (let i = 0; i < cellPositions.length; i++) {
-            const position = cellPositions[i];
-            let cell = new PIXI.Point(cellX + position.x, cellY + position.y);
-            if (!this.worldKnowledge.isCellAccessible(cell)) {
-                return false;
-            }
-        }
-
-        return true;
     }
 }
