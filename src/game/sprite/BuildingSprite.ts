@@ -44,6 +44,10 @@ export class BuildingSprite extends Phaser.Sprite {
             this.y - this.height / 2 < bottom;
     }
 
+    updateLife(life: number, maxLife: number) {
+        this.lifeRectangle.updateLife(life / maxLife);
+    }
+
     private doExplodeEffect() {
         this.group.add(new Explosion(
             this.game,

@@ -58,9 +58,6 @@ export class Selector {
                     Cell.realToCell(this.corner.x),
                     Cell.realToCell(this.corner.y)
                 ));
-                if (unitUnderPointer && unitUnderPointer.getPlayer() !== this.player) {
-                    unitUnderPointer = null;
-                }
                 if (unitUnderPointer && this.isDoubleClick) {
                     this.selectUnitsInside(
                         new PIXI.Point(this.camera.position.x, this.camera.position.y),

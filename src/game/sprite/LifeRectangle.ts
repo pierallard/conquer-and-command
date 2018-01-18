@@ -1,3 +1,4 @@
+import {GAME_HEIGHT, GAME_WIDTH} from "../../app";
 const HEIGHT = 3;
 
 export class LifeRectangle extends Phaser.Graphics {

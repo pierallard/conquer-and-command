@@ -9,6 +9,7 @@ export abstract class ConstructableBuilding implements Building {
     protected cellPosition: PIXI.Point;
     protected sprite: BuildingSprite;
     protected life: number = 100;
+    protected maxLife: number = 100;
     protected worldKnowledge: WorldKnowledge;
     protected selected: boolean = false;
 
@@ -16,7 +17,7 @@ export abstract class ConstructableBuilding implements Building {
         this.worldKnowledge = worldKnowledge;
         this.cellPosition = cellPosition;
         this.player = player;
-        this.life = BuildingProperties.getLife(this.constructor.name);
+        this.life = this.maxLife = BuildingProperties.getLife(this.constructor.name);
     }
 
     abstract create(game: Phaser.Game, group: Phaser.Group, effectsGroup: Phaser.Group): void;
@@ -45,6 +46,8 @@ export abstract class ConstructableBuilding implements Building {
             this.worldKnowledge.removeArmy(this);
             this.destroy();
         }
+
+        this.sprite.updateLife(this.life, this.maxLife);
     }
 
     update(): void {

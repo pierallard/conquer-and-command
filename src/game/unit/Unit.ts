@@ -153,7 +153,10 @@ export abstract class Unit implements Army, Shootable, Positionnable {
                 this.pathCache = newPath;
                 this.goalCache = goal;
                 nextStep = this.pathCache.splice();
-            } else if (null !== this.pathCache && this.worldKnowledge.isCellAccessible(this.pathCache.firstStep())) {
+            } else if (null !== this.pathCache &&
+                this.pathCache.firstStep() &&
+                this.worldKnowledge.isCellAccessible(this.pathCache.firstStep())
+            ) {
                 nextStep = this.pathCache.splice();
             }
         }
