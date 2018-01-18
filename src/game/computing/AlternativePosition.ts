@@ -2,6 +2,7 @@ import {GROUND_HEIGHT, GROUND_WIDTH} from "../map/GeneratedGround";
 const MAX_SEARCH_RADIUS = 20;
 
 export class AlternativePosition {
+    // TODO Set 2 zones
     static zones: PIXI.Point[][];
 
     /**

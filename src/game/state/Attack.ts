@@ -40,7 +40,9 @@ export class Attack implements State {
         return AlternativePosition.isArrived(
             this.goal.getCellPositions()[0],
             this.unit.getCellPositions()[0],
-            this.worldKnowledge.isGroundCellAccessible.bind(this.worldKnowledge)
+            this.unit.isOnGround() ?
+                this.worldKnowledge.isGroundCellAccessible.bind(this.worldKnowledge) :
+                this.worldKnowledge.isAerialCellAccessible.bind(this.worldKnowledge)
         );
     }
 
