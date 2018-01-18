@@ -72,4 +72,8 @@ export abstract class ConstructableBuilding implements Building {
     isAlive(): boolean {
         return this.life > 0;
     }
+
+    isOnGround(): boolean {
+        return true;
+    }
 }

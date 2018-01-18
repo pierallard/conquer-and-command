@@ -68,7 +68,7 @@ export default class Play extends Phaser.State {
     }
 
     public start() {
-        AlternativePosition.getZones(this.worldKnowledge.isCellAccessible.bind(this.worldKnowledge));
+        AlternativePosition.getZones(this.worldKnowledge.isGroundCellAccessible.bind(this.worldKnowledge));
 
         this.worldKnowledge.addArmy(new MCV(
             this.worldKnowledge,

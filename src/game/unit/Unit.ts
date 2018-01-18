@@ -139,7 +139,11 @@ export abstract class Unit implements Army, Shootable, Positionnable {
         }
         let nextStep = null;
         if (this.pathCache) {
-            if (this.pathCache.isStillAvailable(this.worldKnowledge.isCellAccessible.bind(this.worldKnowledge))) {
+            if (this.pathCache.isStillAvailable(
+                this.isOnGround() ?
+                    this.worldKnowledge.isGroundCellAccessible.bind(this.worldKnowledge) :
+                    this.worldKnowledge.isAerialCellAccessible.bind(this.worldKnowledge)
+                )) {
                 nextStep = this.pathCache.splice();
             }
         }
@@ -147,7 +151,9 @@ export abstract class Unit implements Army, Shootable, Positionnable {
             const newPath = AStar.getPathOrClosest(
                 this.cellPosition,
                 goal,
-                this.worldKnowledge.isCellAccessible.bind(this.worldKnowledge)
+                this.isOnGround() ?
+                    this.worldKnowledge.isGroundCellAccessible.bind(this.worldKnowledge) :
+                    this.worldKnowledge.isAerialCellAccessible.bind(this.worldKnowledge)
             );
             if (null !== newPath) {
                 this.pathCache = newPath;
@@ -155,7 +161,9 @@ export abstract class Unit implements Army, Shootable, Positionnable {
                 nextStep = this.pathCache.splice();
             } else if (null !== this.pathCache &&
                 this.pathCache.firstStep() &&
-                this.worldKnowledge.isCellAccessible(this.pathCache.firstStep())
+                (this.isOnGround() ?
+                    this.worldKnowledge.isGroundCellAccessible(this.pathCache.firstStep()) :
+                    this.worldKnowledge.isAerialCellAccessible(this.pathCache.firstStep()))
             ) {
                 nextStep = this.pathCache.splice();
             }
@@ -203,6 +211,10 @@ export abstract class Unit implements Army, Shootable, Positionnable {
 
     setVisible(value: boolean) {
         this.unitSprite.alpha = value ? 1 : 0;
+    }
+
+    isOnGround(): boolean {
+        return true;
     }
 
     protected getShootSource(cellDest: PIXI.Point): PIXI.Point {

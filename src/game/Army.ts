@@ -17,4 +17,5 @@ export interface Army extends Positionnable, Shootable {
     setSelected(b: boolean): void;
     updateStateAfterClick(point: PIXI.Point): void;
     isInside(left: number, right: number, top: number, bottom: number): boolean;
+    isOnGround(): boolean;
 }

@@ -47,7 +47,7 @@ export class UnitCreator extends AbstractCreator {
         const cellPosition = AlternativePosition.getClosestAvailable(
             building.getCellPositions()[0],
             building.getCellPositions()[0],
-            this.worldKnowledge.isCellAccessible.bind(this.worldKnowledge)
+            this.worldKnowledge.isGroundCellAccessible.bind(this.worldKnowledge)
         );
         switch (unitName) {
             case 'Harvester':

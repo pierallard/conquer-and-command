@@ -3,6 +3,22 @@ import {Building} from "../building/Building";
 import {BuildingProperties} from "../building/BuildingProperties";
 
 export class ArmyRepository {
+    private static itemAt(position: PIXI.Point, items: Army[]): Army {
+        for (let i = 0; i < items.length; i++) {
+            const cellPositions = items[i].getCellPositions();
+            for (let j = 0; j < cellPositions.length; j++) {
+                if (
+                    cellPositions[j].x === position.x &&
+                    cellPositions[j].y === position.y
+                ) {
+                    return (<Army> items[i]);
+                }
+            }
+        }
+
+        return null;
+    }
+
     private items: Army[];
 
     constructor() {
@@ -30,24 +46,24 @@ export class ArmyRepository {
         }
     }
 
-    isCellNotOccupied(position: PIXI.Point): boolean {
-        return (null === this.itemAt(position));
+    isGroundCellAccessible(position: PIXI.Point): boolean {
+        return (null === this.groundItemAt(position));
     }
 
-    itemAt(position: PIXI.Point): Army {
-        for (let i = 0; i < this.items.length; i++) {
-            const cellPositions = this.items[i].getCellPositions();
-            for (let j = 0; j < cellPositions.length; j++) {
-                if (
-                    cellPositions[j].x === position.x &&
-                    cellPositions[j].y === position.y
-                ) {
-                    return (<Army> this.items[i]);
-                }
-            }
-        }
+    isAerialCellAccessible(position: PIXI.Point): boolean {
+        return (null === this.aerialItemAt(position));
+    }
 
-        return null;
+    groundItemAt(position: PIXI.Point): Army {
+        return ArmyRepository.itemAt(position, this.items.filter((item) => {
+            return item.isOnGround();
+        }));
+    }
+
+    aerialItemAt(position: PIXI.Point): Army {
+        return ArmyRepository.itemAt(position, this.items.filter((item) => {
+            return !item.isOnGround();
+        }));
     }
 
     getSelectedArmies(): Army[] {

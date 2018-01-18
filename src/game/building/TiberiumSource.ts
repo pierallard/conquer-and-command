@@ -120,4 +120,8 @@ export class TiberiumSource implements Building {
     isAlive(): boolean {
         return true;
     }
+
+    isOnGround(): boolean {
+        return true;
+    }
 }

@@ -67,7 +67,7 @@ export class BuildingCreator extends AbstractCreator {
                 const cellHarvester = AlternativePosition.getClosestAvailable(
                     cell,
                     cell,
-                    this.worldKnowledge.isCellAccessible.bind(this.worldKnowledge)
+                    this.worldKnowledge.isGroundCellAccessible.bind(this.worldKnowledge)
                 );
                 let harvester = new Harvester(this.worldKnowledge, cellHarvester, this.player);
                 this.worldKnowledge.addArmy(harvester, true);

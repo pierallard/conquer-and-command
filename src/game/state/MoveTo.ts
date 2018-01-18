@@ -43,7 +43,7 @@ export class MoveTo implements State {
         return AlternativePosition.isArrived(
             this.goal,
             this.unit.getCellPositions()[0],
-            this.worldKnowledge.isCellAccessible.bind(this.worldKnowledge)
+            this.worldKnowledge.isGroundCellAccessible.bind(this.worldKnowledge)
         );
     }
 }

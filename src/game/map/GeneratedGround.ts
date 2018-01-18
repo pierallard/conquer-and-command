@@ -186,7 +186,7 @@ export class GeneratedGround {
         game.add.existing(layer);
 
         /*
-        const zones = AlternativePosition.getZones(this.isCellAccessible.bind(this));
+        const zones = AlternativePosition.getZones(this.isGroundCellAccessible.bind(this));
         let graphics = game.add.graphics(0, 0);
         graphics.alpha = 0.5;
         for (let z = 0; z < zones.length; z++) {

@@ -11,4 +11,8 @@ export class Orca extends Unit {
             this.cellPosition
         );
     }
+
+    isOnGround(): boolean {
+        return false;
+    }
 }

@@ -37,7 +37,7 @@ export class BuildingPositioner {
         for (let i = 0; i < cellPositions.length; i++) {
             const position = cellPositions[i];
             let newCell = new PIXI.Point(cell.x + position.x, cell.y + position.y);
-            if (!worldKnowledge.isCellAccessible(newCell)) {
+            if (!worldKnowledge.isGroundCellAccessible(newCell)) {
                 return false;
             }
         }

@@ -77,8 +77,12 @@ export class WorldKnowledge {
         });
     }
 
-    isCellAccessible(position: PIXI.Point) {
-        return this.ground.isCellAccessible(position) && this.armyRepository.isCellNotOccupied(position);
+    isGroundCellAccessible(position: PIXI.Point) {
+        return this.ground.isCellAccessible(position) && this.armyRepository.isGroundCellAccessible(position);
+    }
+
+    isAerialCellAccessible(position: PIXI.Point) {
+        return this.armyRepository.isAerialCellAccessible(position);
     }
 
     getGroundWidth() {
@@ -115,7 +119,7 @@ export class WorldKnowledge {
     }
 
     getArmyAt(cell: PIXI.Point) {
-        return this.armyRepository.itemAt(cell);
+        return this.armyRepository.groundItemAt(cell);
     }
 
     getGroundAt(cell: PIXI.Point): TiberiumPlant {

@@ -69,7 +69,7 @@ export class Harvest implements State {
         return AlternativePosition.isArrived(
             refinery.getCellPositions()[0],
             this.harvester.getCellPositions()[0],
-            this.worldKnowledge.isCellAccessible.bind(this.worldKnowledge)
+            this.worldKnowledge.isGroundCellAccessible.bind(this.worldKnowledge)
         );
     }
 }
