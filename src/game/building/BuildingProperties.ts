@@ -129,6 +129,28 @@ const DATA = {
         sprite: 'Turret',
         sprite_layer: 5,
     },
+    Helipad: {
+        cellPositions: [
+            [0, 0],
+            [1, 0],
+            [0, -1],
+            [1, -1],
+            [0, -2],
+            [1, -2],
+        ],
+        constructable: true,
+        constructable_units: ['Chinook', 'Orca'],
+        construction_time: 100,
+        life: 400,
+        power: -10,
+        price: 1500,
+        requireds: [
+            'Barracks',
+        ],
+        sight: 3,
+        sprite: 'Starport',
+        sprite_layer: 16,
+    },
     PowerPlant: {
         cellPositions: [
             [0, 0],

@@ -60,6 +60,8 @@ export default class Play extends Phaser.State {
             this.worldKnowledge.getGroundHeight()
         );
 
+        // this.game.stage.disableVisibilityChange = true;
+
         this.registerInputs();
 
         this.start();

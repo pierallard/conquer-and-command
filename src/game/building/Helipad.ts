@@ -1,18 +1,16 @@
 import {Cell} from "../computing/Cell";
-import {Player} from "../player/Player";
 import {ConstructableBuilding} from "./ConstructableBuilding";
-import {WorldKnowledge} from "../map/WorldKnowledge";
-import {WeaponsFactorySprite} from "../sprite/WeaponsFactorySprite";
+import {HelipadSprite} from "../sprite/HelipadSprite";
 
-export class WeaponsFactory extends ConstructableBuilding {
+export class Helipad extends ConstructableBuilding {
     create(game: Phaser.Game, group: Phaser.Group, effectsGroup: Phaser.Group) {
-        this.sprite = new WeaponsFactorySprite(
+        this.sprite = new HelipadSprite(
             game,
             group,
             effectsGroup,
             Cell.cellToReal(this.cellPosition.x),
             Cell.cellToReal(this.cellPosition.y),
-            'Base'
+            'Starport'
         );
     }
 }
