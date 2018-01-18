@@ -25,13 +25,13 @@ export abstract class Unit implements Army, Shootable, Positionnable {
     protected player: Player;
     protected worldKnowledge: WorldKnowledge;
     protected cellPosition: PIXI.Point;
+    protected timerEvents: Phaser.Timer;
+    protected effectsGroup: Phaser.Group;
     private pathCache: Path;
     private goalCache: PIXI.Point;
     private isFrozen: boolean = false;
     private selected: boolean = false;
     private key: string;
-    private timerEvents: Phaser.Timer;
-    private effectsGroup: Phaser.Group;
 
     constructor(worldKnowledge: WorldKnowledge, cellPosition: PIXI.Point, player: Player) {
         this.worldKnowledge = worldKnowledge;
@@ -42,7 +42,7 @@ export abstract class Unit implements Army, Shootable, Positionnable {
         this.life = this.maxLife = UnitProperties.getLife(this.constructor.name);
     }
 
-    create(game: Phaser.Game, unitGroup: Phaser.Group, effectsGroup: Phaser.Group) {
+    create(game: Phaser.Game, unitGroup: Phaser.Group, effectsGroup: Phaser.Group, aerialGroup: Phaser.Group) {
         this.effectsGroup = effectsGroup;
         this.timerEvents = game.time.events;
         this.unitSprite = new UnitSprite(

@@ -18,6 +18,7 @@ export class WorldKnowledge {
     private groundGroup: Phaser.Group;
     private unitBuildingGroup: Phaser.Group;
     private effectsGroup: Phaser.Group;
+    private aerialGroup: Phaser.Group;
     private armyRepository: ArmyRepository;
     private unitCreators: UnitCreator[];
     private buildingCreators: BuildingCreator[];
@@ -48,6 +49,9 @@ export class WorldKnowledge {
 
         this.effectsGroup = this.game.add.group();
         this.effectsGroup.fixedToCamera = false;
+
+        this.aerialGroup = this.game.add.group();
+        this.aerialGroup.fixedToCamera = false;
 
         this.unitCreators.forEach((unitCreator) => {
             unitCreator.create(game);
@@ -87,7 +91,7 @@ export class WorldKnowledge {
 
     addArmy(army: Army, appear: boolean = false, appearSize: number = 1) {
         this.armyRepository.add(army);
-        army.create(this.game, this.unitBuildingGroup, this.effectsGroup);
+        army.create(this.game, this.unitBuildingGroup, this.effectsGroup, this.aerialGroup);
         if (appear) {
             army.setVisible(false);
             let appearSprite = appearSize === 1 ?

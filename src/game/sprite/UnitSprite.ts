@@ -9,13 +9,14 @@ export enum IMAGE_FORMAT {
     THREE,
     FIVE,
     NINE,
+    ANIMATED,
 }
 
 export class UnitSprite extends Phaser.Sprite {
-    private lifeRectangle: LifeRectangle;
-    private selectedRectangle: SelectRectangle;
     private group: Phaser.Group;
     private imageFormat: IMAGE_FORMAT;
+    protected lifeRectangle: LifeRectangle;
+    protected selectedRectangle: SelectRectangle;
 
     constructor(
         game: Phaser.Game,
@@ -84,11 +85,7 @@ export class UnitSprite extends Phaser.Sprite {
         this.loadRotation(rotation);
     }
 
-    private doExplodeEffect() {
-        this.group.add(new Explosion(this.game, this.x, this.y));
-    }
-
-    private loadRotation(rotation: ROTATION) {
+    protected loadRotation(rotation: ROTATION) {
         if (this.imageFormat === IMAGE_FORMAT.THREE) {
             switch (rotation) {
                 case ROTATION.TOP: this.loadTexture(this.key, 1); break;
@@ -124,4 +121,9 @@ export class UnitSprite extends Phaser.Sprite {
             }
         }
     }
+
+    private doExplodeEffect() {
+        this.group.add(new Explosion(this.game, this.x, this.y));
+    }
+
 }

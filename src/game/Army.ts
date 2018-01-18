@@ -6,7 +6,12 @@ export interface Army extends Positionnable, Shootable {
     isSelected(): boolean;
     destroy(): void;
     update(): void;
-    create(game: Phaser.Game, unitBuildingGroup: Phaser.Group, effectsGroup: Phaser.Group): void;
+    create(
+        game: Phaser.Game,
+        unitBuildingGroup: Phaser.Group,
+        effectsGroup: Phaser.Group,
+        aerialGroup: Phaser.Group
+    ): void;
     setVisible(b: boolean): void;
     getPlayer(): Player;
     setSelected(b: boolean): void;
