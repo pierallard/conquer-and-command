@@ -58,7 +58,7 @@ export class Selector {
                     Cell.realToCell(this.corner.x),
                     Cell.realToCell(this.corner.y)
                 ));
-                if (unitUnderPointer && this.isDoubleClick) {
+                if (unitUnderPointer && unitUnderPointer.getPlayer() === this.player && this.isDoubleClick) {
                     this.selectUnitsInside(
                         new PIXI.Point(this.camera.position.x, this.camera.position.y),
                         new PIXI.Point(
@@ -72,7 +72,6 @@ export class Selector {
                         army.setSelected(army === unitUnderPointer);
                     });
                 }
-
             } else {
                 this.selectUnitsInside(this.corner, this.getMousePointer());
             }

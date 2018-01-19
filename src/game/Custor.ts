@@ -92,7 +92,7 @@ export class Cursor {
             return ACTION.DEFAULT;
         }
 
-        const unitAt = this.worldKnowledge.getArmyAt(new PIXI.Point(
+        const unitAt = this.worldKnowledge.getGroundArmyAt(new PIXI.Point(
             Cell.realToCell(this.mousePointer.x + this.camera.position.x),
             Cell.realToCell(this.mousePointer.y + this.camera.position.y)
         ));

@@ -41,8 +41,8 @@ export class WorldKnowledge {
         this.ground.create(this.game, startPositions);
 
         this.groups[GROUP.GROUND] = this.game.add.group();
-        this.groups[GROUP.SHADOW] = this.game.add.group();
         this.groups[GROUP.UNIT] = this.game.add.group();
+        this.groups[GROUP.SHADOW] = this.game.add.group();
         this.groups[GROUP.EFFECTS] = this.game.add.group();
         this.groups[GROUP.AERIAL] = this.game.add.group();
 
@@ -116,6 +116,12 @@ export class WorldKnowledge {
     }
 
     getArmyAt(cell: PIXI.Point) {
+        const aerial = this.armyRepository.aerialItemAt(cell);
+
+        return aerial ? aerial : this.armyRepository.groundItemAt(cell);
+    }
+
+    getGroundArmyAt(cell: PIXI.Point) {
         return this.armyRepository.groundItemAt(cell);
     }
 

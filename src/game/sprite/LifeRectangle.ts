@@ -28,6 +28,7 @@ export class LifeRectangle extends Phaser.Graphics {
                 Math.round((this.unitWidth - 4 + 1) * this.percentage),
                 HEIGHT - 1
             );
+            this.endFill();
         }
     }
 

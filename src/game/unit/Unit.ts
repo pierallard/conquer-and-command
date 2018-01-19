@@ -188,16 +188,18 @@ export abstract class Unit implements Army, Shootable, Positionnable {
     }
 
     updateStateAfterClick(cell: PIXI.Point) {
-        const unit = this.worldKnowledge.getArmyAt(cell);
-        if (null !== unit) {
-            if (this.getPlayer() !== unit.getPlayer()) {
-                if (unit.isOnGround() || UnitProperties.getShootAirPower(this.constructor.name) > 0) {
-                    this.state = new Attack(this.worldKnowledge, this, unit);
+        const army = this.worldKnowledge.getArmyAt(cell);
+        if (null !== army) {
+            if (this.getPlayer() !== army.getPlayer()) {
+                if (army.isOnGround() || UnitProperties.getShootAirPower(this.constructor.name) > 0) {
+                    this.state = new Attack(this.worldKnowledge, this, army);
                 } else {
                     this.state = new MoveTo(this.worldKnowledge, this, cell);
                 }
+            } else if (army instanceof Unit) {
+                this.state = new Follow(this.worldKnowledge, this, army);
             } else {
-                this.state = new Follow(this.worldKnowledge, this, unit);
+                this.state = new MoveTo(this.worldKnowledge, this, cell);
             }
         } else {
             this.state = new MoveTo(this.worldKnowledge, this, cell);

@@ -3,16 +3,18 @@ import {ROTATION} from "../computing/Rotation";
 import {SelectRectangle} from "./SelectRectangle";
 import {LifeRectangle} from "./LifeRectangle";
 import {GROUP, SCALE} from "../game_state/Play";
+import {ShotCounter} from "./ShotCounter";
 
 const ANIM_SPEED = 30;
 const GAP_X = 20;
 const GAP_Y = 50;
 
 export class OrcaSprite extends UnitSprite {
-    anims: Phaser.Animation[];
-    shadow: OrcaSpriteShadow;
+    private anims: Phaser.Animation[];
+    private shadow: OrcaSpriteShadow;
+    private shotCounter: ShotCounter;
 
-    constructor(game: Phaser.Game, groups: Phaser.Group[], cellPosition: PIXI.Point) {
+    constructor(game: Phaser.Game, groups: Phaser.Group[], cellPosition: PIXI.Point, counter: number) {
         super(game, groups, cellPosition, 'Copter', IMAGE_FORMAT.ANIMATED);
 
         groups[GROUP.AERIAL].add(this);
@@ -22,6 +24,9 @@ export class OrcaSprite extends UnitSprite {
 
         this.lifeRectangle = new LifeRectangle(game, 20, this.height / SCALE);
         this.addChild(this.lifeRectangle);
+
+        this.shotCounter = new ShotCounter(game, counter);
+        this.addChild(this.shotCounter);
 
         this.anims = [];
         for (let i = 0; i < 8; i++) {
@@ -46,6 +51,16 @@ export class OrcaSprite extends UnitSprite {
     doDestroy() {
         super.doDestroy();
         this.shadow.destroy(true);
+    }
+
+    setSelected(value: boolean = true) {
+        this.shotCounter.setVisible(value);
+
+        super.setSelected(value);
+    }
+
+    updateCounter(value: number) {
+        this.shotCounter.updateCounter(value);
     }
 
     protected loadRotation(rotation: ROTATION) {

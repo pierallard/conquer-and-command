@@ -85,7 +85,7 @@ export class TiberiumSource implements Building {
 
     getFreePlants(harvester: Harvester): TiberiumPlant[] {
         return this.plants.filter((plant) => {
-            const unit = this.worldKnowledge.getArmyAt(plant.getCellPositions()[0]);
+            const unit = this.worldKnowledge.getGroundArmyAt(plant.getCellPositions()[0]);
 
             return unit === null || unit === harvester;
         });

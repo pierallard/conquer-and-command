@@ -1,6 +1,4 @@
 import {Unit} from "./Unit";
-import {MoveTo} from "../state/MoveTo";
-import {Follow} from "../state/Follow";
 import {Stand} from "../state/Stand";
 import {ConstructionYard} from "../building/ConstructionYard";
 
@@ -14,20 +12,15 @@ export class MCV extends Unit {
 
     updateStateAfterClick(cell: PIXI.Point) {
         if (!this.expanded) {
-            const unit = this.worldKnowledge.getArmyAt(cell);
-            if (null !== unit) {
-                if (unit === this) {
-                    this.orderExpand();
-                }
-                if (this.getPlayer() !== unit.getPlayer()) {
-                    this.state = new MoveTo(this.worldKnowledge, this, unit.getCellPositions()[0]);
-                } else {
-                    this.state = new Follow(this.worldKnowledge, this, unit);
-                }
-            } else {
-                this.state = new MoveTo(this.worldKnowledge, this, cell);
+            const unit = this.worldKnowledge.getGroundArmyAt(cell);
+            if (null !== unit && unit === this) {
+                this.orderExpand();
+
+                return;
             }
         }
+
+        super.updateStateAfterClick(cell);
     }
 
     private expand() {

@@ -1,8 +1,5 @@
 import {Unit} from "./Unit";
 import {Player} from "../player/Player";
-import {Attack} from "../state/Attack";
-import {Follow} from "../state/Follow";
-import {MoveAttack} from "../state/MoveAttack";
 import {Harvest} from "../state/Harvest";
 import {TiberiumPlant} from "../sprite/TiberiumPlant";
 import {Distance} from "../computing/Distance";
@@ -29,21 +26,17 @@ export class Harvester extends Unit {
     }
 
     updateStateAfterClick(cell: PIXI.Point) {
-        const unit = this.worldKnowledge.getArmyAt(cell);
-        if (null !== unit) {
-            if (this.getPlayer() !== unit.getPlayer()) {
-                this.state = new Attack(this.worldKnowledge, this, unit);
-            } else {
-                this.state = new Follow(this.worldKnowledge, this, unit);
-            }
-        } else {
+        const unit = this.worldKnowledge.getGroundArmyAt(cell);
+        if (null === unit) {
             const ground = this.worldKnowledge.getGroundAt(cell);
             if (ground && ground instanceof TiberiumPlant) {
                 this.state = new Harvest(this.worldKnowledge, this, (<TiberiumPlant> ground).getSource());
-            } else {
-                this.state = new MoveAttack(this.worldKnowledge, this, cell);
+
+                return;
             }
         }
+
+        super.updateStateAfterClick(cell);
     }
 
     getClosestRefinery(): TiberiumRefinery {

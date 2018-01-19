@@ -170,7 +170,7 @@ export class ConcreteBarrier extends ConstructableBuilding {
     }
 
     private hasConcreteNeighbourAt(cell: PIXI.Point): boolean {
-        const building = this.worldKnowledge.getArmyAt(cell);
+        const building = this.worldKnowledge.getGroundArmyAt(cell);
 
         return (
             null !== building &&
