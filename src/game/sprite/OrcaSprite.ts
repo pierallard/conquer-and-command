@@ -2,7 +2,7 @@ import {IMAGE_FORMAT, UnitSprite} from "./UnitSprite";
 import {ROTATION} from "../computing/Rotation";
 import {SelectRectangle} from "./SelectRectangle";
 import {LifeRectangle} from "./LifeRectangle";
-import {SCALE} from "../game_state/Play";
+import {GROUP, SCALE} from "../game_state/Play";
 
 export class OrcaSprite extends UnitSprite {
     anims: Phaser.Animation[];
@@ -28,6 +28,13 @@ export class OrcaSprite extends UnitSprite {
         this.loadRotation(ROTATION.RIGHT);
 
         this.shadow = new OrcaSpriteShadow(game, this.x + 20, this.y + 50);
+        groups[GROUP.SHADOW].add(this.shadow);
+    }
+
+    update() {
+        super.update();
+        this.shadow.x = this.x + 20;
+        this.shadow.y = this.y + 50;
     }
 
     protected loadRotation(rotation: ROTATION) {
@@ -41,6 +48,9 @@ class OrcaSpriteShadow extends Phaser.Sprite {
     constructor(game: Phaser.Game, x, y) {
         super(game, x, y, 'CptrShd1');
 
+        this.scale.setTo(SCALE, SCALE);
+        this.anchor.setTo(0.5, 0.5);
+
         this.anims = [];
         for (let i = 0; i < 8; i++) {
             this.anims.push(this.animations.add(
@@ -50,6 +60,10 @@ class OrcaSpriteShadow extends Phaser.Sprite {
         }
 
         this.loadRotation(ROTATION.RIGHT);
+    }
+
+    update() {
+
     }
 
     protected loadRotation(rotation: ROTATION) {
