@@ -4,12 +4,18 @@ import {SelectRectangle} from "./SelectRectangle";
 import {LifeRectangle} from "./LifeRectangle";
 import {GROUP, SCALE} from "../game_state/Play";
 
+const ANIM_SPEED = 30;
+const GAP_X = 20;
+const GAP_Y = 50;
+
 export class OrcaSprite extends UnitSprite {
     anims: Phaser.Animation[];
     shadow: OrcaSpriteShadow;
 
     constructor(game: Phaser.Game, groups: Phaser.Group[], cellPosition: PIXI.Point) {
         super(game, groups, cellPosition, 'Copter', IMAGE_FORMAT.ANIMATED);
+
+        groups[GROUP.AERIAL].add(this);
 
         this.selectedRectangle = new SelectRectangle(game, 20, this.height / SCALE);
         this.addChild(this.selectedRectangle);
@@ -25,20 +31,26 @@ export class OrcaSprite extends UnitSprite {
             ));
         }
 
-        this.loadRotation(ROTATION.RIGHT);
-
-        this.shadow = new OrcaSpriteShadow(game, this.x + 20, this.y + 50);
+        this.shadow = new OrcaSpriteShadow(game, this.x + GAP_X, this.y + GAP_Y);
         groups[GROUP.SHADOW].add(this.shadow);
+
+        this.loadRotation(ROTATION.RIGHT);
     }
 
     update() {
         super.update();
-        this.shadow.x = this.x + 20;
-        this.shadow.y = this.y + 50;
+        this.shadow.x = this.x + GAP_X;
+        this.shadow.y = this.y + GAP_Y;
+    }
+
+    doDestroy() {
+        super.doDestroy();
+        this.shadow.destroy(true);
     }
 
     protected loadRotation(rotation: ROTATION) {
-        this.anims[rotation].play(50, true, false);
+        this.anims[rotation].play(ANIM_SPEED, true, false);
+        this.shadow.loadRotation(rotation);
     }
 }
 
@@ -59,14 +71,12 @@ class OrcaSpriteShadow extends Phaser.Sprite {
             ));
         }
 
+        this.alpha = 0.5;
+
         this.loadRotation(ROTATION.RIGHT);
     }
 
-    update() {
-
-    }
-
-    protected loadRotation(rotation: ROTATION) {
-        this.anims[rotation].play(50, true, false);
+    loadRotation(rotation: ROTATION) {
+        this.anims[rotation].play(ANIM_SPEED, true, false);
     }
 }
