@@ -49,8 +49,7 @@ export class ComputerPlayer extends Player {
 
             tries--;
         }
-
-        console.log('NO TFIND');
+        
         return null;
     }
 
