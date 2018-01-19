@@ -5,15 +5,10 @@ import {ConstructionYardSprite} from "../sprite/ConstructionYardSprite";
 import {WorldKnowledge} from "../map/WorldKnowledge";
 
 export class ConstructionYard extends ConstructableBuilding {
-    constructor(worldKnowledge: WorldKnowledge, cellPosition: PIXI.Point, player: Player) {
-        super(worldKnowledge, cellPosition, player);
-    }
-
-    create(game: Phaser.Game, group: Phaser.Group, effectsGroup: Phaser.Group) {
+    create(game: Phaser.Game, groups: Phaser.Group[]) {
         this.sprite = new ConstructionYardSprite(
             game,
-            group,
-            effectsGroup,
+            groups,
             Cell.cellToReal(this.cellPosition.x),
             Cell.cellToReal(this.cellPosition.y),
             'MinerAni'

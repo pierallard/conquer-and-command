@@ -1,4 +1,4 @@
-import {SCALE} from "../game_state/Play";
+import {GROUP, SCALE} from "../game_state/Play";
 import {Explosion} from "./Explosion";
 import {Cell} from "../computing/Cell";
 import {SelectRectangle} from "./SelectRectangle";
@@ -13,14 +13,14 @@ export enum IMAGE_FORMAT {
 }
 
 export class UnitSprite extends Phaser.Sprite {
-    private group: Phaser.Group;
-    private imageFormat: IMAGE_FORMAT;
     protected lifeRectangle: LifeRectangle;
     protected selectedRectangle: SelectRectangle;
+    private group: Phaser.Group;
+    private imageFormat: IMAGE_FORMAT;
 
     constructor(
         game: Phaser.Game,
-        group: Phaser.Group,
+        groups: Phaser.Group[],
         cellPosition: PIXI.Point,
         key: string,
         imageFormat = IMAGE_FORMAT.THREE
@@ -29,7 +29,7 @@ export class UnitSprite extends Phaser.Sprite {
 
         this.imageFormat = imageFormat;
 
-        this.group = group;
+        this.group = groups[GROUP.UNIT];
         this.group.add(this);
 
         this.scale.setTo(SCALE, SCALE);
@@ -40,8 +40,6 @@ export class UnitSprite extends Phaser.Sprite {
 
         this.lifeRectangle = new LifeRectangle(game, this.width / SCALE, this.height / SCALE);
         this.addChild(this.lifeRectangle);
-
-        group.add(this);
     }
 
     doDestroy() {

@@ -11,6 +11,13 @@ export const _DEBUG_FAST_CONSTRUCT = true;
 export const SCALE = 2;
 export const MOVE = 3 * SCALE;
 export const PANEL_WIDTH = 80;
+export enum GROUP {
+    UNIT,
+    EFFECTS,
+    AERIAL,
+    SHADOW,
+    GROUND
+}
 
 export default class Play extends Phaser.State {
     private upKey: Phaser.Key;

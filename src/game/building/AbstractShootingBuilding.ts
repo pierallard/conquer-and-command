@@ -16,7 +16,7 @@ export abstract class AbstractShootingBuilding extends ConstructableBuilding {
         this.isFrozen = false;
     }
 
-    create(game: Phaser.Game, group: Phaser.Group, effectsGroup: Phaser.Group): void {
+    create(game: Phaser.Game, groups: Phaser.Group[]): void {
         this.timerEvents = game.time.events;
     }
 

@@ -2,7 +2,7 @@ import {Building} from "./Building";
 import {Player} from "../player/Player";
 import {Cell} from "../computing/Cell";
 import {WorldKnowledge} from "../map/WorldKnowledge";
-import {SCALE} from "../game_state/Play";
+import {GROUP, SCALE} from "../game_state/Play";
 import {TiberiumPlant} from "../sprite/TiberiumPlant";
 import {Distance} from "../computing/Distance";
 import {Harvester} from "../unit/Harvester";
@@ -23,9 +23,9 @@ export class TiberiumSource implements Building {
         this.plants = [];
     }
 
-    create(game: Phaser.Game, group: Phaser.Group): void {
+    create(game: Phaser.Game, groups: Phaser.Group[]): void {
         this.game = game;
-        this.group = group;
+        this.group = groups[GROUP.UNIT];
         this.sprite = game.add.sprite(
             Cell.cellToReal(this.cellPosition.x),
             Cell.cellToReal(this.cellPosition.y),
@@ -34,7 +34,7 @@ export class TiberiumSource implements Building {
         );
         this.sprite.scale.setTo(SCALE, SCALE);
         this.sprite.anchor.setTo(0.5, 5 / 6);
-        group.add(this.sprite);
+        groups[GROUP.GROUND].add(this.sprite);
         for (let i = 0; i < 20; i++) {
             this.spread();
         }

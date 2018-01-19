@@ -11,14 +11,12 @@ import {ProductionStatus} from "../creator/AbstractCreator";
 import {Fog} from "../Fog";
 import {Army} from "../Army";
 import {Appear} from "../sprite/Appear";
+import {GROUP} from "../game_state/Play";
 
 export class WorldKnowledge {
     private game: Phaser.Game;
     private ground: GeneratedGround;
-    private groundGroup: Phaser.Group;
-    private unitBuildingGroup: Phaser.Group;
-    private effectsGroup: Phaser.Group;
-    private aerialGroup: Phaser.Group;
+    private groups: Phaser.Group[];
     private armyRepository: ArmyRepository;
     private unitCreators: UnitCreator[];
     private buildingCreators: BuildingCreator[];
@@ -35,23 +33,22 @@ export class WorldKnowledge {
         this.buildingCreators = [];
         this.players = [];
         this.fogs = [];
+        this.groups = [];
     }
 
     create(game: Phaser.Game, startPositions: PIXI.Point[], player: Player) {
         this.game = game;
         this.ground.create(this.game, startPositions);
 
-        this.groundGroup = this.game.add.group();
-        this.groundGroup.fixedToCamera = false;
+        this.groups[GROUP.GROUND] = this.game.add.group();
+        this.groups[GROUP.SHADOW] = this.game.add.group();
+        this.groups[GROUP.UNIT] = this.game.add.group();
+        this.groups[GROUP.EFFECTS] = this.game.add.group();
+        this.groups[GROUP.AERIAL] = this.game.add.group();
 
-        this.unitBuildingGroup = this.game.add.group();
-        this.unitBuildingGroup.fixedToCamera = false;
-
-        this.effectsGroup = this.game.add.group();
-        this.effectsGroup.fixedToCamera = false;
-
-        this.aerialGroup = this.game.add.group();
-        this.aerialGroup.fixedToCamera = false;
+        this.groups.forEach((group) => {
+            group.fixedToCamera = false;
+        });
 
         this.unitCreators.forEach((unitCreator) => {
             unitCreator.create(game);
@@ -68,7 +65,7 @@ export class WorldKnowledge {
     }
 
     update() {
-        this.unitBuildingGroup.sort('y');
+        this.groups[GROUP.UNIT].sort('y');
         this.armyRepository.getItems().forEach((army) => {
             army.update();
         });
@@ -95,13 +92,13 @@ export class WorldKnowledge {
 
     addArmy(army: Army, appear: boolean = false, appearSize: number = 1) {
         this.armyRepository.add(army);
-        army.create(this.game, this.unitBuildingGroup, this.effectsGroup, this.aerialGroup);
+        army.create(this.game, this.groups);
         if (appear) {
             army.setVisible(false);
             let appearSprite = appearSize === 1 ?
                 new MiniAppear(army.getCellPositions()[0]) :
                 new Appear(army.getCellPositions()[0]);
-            appearSprite.create(this.game, this.unitBuildingGroup);
+            appearSprite.create(this.game, this.groups[GROUP.UNIT]);
             this.game.time.events.add(Phaser.Timer.SECOND * (appearSize === 1 ? 2 : 1.2), () => {
                 army.setVisible(true);
             }, this);
@@ -165,7 +162,7 @@ export class WorldKnowledge {
     }
 
     addGroundElement(newPlant: TiberiumPlant) {
-        this.groundGroup.add(newPlant);
+        this.groups[GROUP.GROUND].add(newPlant);
         this.groundRepository.push(newPlant);
     }
 

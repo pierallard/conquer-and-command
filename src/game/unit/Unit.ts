@@ -16,6 +16,7 @@ import {Cell} from "../computing/Cell";
 import {Bullet} from "../shoot/Bullet";
 import {Army} from "../Army";
 import {MoveTo} from "../state/MoveTo";
+import {GROUP} from "../game_state/Play";
 
 export abstract class Unit implements Army, Shootable, Positionnable {
     protected life: number;
@@ -42,12 +43,12 @@ export abstract class Unit implements Army, Shootable, Positionnable {
         this.life = this.maxLife = UnitProperties.getLife(this.constructor.name);
     }
 
-    create(game: Phaser.Game, unitGroup: Phaser.Group, effectsGroup: Phaser.Group, aerialGroup: Phaser.Group) {
-        this.effectsGroup = effectsGroup;
+    create(game: Phaser.Game, groups: Phaser.Group[]) {
+        this.effectsGroup = groups[GROUP.EFFECTS];
         this.timerEvents = game.time.events;
         this.unitSprite = new UnitSprite(
             game,
-            unitGroup,
+            groups,
             this.cellPosition,
             this.key,
             UnitProperties.getImageFormat(this.constructor.name)

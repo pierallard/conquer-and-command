@@ -1,6 +1,6 @@
 import {ConstructableBuilding} from "./ConstructableBuilding";
 import {Cell} from "../computing/Cell";
-import {SCALE} from "../game_state/Play";
+import {GROUP, SCALE} from "../game_state/Play";
 import {GROUND_SIZE} from "../map/Ground";
 import {LifeRectangle} from "../sprite/LifeRectangle";
 import {SelectRectangle} from "../sprite/SelectRectangle";
@@ -13,7 +13,7 @@ export class ConcreteBarrier extends ConstructableBuilding {
     private lifeRectangle: LifeRectangle;
     private selectedRectable: SelectRectangle;
 
-    create(game: Phaser.Game, group: Phaser.Group) {
+    create(game: Phaser.Game, groups: Phaser.Group[]) {
         const positionX = Cell.cellToReal(this.cellPosition.x);
         const positionY = Cell.cellToReal(this.cellPosition.y);
         this.topLeftSprite = new Phaser.Sprite(game, positionX, positionY, 'Wall', this.getTopLeftLayer());
@@ -27,16 +27,16 @@ export class ConcreteBarrier extends ConstructableBuilding {
 
         this.getSprites().forEach((sprite) => {
             sprite.scale.setTo(SCALE / 2, SCALE / 2); // Wall texture should be resized by 50%
-            group.add(sprite);
+            groups[GROUP.UNIT].add(sprite);
         });
 
         this.updateConcretes();
 
         this.selectedRectable = new SelectRectangle(game, GROUND_SIZE / SCALE, GROUND_SIZE / SCALE);
-        group.add(this.selectedRectable);
+        groups[GROUP.UNIT].add(this.selectedRectable);
 
         this.lifeRectangle = new LifeRectangle(game, GROUND_SIZE / SCALE, GROUND_SIZE / SCALE);
-        group.add(this.lifeRectangle);
+        groups[GROUP.UNIT].add(this.lifeRectangle);
     }
 
     updateTileLayers() {

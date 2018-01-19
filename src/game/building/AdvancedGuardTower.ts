@@ -3,15 +3,14 @@ import {AbstractShootingBuilding} from "./AbstractShootingBuilding";
 import {AdvancedGuardTowerSprite} from "../sprite/AdvancedGuardTowerSprite";
 
 export class AdvancedGuardTower extends AbstractShootingBuilding {
-    create(game: Phaser.Game, group: Phaser.Group, effectsGroup: Phaser.Group) {
+    create(game: Phaser.Game, groups: Phaser.Group[]) {
         this.sprite = new AdvancedGuardTowerSprite(
             game,
-            group,
-            effectsGroup,
+            groups,
             Cell.cellToReal(this.cellPosition.x),
             Cell.cellToReal(this.cellPosition.y),
             'Artilery2'
         );
-        super.create(game, group, effectsGroup);
+        super.create(game, groups);
     }
 }

@@ -20,7 +20,7 @@ export abstract class ConstructableBuilding implements Building {
         this.life = this.maxLife = BuildingProperties.getLife(this.constructor.name);
     }
 
-    abstract create(game: Phaser.Game, group: Phaser.Group, effectsGroup: Phaser.Group): void;
+    abstract create(game: Phaser.Game, groups: Phaser.Group[]): void;
 
     setVisible(value: boolean) {
         this.sprite.alpha = value ? 1 : 0;

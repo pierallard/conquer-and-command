@@ -8,9 +8,7 @@ export interface Army extends Positionnable, Shootable {
     update(): void;
     create(
         game: Phaser.Game,
-        unitBuildingGroup: Phaser.Group,
-        effectsGroup: Phaser.Group,
-        aerialGroup: Phaser.Group
+        groups: Phaser.Group[]
     ): void;
     setVisible(b: boolean): void;
     getPlayer(): Player;
