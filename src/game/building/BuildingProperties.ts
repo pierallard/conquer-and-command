@@ -10,6 +10,7 @@ const DATA = {
         construction_time: 66,
         life: 300,
         options: {
+            shoot_air_power: 60,
             shoot_cooldown: 40,
             shoot_distance: 6,
             shoot_power: 60,

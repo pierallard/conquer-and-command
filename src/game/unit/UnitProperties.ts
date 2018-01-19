@@ -99,6 +99,7 @@ const DATA = {
         image_format: IMAGE_FORMAT.ANIMATED,
         life: 125,
         price: 1200,
+        shoot_air_power: 30,
         shoot_cooldown: 60,
         shoot_distance: 4,
         shoot_power: 30,
@@ -114,6 +115,7 @@ const DATA = {
         image_format: IMAGE_FORMAT.NINE,
         life: 25,
         price: 300,
+        shoot_air_power: 30,
         shoot_cooldown: 60,
         shoot_distance: 4,
         shoot_power: 30,
@@ -192,6 +194,10 @@ export class UnitProperties {
 
     static getShootPower(unitName: string): number {
         return DATA[unitName].shoot_power;
+    }
+
+    static getShootAirPower(unitName: string): number {
+        return DATA[unitName].shoot_air_power ? DATA[unitName].shoot_air_power : 0;
     }
 
     static getImageFormat(unitName: string): IMAGE_FORMAT {

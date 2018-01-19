@@ -5,6 +5,7 @@ import {AlternativePosition} from "../computing/AlternativePosition";
 import {Distance} from "../computing/Distance";
 import {WorldKnowledge} from "../map/WorldKnowledge";
 import {Shootable} from "../Shootable";
+import {UnitProperties} from "../unit/UnitProperties";
 
 export class Attack implements State {
     private worldKnowledge: WorldKnowledge;
@@ -47,6 +48,7 @@ export class Attack implements State {
     }
 
     private isAbleToShoot(): boolean {
-        return Distance.to(this.unit.getCellPositions(), this.goal.getCellPositions()) < this.unit.getShootDistance();
+        return (this.goal.isOnGround() || UnitProperties.getShootAirPower(this.unit.constructor.name) > 0) &&
+            Distance.to(this.unit.getCellPositions(), this.goal.getCellPositions()) < this.unit.getShootDistance();
     }
 }

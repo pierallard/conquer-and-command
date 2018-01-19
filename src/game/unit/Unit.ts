@@ -120,11 +120,13 @@ export abstract class Unit implements Army, Shootable, Positionnable {
         for (let i = 0; i < enemies.length; i++) {
             const enemy = enemies[i];
             if (enemy !== this) {
-                const distance = Distance.to(this.cellPosition, enemy.getCellPositions());
-                if (distance <= this.getShootDistance()) {
-                    if (null === closest || minDistance > distance) {
-                        minDistance = distance;
-                        closest = enemy;
+                if (enemy.isOnGround() || UnitProperties.getShootAirPower(this.constructor.name) > 0) {
+                    const distance = Distance.to(this.cellPosition, enemy.getCellPositions());
+                    if (distance <= this.getShootDistance()) {
+                        if (null === closest || minDistance > distance) {
+                            minDistance = distance;
+                            closest = enemy;
+                        }
                     }
                 }
             }
@@ -189,7 +191,11 @@ export abstract class Unit implements Army, Shootable, Positionnable {
         const unit = this.worldKnowledge.getArmyAt(cell);
         if (null !== unit) {
             if (this.getPlayer() !== unit.getPlayer()) {
-                this.state = new Attack(this.worldKnowledge, this, unit);
+                if (unit.isOnGround() || UnitProperties.getShootAirPower(this.constructor.name) > 0) {
+                    this.state = new Attack(this.worldKnowledge, this, unit);
+                } else {
+                    this.state = new MoveTo(this.worldKnowledge, this, cell);
+                }
             } else {
                 this.state = new Follow(this.worldKnowledge, this, unit);
             }

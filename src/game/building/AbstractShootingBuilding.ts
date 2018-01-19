@@ -55,11 +55,13 @@ export abstract class AbstractShootingBuilding extends ConstructableBuilding {
         for (let i = 0; i < enemies.length; i++) {
             const enemy = enemies[i];
             if (enemy !== this) {
-                const distance = Distance.to(this.cellPosition, enemy.getCellPositions());
-                if (distance <= BuildingProperties.getOption(this.constructor.name, 'shoot_distance')) {
-                    if (null === closest || minDistance > distance) {
-                        minDistance = distance;
-                        closest = enemy;
+                if (enemy.isOnGround() || BuildingProperties.getOption(this.constructor.name, 'shoot_air_power') > 0) {
+                    const distance = Distance.to(this.cellPosition, enemy.getCellPositions());
+                    if (distance <= BuildingProperties.getOption(this.constructor.name, 'shoot_distance')) {
+                        if (null === closest || minDistance > distance) {
+                            minDistance = distance;
+                            closest = enemy;
+                        }
                     }
                 }
             }

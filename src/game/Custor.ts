@@ -7,6 +7,7 @@ import {GAME_WIDTH} from "../app";
 import {INTERFACE_WIDTH} from "./interface/UserInterface";
 import {MCV} from "./unit/MCV";
 import {Army} from "./Army";
+import {UnitProperties} from "./unit/UnitProperties";
 
 enum ACTION {
     DEFAULT,
@@ -96,7 +97,11 @@ export class Cursor {
             Cell.realToCell(this.mousePointer.y + this.camera.position.y)
         ));
         if (unitAt && unitAt.getPlayer() !== this.player) {
-            return ACTION.ATTACK;
+            if (unitAt.isOnGround() || this.selectedUnitCanShootAir()) {
+                return ACTION.ATTACK;
+            } else {
+                return ACTION.MOVE;
+            }
         } else {
             if (this.isMCVExpanding(unitAt)) {
                 return ACTION.SPECIAL;
@@ -121,5 +126,16 @@ export class Cursor {
         return selecteds.length === 1 &&
                 selecteds[0] instanceof MCV &&
                 selecteds[0] === unitAt;
+    }
+
+    private selectedUnitCanShootAir() {
+        const selecteds = this.worldKnowledge.getSelectedArmies();
+        for (let i = 0; i < selecteds.length; i++) {
+            if (selecteds[i] instanceof Unit && UnitProperties.getShootAirPower(selecteds[i].constructor.name) > 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
