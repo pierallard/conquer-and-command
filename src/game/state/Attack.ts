@@ -8,9 +8,9 @@ import {Shootable} from "../Shootable";
 import {UnitProperties} from "../unit/UnitProperties";
 
 export class Attack implements State {
-    private worldKnowledge: WorldKnowledge;
-    private unit: Unit;
     private goal: Shootable;
+    protected unit: Unit;
+    protected worldKnowledge: WorldKnowledge;
 
     constructor(worldKnowledge: WorldKnowledge, unit: Unit, goal: Shootable) {
         this.worldKnowledge = worldKnowledge;
@@ -37,7 +37,7 @@ export class Attack implements State {
         }
     }
 
-    isArrived(): boolean {
+    private isArrived(): boolean {
         return AlternativePosition.isArrived(
             this.goal.getCellPositions()[0],
             this.unit.getCellPositions()[0],
@@ -48,7 +48,8 @@ export class Attack implements State {
     }
 
     private isAbleToShoot(): boolean {
-        return (this.goal.isOnGround() || UnitProperties.getShootAirPower(this.unit.constructor.name) > 0) &&
+        return this.unit.canShoot &&
+            (this.goal.isOnGround() || UnitProperties.getShootAirPower(this.unit.constructor.name) > 0) &&
             Distance.to(this.unit.getCellPositions(), this.goal.getCellPositions()) < this.unit.getShootDistance();
     }
 }

@@ -226,6 +226,10 @@ export abstract class Unit implements Army, Shootable, Positionnable {
         return true;
     }
 
+    canShoot(): boolean {
+        return true;
+    }
+
     protected getShootSource(cellDest: PIXI.Point): PIXI.Point {
         return new PIXI.Point(Cell.cellToReal(this.cellPosition.x), Cell.cellToReal(this.cellPosition.y));
     }
