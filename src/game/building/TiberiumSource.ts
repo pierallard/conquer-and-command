@@ -62,6 +62,10 @@ export class TiberiumSource implements Building {
     setVisible(value: boolean): void {
     }
 
+    isVisible(): boolean {
+        return true;
+    }
+
     getPlayer(): Player {
         return null;
     }

@@ -117,7 +117,10 @@ export class Selector {
 
         this.worldKnowledge.getArmies().forEach((unit) => {
             let isInside = false;
-            if (unit.getPlayer() === this.player && (null === constructor || unit.constructor === constructor)) {
+            if (unit.isVisible() &&
+                unit.getPlayer() === this.player &&
+                (null === constructor || unit.constructor === constructor)
+            ) {
                 isInside = unit.isInside(left, right, top, bottom);
             }
             unit.setSelected(isInside);

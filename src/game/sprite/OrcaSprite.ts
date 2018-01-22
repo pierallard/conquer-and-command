@@ -82,6 +82,10 @@ export class OrcaSprite extends UnitSprite {
         }
     }
 
+    setShadowVisible(value: boolean) {
+        this.shadow.alpha = value ? 0.5 : 0;
+    }
+
     protected loadRotation(rotation: ROTATION) {
         this.anims[rotation].play(ANIM_SPEED, true, false);
         this.shadow.loadRotation(rotation);

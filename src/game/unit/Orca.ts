@@ -100,6 +100,12 @@ export class Orca extends Unit {
         super.updateStateAfterClick(cell);
     }
 
+    setVisible(value: boolean) {
+        super.setVisible(value);
+
+        (<OrcaSprite> this.unitSprite).setShadowVisible(value);
+    }
+
     protected getAttackState(army: Army) {
         return new AttackReload(this.worldKnowledge, this, army);
     }

@@ -26,6 +26,10 @@ export abstract class ConstructableBuilding implements Building {
         this.sprite.alpha = value ? 1 : 0;
     }
 
+    isVisible(): boolean {
+        return this.sprite.alpha > 0;
+    }
+
     getCellPositions(): PIXI.Point[] {
         return BuildingProperties.getCellPositions(this.constructor.name).map((position) => {
             return new PIXI.Point(position.x + this.cellPosition.x, position.y + this.cellPosition.y);

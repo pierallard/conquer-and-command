@@ -226,6 +226,10 @@ export abstract class Unit implements Army, Shootable, Positionnable {
         this.unitSprite.alpha = value ? 1 : 0;
     }
 
+    isVisible(): boolean {
+        return this.unitSprite.alpha > 0;
+    }
+
     isOnGround(): boolean {
         return true;
     }
