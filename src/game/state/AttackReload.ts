@@ -1,5 +1,7 @@
 import {Attack} from "./Attack";
 import {Orca} from "../unit/Orca";
+import {Helipad} from "../building/Helipad";
+import {Distance} from "../computing/Distance";
 
 export class AttackReload extends Attack {
     run(): void {
@@ -14,13 +16,18 @@ export class AttackReload extends Attack {
         } else {
             const closestHelipad = this.getClosestHelipad();
             if (closestHelipad) {
-                this.unit.moveTowards(closestHelipad.getCellPositions()[0]);
+                const closestPoint = Distance.getClosestPosition(
+                    this.unit.getCellPositions()[0],
+                    closestHelipad.getCellPositions()
+                );
+                this.unit.moveTowards(closestPoint);
             }
         }
     }
 
     private getClosestHelipad() {
-        // TODO It only get the first one
-        return this.worldKnowledge.getPlayerArmies(this.unit.getPlayer(), 'Helipad')[0];
+        return this.worldKnowledge.getPlayerArmies(this.unit.getPlayer(), 'Helipad').filter((helipad) => {
+            return !(<Helipad> helipad).isLoading();
+        })[0];
     }
 }

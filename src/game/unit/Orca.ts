@@ -8,6 +8,7 @@ import {AttackReload} from "../state/AttackReload";
 import {Army} from "../Army";
 import {Helipad} from "../building/Helipad";
 import {Cell} from "../computing/Cell";
+import {Reload} from "../state/Reload";
 
 const SHOOT_COUNTER = 5;
 export const UNLAND_TIME = 0.5;
@@ -69,16 +70,34 @@ export class Orca extends Unit {
         (<OrcaSprite> this.unitSprite).landIfNeeded(this.getHelipadCenter());
         this.freeze(2 * Phaser.Timer.SECOND);
         this.getCurrentHelipad().runLoadAnimation();
+        this.getCurrentHelipad().setLoading(true);
 
         if (this.counter >= SHOOT_COUNTER) {
             this.timerEvents.add((2 - UNLAND_TIME) * Phaser.Timer.SECOND, () => {
                 this.unlandIfNeeded();
+                this.getCurrentHelipad().setLoading(false);
             }, this);
         }
     }
 
     unlandIfNeeded() {
         (<OrcaSprite> this.unitSprite).unlandIfNeeded(this.cellPosition);
+    }
+
+    updateStateAfterClick(cell: PIXI.Point) {
+        const army = this.worldKnowledge.getArmyAt(cell);
+        if (
+            null !== army &&
+            army instanceof Helipad &&
+            army.getPlayer() === this.player &&
+            (!(<Helipad> army).isLoading())
+        ) {
+            this.state = new Reload(this, (<Helipad> army));
+
+            return;
+        }
+
+        super.updateStateAfterClick(cell);
     }
 
     protected getAttackState(army: Army) {

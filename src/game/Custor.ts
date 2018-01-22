@@ -8,6 +8,8 @@ import {INTERFACE_WIDTH} from "./interface/UserInterface";
 import {MCV} from "./unit/MCV";
 import {Army} from "./Army";
 import {UnitProperties} from "./unit/UnitProperties";
+import {Orca} from "./unit/Orca";
+import {Helipad} from "./building/Helipad";
 
 enum ACTION {
     DEFAULT,
@@ -103,7 +105,7 @@ export class Cursor {
                 return ACTION.MOVE;
             }
         } else {
-            if (this.isMCVExpanding(unitAt)) {
+            if (this.isMCVExpanding(unitAt) || this.isOrcaReloading(unitAt)) {
                 return ACTION.SPECIAL;
             }
             return ACTION.MOVE;
@@ -126,6 +128,16 @@ export class Cursor {
         return selecteds.length === 1 &&
                 selecteds[0] instanceof MCV &&
                 selecteds[0] === unitAt;
+    }
+
+    private isOrcaReloading(unitAt: Army) {
+        const selecteds = this.worldKnowledge.getSelectedArmies();
+        return selecteds.filter((unit) => {
+            return unit instanceof Orca;
+        }).length === selecteds.length && selecteds.filter((unit) => {
+            return !(<Orca> unit).isFullyReloaded();
+        }).length > 0 &&
+        unitAt instanceof Helipad;
     }
 
     private selectedUnitCanShootAir() {
