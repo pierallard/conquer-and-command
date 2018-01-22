@@ -12,4 +12,8 @@ export class Helipad extends ConstructableBuilding {
             'Starport'
         );
     }
+
+    runLoadAnimation() {
+        (<HelipadSprite> this.sprite).runLoadAnimation();
+    }
 }

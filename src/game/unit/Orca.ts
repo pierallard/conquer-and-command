@@ -6,8 +6,10 @@ import {Player} from "../player/Player";
 import {Shootable} from "../Shootable";
 import {AttackReload} from "../state/AttackReload";
 import {Army} from "../Army";
+import {Helipad} from "../building/Helipad";
+import {Cell} from "../computing/Cell";
 
-const SHOOT_COUNTER = 2;
+const SHOOT_COUNTER = 5;
 export const UNLAND_TIME = 0.5;
 
 export class Orca extends Unit {
@@ -40,17 +42,21 @@ export class Orca extends Unit {
     }
 
     isOnHelipad(): boolean {
+        return this.getCurrentHelipad() !== null;
+    }
+
+    getCurrentHelipad(): Helipad {
         const helipads = this.worldKnowledge.getPlayerArmies(this.getPlayer(), 'Helipad');
         for (let i = 0; i < helipads.length; i++) {
             for (let j = 0; j < helipads[i].getCellPositions().length; j++) {
                 if (helipads[i].getCellPositions()[j].x === this.cellPosition.x &&
                     helipads[i].getCellPositions()[j].y === this.cellPosition.y) {
-                    return true;
+                    return (<Helipad> helipads[i]);
                 }
             }
         }
 
-        return false;
+        return null;
     }
 
     isFullyReloaded(): boolean {
@@ -60,8 +66,9 @@ export class Orca extends Unit {
     reload() {
         this.counter++;
         (<OrcaSprite> this.unitSprite).updateCounter(this.counter);
-        (<OrcaSprite> this.unitSprite).landIfNeeded();
+        (<OrcaSprite> this.unitSprite).landIfNeeded(this.getHelipadCenter());
         this.freeze(2 * Phaser.Timer.SECOND);
+        this.getCurrentHelipad().runLoadAnimation();
 
         if (this.counter >= SHOOT_COUNTER) {
             this.timerEvents.add((2 - UNLAND_TIME) * Phaser.Timer.SECOND, () => {
@@ -71,10 +78,18 @@ export class Orca extends Unit {
     }
 
     unlandIfNeeded() {
-        (<OrcaSprite> this.unitSprite).unlandIfNeeded();
+        (<OrcaSprite> this.unitSprite).unlandIfNeeded(this.cellPosition);
     }
 
     protected getAttackState(army: Army) {
         return new AttackReload(this.worldKnowledge, this, army);
+    }
+
+    private getHelipadCenter(): PIXI.Point {
+        const cellPosition = this.getCurrentHelipad().getCellPositions()[0];
+        return new PIXI.Point(
+            Cell.cellToReal(cellPosition.x + 0.5),
+            Cell.cellToReal(cellPosition.y - 0.7),
+        )
     }
 }

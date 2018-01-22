@@ -70,15 +70,15 @@ export class OrcaSprite extends UnitSprite {
         this.shotCounter.updateCounter(value);
     }
 
-    landIfNeeded() {
+    landIfNeeded(position: PIXI.Point) {
         if (!this.isLanded) {
-            this.land();
+            this.land(position);
         }
     }
 
-    unlandIfNeeded() {
+    unlandIfNeeded(cellPosition: PIXI.Point) {
         if (this.isLanded) {
-            this.unland();
+            this.unland(cellPosition);
         }
     }
 
@@ -87,14 +87,22 @@ export class OrcaSprite extends UnitSprite {
         this.shadow.loadRotation(rotation);
     }
 
-    private land() {
+    private land(position: PIXI.Point) {
         this.isLanded = true;
-        this.shadow.land();
+        this.shadow.land(position);
+        this.game.add.tween(this).to({
+            x: position.x,
+            y: position.y,
+        }, UNLAND_TIME * Phaser.Timer.SECOND, Phaser.Easing.Power0, true);
     }
 
-    private unland() {
+    private unland(cellPosition: PIXI.Point) {
         this.isLanded = false;
-        this.shadow.unland(this.position);
+        this.shadow.unland(cellPosition);
+        this.game.add.tween(this).to({
+            x: Cell.cellToReal(cellPosition.x),
+            y: Cell.cellToReal(cellPosition.y),
+        }, UNLAND_TIME * Phaser.Timer.SECOND, Phaser.Easing.Power0, true);
     }
 }
 
@@ -124,18 +132,16 @@ class OrcaSpriteShadow extends Phaser.Sprite {
         this.anims[rotation].play(ANIM_SPEED, true, false);
     }
 
-    land() {
-        const goalX = this.x - GAP_X;
-        const goalY = this.y - GAP_Y;
+    land(position: PIXI.Point) {
         this.game.add.tween(this).to({
-            x: goalX,
-            y: goalY,
+            x: position.x,
+            y: position.y,
         }, UNLAND_TIME * Phaser.Timer.SECOND, Phaser.Easing.Power0, true);
     }
 
-    unland(position: PIXI.Point) {
-        const goalX = position.x + GAP_X;
-        const goalY = position.y + GAP_Y;
+    unland(cellPosition: PIXI.Point) {
+        const goalX = Cell.cellToReal(cellPosition.x) + GAP_X;
+        const goalY = Cell.cellToReal(cellPosition.y) + GAP_Y;
         this.game.add.tween(this).to({
             x: goalX,
             y: goalY,

@@ -10,8 +10,8 @@ export class HelipadSprite extends BuildingSprite {
         this.lifeRectangle.setAnchor(1 / 4, 5 / 6);
         this.selectedRectangle.setAnchor(1 / 4, 5 / 6);
         this.animationLoad = this.animations.add(
-            'toto',
-            [0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 16, 14, 13, 12, 11, 10, 9, 8, 6, 5, 4, 3, 2, 1]
+            'tata',
+            [16, 14, 13, 12, 11, 10, 9, 8, 6, 5, 4, 3, 2, 1, 0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14]
         );
         this.animationStand = this.animations.add(
             'toto',
@@ -20,10 +20,10 @@ export class HelipadSprite extends BuildingSprite {
         this.animationStand.play(10, true, false);
     }
 
-    // runUnloadAnimation() {
-    //     let animation = this.animationLoad.play(10, false, false);
-    //     animation.onComplete.add(() => {
-    //         this.animationStand.play(5, true, false);
-    //     });
-    // }
+    runLoadAnimation() {
+        let animation = this.animationLoad.play(20, false, false);
+        animation.onComplete.add(() => {
+            this.animationStand.play(5, true, false);
+        });
+    }
 }

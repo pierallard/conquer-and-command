@@ -123,5 +123,4 @@ export class UnitSprite extends Phaser.Sprite {
     private doExplodeEffect() {
         this.group.add(new Explosion(this.game, this.x, this.y));
     }
-
 }
