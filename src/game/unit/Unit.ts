@@ -192,7 +192,7 @@ export abstract class Unit implements Army, Shootable, Positionnable {
         if (null !== army) {
             if (this.getPlayer() !== army.getPlayer()) {
                 if (army.isOnGround() || UnitProperties.getShootAirPower(this.constructor.name) > 0) {
-                    this.state = new Attack(this.worldKnowledge, this, army);
+                    this.state = this.getAttackState(army);
                 } else {
                     this.state = new MoveTo(this.worldKnowledge, this, cell);
                 }
@@ -204,6 +204,10 @@ export abstract class Unit implements Army, Shootable, Positionnable {
         } else {
             this.state = new MoveTo(this.worldKnowledge, this, cell);
         }
+    }
+
+    protected getAttackState(army: Army) {
+        return new Attack(this.worldKnowledge, this, army);
     }
 
     isInside(left: number, right: number, top: number, bottom: number): boolean {

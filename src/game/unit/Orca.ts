@@ -4,12 +4,11 @@ import {GROUP} from "../game_state/Play";
 import {WorldKnowledge} from "../map/WorldKnowledge";
 import {Player} from "../player/Player";
 import {Shootable} from "../Shootable";
-import {UnitProperties} from "./UnitProperties";
 import {AttackReload} from "../state/AttackReload";
-import {MoveTo} from "../state/MoveTo";
-import {Follow} from "../state/Follow";
+import {Army} from "../Army";
 
-const SHOOT_COUNTER = 5;
+const SHOOT_COUNTER = 2;
+export const UNLAND_TIME = 0.5;
 
 export class Orca extends Unit {
     private counter: number;
@@ -61,26 +60,21 @@ export class Orca extends Unit {
     reload() {
         this.counter++;
         (<OrcaSprite> this.unitSprite).updateCounter(this.counter);
-
+        (<OrcaSprite> this.unitSprite).landIfNeeded();
         this.freeze(2 * Phaser.Timer.SECOND);
+
+        if (this.counter >= SHOOT_COUNTER) {
+            this.timerEvents.add((2 - UNLAND_TIME) * Phaser.Timer.SECOND, () => {
+                this.unlandIfNeeded();
+            }, this);
+        }
     }
 
-    updateStateAfterClick(cell: PIXI.Point) {
-        const army = this.worldKnowledge.getArmyAt(cell);
-        if (null !== army) {
-            if (this.getPlayer() !== army.getPlayer()) {
-                if (army.isOnGround() || UnitProperties.getShootAirPower(this.constructor.name) > 0) {
-                    this.state = new AttackReload(this.worldKnowledge, this, army);
-                } else {
-                    this.state = new MoveTo(this.worldKnowledge, this, cell);
-                }
-            } else if (army instanceof Unit) {
-                this.state = new Follow(this.worldKnowledge, this, army);
-            } else {
-                this.state = new MoveTo(this.worldKnowledge, this, cell);
-            }
-        } else {
-            this.state = new MoveTo(this.worldKnowledge, this, cell);
-        }
+    unlandIfNeeded() {
+        (<OrcaSprite> this.unitSprite).unlandIfNeeded();
+    }
+
+    protected getAttackState(army: Army) {
+        return new AttackReload(this.worldKnowledge, this, army);
     }
 }

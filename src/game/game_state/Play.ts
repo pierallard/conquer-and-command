@@ -6,6 +6,7 @@ import {ComputerPlayer} from "../player/ComputerPlayer";
 import {GROUND_HEIGHT, GROUND_WIDTH} from "../map/GeneratedGround";
 import {TiberiumSource} from "../building/TiberiumSource";
 import {AlternativePosition} from "../computing/AlternativePosition";
+import {Helipad} from "../building/Helipad";
 
 export const _DEBUG_FAST_CONSTRUCT = true;
 export const SCALE = 2;
