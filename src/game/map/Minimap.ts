@@ -12,7 +12,17 @@ const REFRESH_TIME = 0.25 * Phaser.Timer.SECOND;
 const TILE_SIZE = 20;
 const IDONTKNOW = 1;
 
-export class MiniMap {
+export class Minimap {
+    private static rectsContains(rects: PIXI.Point[], pos: PIXI.Point): boolean {
+        for (let i = 0; i < rects.length; i++) {
+            if (rects[i].x === pos.x && rects[i].y === pos.y) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private unitAndBuildingGraphics: Phaser.Graphics;
     private fogGraphics: Phaser.Graphics;
     private rectGraphics: Phaser.Graphics;
@@ -22,6 +32,7 @@ export class MiniMap {
     private timerEvents: Phaser.Timer;
     private scale: number;
     private player: Player;
+    private multiplicator: number;
 
     constructor(worldKnowledge: WorldKnowledge, player: Player) {
         this.worldKnowledge = worldKnowledge;
@@ -88,6 +99,9 @@ export class MiniMap {
             const y = (game.input.mousePointer.y - Y * SCALE - cameraHeight / 2) / this.scale * GROUND_SIZE * SCALE;
             game.camera.setPosition(x, y);
         });
+
+        this.multiplicator = Math.ceil(Math.sqrt(GROUND_WIDTH * GROUND_HEIGHT / 1000));
+        console.log(this.multiplicator);
     }
 
     update() {
@@ -107,21 +121,39 @@ export class MiniMap {
 
     private updateUnitAndBuildingGraphics() {
         this.unitAndBuildingGraphics.clear();
+        this.unitAndBuildingGraphics.lineStyle(null);
 
+        let rects = [];
         this.worldKnowledge.getArmies().forEach((unit) => {
             if (null !== unit.getPlayer()) {
-                this.unitAndBuildingGraphics.beginFill(unit.getPlayer().getColor());
-                this.unitAndBuildingGraphics.lineStyle(1, unit.getPlayer().getColor());
+                const color = unit.getPlayer().getColor();
+                if (!rects[color]) {
+                    rects[color] = [];
+                }
                 unit.getCellPositions().forEach((cellPosition) => {
-                    this.unitAndBuildingGraphics.drawRect(
-                        cellPosition.x,
-                        cellPosition.y,
-                        1,
-                        1
+                    const pos = new PIXI.Point(
+                        Math.round(cellPosition.x / this.multiplicator),
+                        Math.round(cellPosition.y / this.multiplicator),
                     );
+                    if (!Minimap.rectsContains(rects[color], pos)) {
+                        rects[color].push(pos);
+                    }
                 });
             }
         });
+
+
+        for (let i = 0; i < Object.keys(rects).length; i++) {
+            this.unitAndBuildingGraphics.beginFill(+Object.keys(rects)[i]);
+            rects[+Object.keys(rects)[i]].forEach((rect) => {
+                this.unitAndBuildingGraphics.drawRect(
+                    rect.x * this.multiplicator,
+                    rect.y * this.multiplicator,
+                    this.multiplicator,
+                    this.multiplicator
+                );
+            });
+        }
     }
 
     private updateFogGraphics() {
@@ -129,10 +161,18 @@ export class MiniMap {
         this.fogGraphics.beginFill(0x000000);
 
         const fogKnownCells = this.worldKnowledge.getFogKnownCells(this.player);
-        for (let y = 0; y < fogKnownCells.length; y++) {
-            for (let x = 0; x < fogKnownCells[y].length; x++) {
-                if (!fogKnownCells[y][x]) {
-                    this.fogGraphics.drawRect(x, y, 1, 1);
+        for (let y = 0; y < fogKnownCells.length; y += this.multiplicator) {
+            for (let x = 0; x < fogKnownCells[y].length; x+= this.multiplicator) {
+                let addRect = false;
+                for (let gapX = 0; !addRect && gapX < this.multiplicator; gapX++) {
+                    for (let gapY = 0; !addRect && gapY < this.multiplicator; gapY++) {
+                        if (!fogKnownCells[y][x]) {
+                            addRect = true;
+                        }
+                    }
+                }
+                if (addRect) {
+                    this.fogGraphics.drawRect(x, y, this.multiplicator, this.multiplicator);
                 }
             }
         }

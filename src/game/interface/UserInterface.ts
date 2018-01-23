@@ -1,6 +1,6 @@
 import {WorldKnowledge} from "../map/WorldKnowledge";
 import {UIBuildingCreator} from "../creator/UIBuildingCreator";
-import {MiniMap} from "../map/Minimap";
+import {Minimap} from "../map/Minimap";
 import {Player} from "../player/Player";
 import {BuildingPositioner} from "./BuildingPositionner";
 import {Selector} from "./Selector";
@@ -15,7 +15,7 @@ export class UserInterface {
     private UIBuildingCreator: UIBuildingCreator;
     private UIUnitCreator: UIUnitCreator;
     private interfaceGroup: Phaser.Group;
-    private miniMap: MiniMap;
+    private miniMap: Minimap;
     private player: Player;
     private selector: Selector;
     private buildingPositionner: BuildingPositioner;
@@ -29,7 +29,7 @@ export class UserInterface {
         this.buildingPositionner = new BuildingPositioner(worldKnowledge, this.player);
         this.UIBuildingCreator = new UIBuildingCreator(worldKnowledge, this.player, this.buildingPositionner);
         this.UIUnitCreator = new UIUnitCreator(worldKnowledge, this.player);
-        this.miniMap = new MiniMap(worldKnowledge, this.player);
+        this.miniMap = new Minimap(worldKnowledge, this.player);
         this.powerInterface = new PowerInterface(worldKnowledge, this.player);
         this.cursor = new Cursor(worldKnowledge, this.player);
     }
