@@ -171,7 +171,7 @@ const DATA = {
         ],
         sight: 2,
         sprite_layer: 0,
-        sprites: ['Factory2', 'Factory2'],
+        sprites: ['Factory2p1', 'Factory2p2'],
     },
     TiberiumRefinery: {
         cellPositions: [
