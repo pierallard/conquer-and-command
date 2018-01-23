@@ -95,13 +95,12 @@ export class Minimap {
             const cameraView = this.layer.game.camera.view;
             const cameraWidth = (cameraView.width - INTERFACE_WIDTH) * scaleCamera;
             const cameraHeight = cameraView.height * scaleCamera;
-            const x = (game.input.mousePointer.x - X * SCALE - cameraWidth / 2) / this.scale * GROUND_SIZE * SCALE;
-            const y = (game.input.mousePointer.y - Y * SCALE - cameraHeight / 2) / this.scale * GROUND_SIZE * SCALE;
+            const x = (game.input.mousePointer.x - X * 2 - cameraWidth / 2) / this.scale * GROUND_SIZE * SCALE;
+            const y = (game.input.mousePointer.y - Y * 2 - cameraHeight / 2) / this.scale * GROUND_SIZE * SCALE;
             game.camera.setPosition(x, y);
         });
 
         this.multiplicator = Math.ceil(Math.sqrt(GROUND_WIDTH * GROUND_HEIGHT / 1000));
-        console.log(this.multiplicator);
     }
 
     update() {
@@ -111,7 +110,7 @@ export class Minimap {
 
         this.updateUnitAndBuildingGraphics();
         this.updateFogGraphics();
-        this.udpateRectGraphics();
+        this.updateRectGraphics();
 
         this.hasRenderedRecently = true;
         this.timerEvents.add(REFRESH_TIME, () => {
@@ -178,7 +177,7 @@ export class Minimap {
         }
     }
 
-    private udpateRectGraphics() {
+    private updateRectGraphics() {
         this.rectGraphics.clear();
 
         const cameraView = this.layer.game.camera.view;
