@@ -21,7 +21,7 @@ export class UIBuildingCreator extends AbstractUICreator {
     }
 
     protected getSpriteKey(itemName: string): string {
-        return BuildingProperties.getSpriteKey(itemName);
+        return BuildingProperties.getSpriteKey(itemName, this.player.getId());
     }
 
     protected getSpriteLayer(itemName: string): number {

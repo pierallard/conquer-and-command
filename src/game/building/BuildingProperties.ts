@@ -21,8 +21,8 @@ const DATA = {
             'CommunicationCenter',
         ],
         sight: 4,
-        sprite: 'Artilery2',
         sprite_layer: 5,
+        sprites: ['Artilery2', 'Artilery2'],
     },
     AdvancedPowerPlant: {
         cellPositions: [
@@ -41,8 +41,8 @@ const DATA = {
             'PowerPlant',
         ],
         sight: 2,
-        sprite: 'Generator',
         sprite_layer: 0,
+        sprites: ['Generator', 'Generator'],
     },
     Barracks: {
         cellPositions: [
@@ -63,8 +63,8 @@ const DATA = {
             'PowerPlant',
         ],
         sight: 3,
-        sprite: 'Module',
         sprite_layer: 0,
+        sprites: ['Module', 'Module'],
     },
     CommunicationCenter: {
         cellPositions: [
@@ -81,8 +81,8 @@ const DATA = {
             'TiberiumRefinery',
         ],
         sight: 10,
-        sprite: 'Silo',
         sprite_layer: 0,
+        sprites: ['Silo', 'Silo'],
     },
     ConcreteBarrier: {
         cellPositions: [[0, 0]],
@@ -93,8 +93,8 @@ const DATA = {
         price: 100,
         requireds: ['ConstructionYard'],
         sight: 0,
-        sprite: 'Wall',
         sprite_layer: 0,
+        sprites: ['Wall', 'Wall'],
     },
     ConstructionYard: {
         cellPositions: [
@@ -106,6 +106,7 @@ const DATA = {
         life: 400,
         power: -20,
         sight: 3,
+        sprites: ['MinerAnip1', 'MinerAnip2'],
     },
     GuardTower: {
         cellPositions: [
@@ -127,8 +128,8 @@ const DATA = {
             'Barracks',
         ],
         sight: 2,
-        sprite: 'Turret',
         sprite_layer: 5,
+        sprites: ['Turret', 'Turret'],
     },
     Helipad: {
         cellPositions: [
@@ -149,8 +150,8 @@ const DATA = {
             'Barracks',
         ],
         sight: 3,
-        sprite: 'Starport',
         sprite_layer: 16,
+        sprites: ['Starport', 'Starport'],
     },
     PowerPlant: {
         cellPositions: [
@@ -169,8 +170,8 @@ const DATA = {
             'ConstructionYard',
         ],
         sight: 2,
-        sprite: 'Factory2',
         sprite_layer: 0,
+        sprites: ['Factory2', 'Factory2'],
     },
     TiberiumRefinery: {
         cellPositions: [
@@ -191,8 +192,8 @@ const DATA = {
             'PowerPlant',
         ],
         sight: 4,
-        sprite: 'Factory3',
         sprite_layer: 0,
+        sprites: ['Factory3', 'Factory3'],
     },
     TiberiumSource: {
         cellPositions: [
@@ -219,8 +220,8 @@ const DATA = {
             'TiberiumRefinery',
         ],
         sight: 3,
-        sprite: 'Base',
         sprite_layer: 0,
+        sprites: ['Base', 'Base'],
     }
 };
 
@@ -253,8 +254,8 @@ export class BuildingProperties {
         });
     }
 
-    static getSpriteKey(buildingName: string): string {
-        return DATA[buildingName].sprite;
+    static getSpriteKey(buildingName: string, playerId: number): string {
+        return DATA[buildingName].sprites[playerId];
     }
 
     static getSpriteLayer(buildingName: string): number {
