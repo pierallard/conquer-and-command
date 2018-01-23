@@ -7,7 +7,7 @@ import {Selector} from "./Selector";
 import {UIUnitCreator} from "../creator/UIUnitCreator";
 import {GAME_WIDTH} from "../../app";
 import {PowerInterface} from "./PowerInterface";
-import {Cursor} from "../Custor";
+import {Cursor} from "../Cursor";
 
 export const INTERFACE_WIDTH = 94 * 2;
 

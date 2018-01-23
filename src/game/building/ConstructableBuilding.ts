@@ -3,6 +3,7 @@ import {Player} from "../player/Player";
 import {BuildingProperties} from "./BuildingProperties";
 import {BuildingSprite} from "../sprite/BuildingSprite";
 import {WorldKnowledge} from "../map/WorldKnowledge";
+import {Engineer} from "../unit/Engineer";
 
 export abstract class ConstructableBuilding implements Building {
     protected player: Player;
@@ -79,5 +80,10 @@ export abstract class ConstructableBuilding implements Building {
 
     isOnGround(): boolean {
         return true;
+    }
+
+    capture(engineer: Engineer) {
+        this.player = engineer.getPlayer();
+        this.worldKnowledge.removeArmy(engineer);
     }
 }

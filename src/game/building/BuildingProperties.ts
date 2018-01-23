@@ -53,7 +53,7 @@ const DATA = {
         ],
         constructable: true,
         constructable_units: [
-            'MinigunInfantry', 'Grenadier', 'RocketSoldier', 'EngineerInfantry',
+            'MinigunInfantry', 'Grenadier', 'RocketSoldier', 'Engineer',
         ],
         construction_time: 20,
         life: 400,

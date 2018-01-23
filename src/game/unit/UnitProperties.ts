@@ -4,6 +4,19 @@ import {IMAGE_FORMAT} from "../sprite/UnitSprite";
 export const SHOOT_COOLDOWN_RATIO = 0.1;
 
 const DATA = {
+    Engineer: {
+        allowed_by: ['Barracks'],
+        construction_time: 33,
+        image_format: IMAGE_FORMAT.THREE,
+        life: 1,
+        price: 25,
+        shoot_distance: -1,
+        shoot_type: 'default',
+        sight: 2,
+        speed: 8,
+        sprite_layer: 6,
+        sprites: ['Tank10', 'Tank10'],
+    },
     Grenadier: {
         allowed_by: ['Barracks'],
         construction_time: 7,
