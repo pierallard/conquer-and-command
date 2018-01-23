@@ -8,7 +8,7 @@ import {BuildingProperties} from "./building/BuildingProperties";
 import {Unit} from "./unit/Unit";
 
 const REFRESH_TIME = 0.25 * Phaser.Timer.SECOND;
-const SIGHT_RATIO = 3;
+const SIGHT_RATIO = 2;
 
 export class Fog {
     private worldKnowledge: WorldKnowledge;

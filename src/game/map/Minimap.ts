@@ -12,6 +12,12 @@ const REFRESH_TIME = 0.25 * Phaser.Timer.SECOND;
 const TILE_SIZE = 20;
 const IDONTKNOW = 1;
 
+enum MINIMAP_STATE {
+    HIDDEN,
+    VISIBLE,
+    NO_ENERGY
+}
+
 export class Minimap {
     private static rectsContains(rects: PIXI.Point[], pos: PIXI.Point): boolean {
         for (let i = 0; i < rects.length; i++) {
@@ -33,6 +39,7 @@ export class Minimap {
     private scale: number;
     private player: Player;
     private multiplicator: number;
+    private snow: Phaser.Sprite;
 
     constructor(worldKnowledge: WorldKnowledge, player: Player) {
         this.worldKnowledge = worldKnowledge;
@@ -101,12 +108,20 @@ export class Minimap {
         });
 
         this.multiplicator = Math.ceil(Math.sqrt(GROUND_WIDTH * GROUND_HEIGHT / 1000));
+
+        this.snow = game.add.sprite(X * 2, Y * 2, 'snow');
+        this.snow.scale.setTo(2);
+        this.snow.fixedToCamera = true;
+
+        this.updateState();
     }
 
     update() {
         if (this.hasRenderedRecently) {
             return;
         }
+
+        this.updateState();
 
         this.updateUnitAndBuildingGraphics();
         this.updateFogGraphics();
@@ -191,5 +206,50 @@ export class Minimap {
             (cameraView.width - INTERFACE_WIDTH) * scaleCamera,
             cameraView.height * scaleCamera
         );
+    }
+
+    private updateState() {
+        let state = MINIMAP_STATE.HIDDEN;
+        if (this.hasCommunicationCenter()) {
+            if (this.hasPower()) {
+                state = MINIMAP_STATE.VISIBLE;
+            } else {
+                state = MINIMAP_STATE.NO_ENERGY;
+            }
+        }
+
+        switch (state) {
+            case MINIMAP_STATE.HIDDEN:
+                this.layer.alpha = 0;
+                this.unitAndBuildingGraphics.alpha = 0;
+                this.fogGraphics.alpha = 0;
+                this.rectGraphics.alpha = 0;
+                this.snow.alpha = 0;
+                break;
+            case MINIMAP_STATE.VISIBLE:
+                this.layer.alpha = 1;
+                this.unitAndBuildingGraphics.alpha = 1;
+                this.fogGraphics.alpha = 1;
+                this.rectGraphics.alpha = 1;
+                this.snow.alpha = 0;
+                break;
+            case MINIMAP_STATE.NO_ENERGY: {
+                this.layer.alpha = 0;
+                this.unitAndBuildingGraphics.alpha = 0;
+                this.fogGraphics.alpha = 0;
+                this.rectGraphics.alpha = 0;
+                this.snow.alpha = 1;
+                break;
+            }
+        }
+    }
+
+    private hasCommunicationCenter(): boolean {
+        return this.worldKnowledge.getPlayerArmies(this.player, 'CommunicationCenter').length > 0;
+    }
+
+    private hasPower() {
+        return this.worldKnowledge.getPlayerNeededPower(this.player) <=
+            this.worldKnowledge.getPlayerProvidedPower(this.player);
     }
 }
