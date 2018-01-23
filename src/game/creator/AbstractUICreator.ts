@@ -45,12 +45,12 @@ export abstract class AbstractUICreator {
         this.group = group;
 
         this.bottomButton = new Phaser.Sprite(game, this.x + 3 * 2, 305 * 2, 'interfacebuttons', 3);
-        this.bottomButton.scale.setTo(SCALE);
+        this.bottomButton.scale.setTo(2);
         this.bottomButton.events.onInputDown.add(() => {
             this.goDown();
         }, this);
         this.topButton = new Phaser.Sprite(game, this.x + 18 * 2, 305 * 2, 'interfacebuttons', 2);
-        this.topButton.scale.setTo(SCALE);
+        this.topButton.scale.setTo(2);
         this.topButton.events.onInputDown.add(() => {
             this.goUp();
         }, this);
@@ -95,7 +95,7 @@ export abstract class AbstractUICreator {
         this.buttons.push(new CreationButton(
             this,
             this.game,
-            this.buttons.length > 0 ? this.buttons[this.buttons.length - 1].getTop() + HEIGHT * SCALE : TOP,
+            this.buttons.length > 0 ? this.buttons[this.buttons.length - 1].getTop() + HEIGHT * 2 : TOP,
             itemName,
             this.group,
             this.x,
@@ -181,7 +181,7 @@ class CreationButton {
         this.uiCreator = creator;
 
         this.button = new Phaser.Sprite(game, x, top, 'buttons', 2);
-        this.button.scale.setTo(SCALE, SCALE);
+        this.button.scale.setTo(2, 2);
         this.button.inputEnabled = true;
         this.button.events.onInputDown.add(() => {
             if (game.input.activePointer.rightButton.isDown) {
@@ -194,12 +194,11 @@ class CreationButton {
 
         this.itemSprite = new Phaser.Sprite(
             game,
-            x + WIDTH * SCALE / 2,
-            top + HEIGHT * SCALE / 2,
+            x + WIDTH,
+            top + HEIGHT,
             spriteKey,
             spriteLayer
         );
-        this.itemSprite.scale.setTo(SCALE / 2, SCALE / 2);
         this.itemSprite.anchor.setTo(0.5, 0.7);
         group.add(this.itemSprite);
 
@@ -239,13 +238,13 @@ class CreationButton {
 
     goDown() {
         this.applyAllElement((element) => {
-            element.y = element.y + HEIGHT * SCALE;
+            element.y = element.y + HEIGHT * 2;
         });
     }
 
     goUp() {
         this.applyAllElement((element) => {
-            element.y = element.y - HEIGHT * SCALE;
+            element.y = element.y - HEIGHT * 2;
         });
     }
 
@@ -274,7 +273,7 @@ class CreationButtonProgress extends Phaser.Sprite {
             top + 54,
             'button-progress'
         );
-        this.scale.setTo(SCALE);
+        this.scale.setTo(2);
         this.myCropRect = new Phaser.Rectangle(0, 0, 0, 8);
         this.crop(this.myCropRect, false);
     }

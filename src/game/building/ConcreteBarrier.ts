@@ -67,6 +67,10 @@ export class ConcreteBarrier extends ConstructableBuilding {
         this.lifeRectangle.setVisible(value);
     }
 
+    isVisible(): boolean {
+        return true;
+    }
+
     private getSprites(): Phaser.Sprite[] {
         return [
             this.topLeftSprite,

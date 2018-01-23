@@ -47,28 +47,28 @@ export class MiniMap {
         map.addTilesetImage('Stn2SnwB', 'Stn2SnwB', TILE_SIZE, TILE_SIZE, 0, 0, 900);
         this.layer = map.createLayer(0, GROUND_WIDTH * IDONTKNOW, GROUND_HEIGHT * IDONTKNOW, group);
 
-        this.scale = SIZE / Math.max(GROUND_WIDTH, GROUND_HEIGHT) * SCALE;
+        this.scale = SIZE / Math.max(GROUND_WIDTH, GROUND_HEIGHT) * 2;
         this.layer.scale.setTo(this.scale, this.scale);
         this.layer.fixedToCamera = false;
-        this.layer.position.setTo(X * SCALE, Y * SCALE);
+        this.layer.position.setTo(X * 2, Y * 2);
         this.layer.scrollFactorX = 0;
         this.layer.scrollFactorY = 0;
 
-        const secondScale = SIZE * SCALE / Math.max(GROUND_WIDTH, GROUND_HEIGHT);
+        const secondScale = SIZE * 2 / Math.max(GROUND_WIDTH, GROUND_HEIGHT);
         this.unitAndBuildingGraphics = new Phaser.Graphics(game);
-        this.unitAndBuildingGraphics.position.setTo(X * SCALE, Y * SCALE);
+        this.unitAndBuildingGraphics.position.setTo(X * 2, Y * 2);
         this.unitAndBuildingGraphics.fixedToCamera = true;
         this.unitAndBuildingGraphics.scale.set(secondScale, secondScale);
         game.add.existing(this.unitAndBuildingGraphics);
 
         this.fogGraphics = new Phaser.Graphics(game);
-        this.fogGraphics.position.setTo(X * SCALE, Y * SCALE);
+        this.fogGraphics.position.setTo(X * 2, Y * 2);
         this.fogGraphics.fixedToCamera = true;
         this.fogGraphics.scale.set(secondScale, secondScale);
         game.add.existing(this.fogGraphics);
 
         this.rectGraphics = new Phaser.Graphics(game);
-        this.rectGraphics.position.setTo(X * SCALE, Y * SCALE);
+        this.rectGraphics.position.setTo(X * 2, Y * 2);
         this.rectGraphics.fixedToCamera = true;
         game.add.existing(this.rectGraphics);
 
