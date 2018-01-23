@@ -8,7 +8,7 @@ import {TiberiumSource} from "../building/TiberiumSource";
 import {AlternativePosition} from "../computing/AlternativePosition";
 
 export const _DEBUG_FAST_CONSTRUCT = true;
-export const SCALE = 1.2;
+export const SCALE = 2;
 export const MOVE = 3 * SCALE;
 export const PANEL_WIDTH = 80;
 export enum GROUP {

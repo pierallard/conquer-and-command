@@ -5,6 +5,7 @@ import {ProductionStatus} from "./AbstractCreator";
 
 const WIDTH = 33;
 const HEIGHT = 36;
+const PROGRESS_HEIGHT = 9;
 const TOP = 244;
 
 export abstract class AbstractUICreator {
@@ -200,6 +201,11 @@ class CreationButton {
             spriteLayer
         );
         this.itemSprite.anchor.setTo(0.5, 0.7);
+        this.itemSprite.scale.setTo(2 * Math.min(
+                (WIDTH - 2) / this.itemSprite.width,
+                (HEIGHT - PROGRESS_HEIGHT - 2) / this.itemSprite.height,
+            1
+        ));
         group.add(this.itemSprite);
 
         this.text = new Phaser.Text(
@@ -270,7 +276,7 @@ class CreationButtonProgress extends Phaser.Sprite {
         super(
             game,
             x,
-            top + 54,
+            top + (HEIGHT - PROGRESS_HEIGHT) * 2,
             'button-progress'
         );
         this.scale.setTo(2);
