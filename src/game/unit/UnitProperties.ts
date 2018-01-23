@@ -91,7 +91,7 @@ const DATA = {
         sight: 1,
         speed: 8,
         sprite_layer: 6,
-        sprites: ['Scout2', 'Scout2'],
+        sprites: ['Scout2p1', 'Scout2p2'],
     },
     Orca: {
         allowed_by: ['Barracks', 'Helipad'],
