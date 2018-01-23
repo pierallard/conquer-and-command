@@ -89,7 +89,7 @@ const DATA = {
         constructable: true,
         constructable_units: [],
         construction_time: 7,
-        life: 1,
+        life: 100,
         price: 100,
         requireds: ['ConstructionYard'],
         sight: 0,
@@ -272,7 +272,7 @@ export class BuildingProperties {
 
     static getConstructionTime(buildingName: string): number {
         if (_DEBUG_FAST_CONSTRUCT) {
-            return DATA[buildingName].construction_time / 50;
+            return DATA[buildingName].construction_time / 100;
         }
         return DATA[buildingName].construction_time / 6;
     }

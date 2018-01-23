@@ -52,7 +52,9 @@ export abstract class ConstructableBuilding implements Building {
             this.destroy();
         }
 
-        this.sprite.updateLife(this.life, this.maxLife);
+        if (this.sprite) {
+            this.sprite.updateLife(this.life, this.maxLife);
+        }
     }
 
     update(): void {
