@@ -42,7 +42,7 @@ const DATA = {
         ],
         sight: 2,
         sprite_layer: 0,
-        sprites: ['Generator', 'Generator'],
+        sprites: ['Generatorp1', 'Generatorp2'],
     },
     Barracks: {
         cellPositions: [

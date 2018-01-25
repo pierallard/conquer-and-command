@@ -3,6 +3,7 @@ import {Player} from "../player/Player";
 import {ConstructableBuilding} from "./ConstructableBuilding";
 import {WorldKnowledge} from "../map/WorldKnowledge";
 import {AdvancedPowerPlantSprite} from "../sprite/AdvancedPowerPlantSprite";
+import {BuildingProperties} from "./BuildingProperties";
 
 export class AdvancedPowerPlant extends ConstructableBuilding {
     constructor(worldKnowledge: WorldKnowledge, cell: PIXI.Point, player: Player) {
@@ -15,7 +16,7 @@ export class AdvancedPowerPlant extends ConstructableBuilding {
             groups,
             Cell.cellToReal(this.cellPosition.x),
             Cell.cellToReal(this.cellPosition.y),
-            'Generator'
+            BuildingProperties.getSpriteKey(this.constructor.name, this.player.getId())
         );
     }
 }
