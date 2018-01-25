@@ -64,7 +64,7 @@ const DATA = {
         ],
         sight: 3,
         sprite_layer: 0,
-        sprites: ['Module', 'Module'],
+        sprites: ['Modulep1', 'Modulep2'],
     },
     CommunicationCenter: {
         cellPositions: [
