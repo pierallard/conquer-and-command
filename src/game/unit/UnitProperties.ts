@@ -15,7 +15,7 @@ const DATA = {
         sight: 2,
         speed: 8,
         sprite_layer: 6,
-        sprites: ['Tank10', 'Tank10'],
+        sprites: ['Tank10p1', 'Tank10p2'],
     },
     Grenadier: {
         allowed_by: ['Barracks'],
