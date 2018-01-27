@@ -3,6 +3,7 @@ import {ConstructableBuilding} from "./ConstructableBuilding";
 import {HelipadSprite} from "../sprite/HelipadSprite";
 import {WorldKnowledge} from "../map/WorldKnowledge";
 import {Player} from "../player/Player";
+import {BuildingProperties} from "./BuildingProperties";
 
 export class Helipad extends ConstructableBuilding {
     private loading: boolean;
@@ -19,7 +20,7 @@ export class Helipad extends ConstructableBuilding {
             groups,
             Cell.cellToReal(this.cellPosition.x),
             Cell.cellToReal(this.cellPosition.y),
-            'Starport'
+            BuildingProperties.getSpriteKey(this.constructor.name, this.player.getId())
         );
     }
 

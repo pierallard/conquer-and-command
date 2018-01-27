@@ -151,7 +151,7 @@ const DATA = {
         ],
         sight: 3,
         sprite_layer: 16,
-        sprites: ['Starport', 'Starport'],
+        sprites: ['Starportp1', 'Starportp2'],
     },
     PowerPlant: {
         cellPositions: [
