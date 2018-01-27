@@ -30,7 +30,7 @@ const DATA = {
         sight: 1,
         speed: 10,
         sprite_layer: 20,
-        sprites: ['Tank5', 'Tank5'],
+        sprites: ['Tank5p1', 'Tank5p2'],
     },
     Harvester: {
         allowed_by: ['WeaponsFactory', 'TiberiumRefinery'],
