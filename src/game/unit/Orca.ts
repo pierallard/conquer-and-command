@@ -9,6 +9,7 @@ import {Army} from "../Army";
 import {Helipad} from "../building/Helipad";
 import {Cell} from "../computing/Cell";
 import {Reload} from "../state/Reload";
+import {UnitProperties} from "./UnitProperties";
 
 const SHOOT_COUNTER = 5;
 export const UNLAND_TIME = 0.5;
@@ -24,7 +25,13 @@ export class Orca extends Unit {
     create(game: Phaser.Game, groups) {
         this.effectsGroup = groups[GROUP.EFFECTS];
         this.timerEvents = game.time.events;
-        this.unitSprite = new OrcaSprite(game, groups, this.cellPosition, this.counter);
+        this.unitSprite = new OrcaSprite(
+            game,
+            groups,
+            this.cellPosition,
+            this.counter,
+            UnitProperties.getSprite(this.constructor.name, this.player.getId())
+        );
     }
 
     isOnGround(): boolean {

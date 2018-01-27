@@ -120,7 +120,7 @@ const DATA = {
         sight: 3,
         speed: 40,
         sprite_layer: 5,
-        sprites: ['Copter', 'Copter'],
+        sprites: ['Copterp1', 'Copterp2'],
     },
     RocketSoldier: {
         allowed_by: ['Barracks'],
@@ -136,7 +136,7 @@ const DATA = {
         sight: 2,
         speed: 6,
         sprite_layer: 14,
-        sprites: ['Tank3', 'Tank3'],
+        sprites: ['Tank3p1', 'Tank3p2'],
     },
 };
 

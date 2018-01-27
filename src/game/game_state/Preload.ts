@@ -29,14 +29,16 @@ export default class Preload extends Phaser.State {
         this.load.spritesheet('Tank10p2', 'assets/Tank10p2.png', 20, 20, 9, 0, 0);
         this.load.spritesheet('Tank5p1', 'assets/Tank5p1.png', 20, 20, 25, 0, 0);
         this.load.spritesheet('Tank5p2', 'assets/Tank5p2.png', 20, 20, 25, 0, 0);
-        this.load.spritesheet('Tank3', 'assets/Tank3.png', 20, 20, 75, 0, 0);
+        this.load.spritesheet('Tank3p1', 'assets/Tank3p1.png', 20, 20, 75, 0, 0);
+        this.load.spritesheet('Tank3p2', 'assets/Tank3p2.png', 20, 20, 75, 0, 0);
         this.load.spritesheet('Tank12', 'assets/Tank12.png', 20, 20, 9, 0, 0);
         this.load.spritesheet('Builder2', 'assets/Builder2.png', 20, 20, 9, 0, 0);
         this.load.spritesheet('Transprt', 'assets/Transprt.png', 40, 40, 9, 0, 0);
         this.load.spritesheet('Scout2p1', 'assets/Scout2p1.png', 20, 20, 9, 0, 0);
         this.load.spritesheet('Scout2p2', 'assets/Scout2p2.png', 20, 20, 9, 0, 0);
         this.load.spritesheet('Tank7', 'assets/Tank7.png', 20, 20, 9, 0, 0);
-        this.load.spritesheet('Copter', 'assets/Copter.png', 40, 20, 8 * 4, 0, 0);
+        this.load.spritesheet('Copterp1', 'assets/Copterp1.png', 40, 20, 8 * 4, 0, 0);
+        this.load.spritesheet('Copterp2', 'assets/Copterp2.png', 40, 20, 8 * 4, 0, 0);
         this.load.spritesheet('CptrShd1', 'assets/CptrShd1.png', 40, 20, 8 * 4, 0, 0);
 
         // Tiles

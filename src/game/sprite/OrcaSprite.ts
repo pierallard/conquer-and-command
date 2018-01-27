@@ -17,8 +17,13 @@ export class OrcaSprite extends UnitSprite {
     private shotCounter: ShotCounter;
     private isLanded: boolean;
 
-    constructor(game: Phaser.Game, groups: Phaser.Group[], cellPosition: PIXI.Point, counter: number) {
-        super(game, groups, cellPosition, 'Copter', IMAGE_FORMAT.ANIMATED);
+    constructor(game: Phaser.Game, groups: Phaser.Group[], cellPosition: PIXI.Point, counter: number, key: string) {
+        super(game,
+            groups,
+            cellPosition,
+            key,
+            IMAGE_FORMAT.ANIMATED
+        );
 
         groups[GROUP.AERIAL].add(this);
 
