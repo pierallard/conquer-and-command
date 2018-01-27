@@ -206,10 +206,6 @@ export abstract class Unit implements Army, Shootable, Positionnable {
         }
     }
 
-    protected getAttackState(army: Army) {
-        return new Attack(this.worldKnowledge, this, army);
-    }
-
     isInside(left: number, right: number, top: number, bottom: number): boolean {
         return this.unitSprite.isInside(left, right, top, bottom);
     }
@@ -235,7 +231,11 @@ export abstract class Unit implements Army, Shootable, Positionnable {
     }
 
     canShoot(): boolean {
-        return true;
+        return UnitProperties.getShootDistance(this.constructor.name) >= 0;
+    }
+
+    protected getAttackState(army: Army) {
+        return new Attack(this.worldKnowledge, this, army);
     }
 
     protected getShootSource(cellDest: PIXI.Point): PIXI.Point {

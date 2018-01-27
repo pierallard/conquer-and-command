@@ -2,6 +2,8 @@ import {Player} from "./Player";
 import {MCV} from "../unit/MCV";
 import {MinigunInfantry} from "../unit/MinigunInfantry";
 import {BUILDING_POSITIONNER_MIN_DIST, BuildingPositioner} from "../interface/BuildingPositionner";
+import {Unit} from "../unit/Unit";
+import {UnitProperties} from "../unit/UnitProperties";
 
 export class ComputerPlayer extends Player {
     update() {
@@ -15,13 +17,21 @@ export class ComputerPlayer extends Player {
         this.constructWhenYouCan('Barracks');
 
         if (this.worldKnowledge.getPlayerArmies(this, 'Barracks').length > 0) {
-            this.order().productUnit('MinigunInfantry');
+            const allowedUnits = UnitProperties.getConstructableUnits().filter((unit) => {
+                return unit !== 'Engineer' &&
+                    this.worldKnowledge.canProductUnit(this, unit);
+            });
+            const randomUnit = allowedUnits[Math.floor(Math.random() * allowedUnits.length)];
+            this.order().productUnit(randomUnit);
         }
 
         // Attack
-        if (this.worldKnowledge.getPlayerArmies(this, 'MinigunInfantry').length > 5) {
-            this.worldKnowledge.getPlayerArmies(this, 'MinigunInfantry').forEach((unit) => {
-                this.order().orderMoveAttack(<MinigunInfantry> unit, new PIXI.Point(0, 0));
+        const units = this.worldKnowledge.getPlayerArmies(this).filter((army) => {
+            return army instanceof Unit && (<Unit> army).canShoot();
+        });
+        if (units.length > 5) {
+            units.forEach((unit) => {
+                this.order().orderMoveAttack((<Unit> unit), new PIXI.Point(0, 0));
             });
         }
     }
@@ -49,7 +59,7 @@ export class ComputerPlayer extends Player {
 
             tries--;
         }
-        
+
         return null;
     }
 
