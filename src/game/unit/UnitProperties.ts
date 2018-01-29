@@ -1,7 +1,7 @@
 import {_DEBUG_FAST_CONSTRUCT} from "../game_state/Play";
 import {IMAGE_FORMAT} from "../sprite/UnitSprite";
 
-export const SHOOT_COOLDOWN_RATIO = 0.1;
+export const SHOOT_COOLDOWN_RATIO = 0.08;
 
 const DATA = {
     Engineer: {
