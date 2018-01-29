@@ -3,7 +3,7 @@ import {SCALE} from "../game_state/Play";
 import {GROUND_SIZE} from "../map/Ground";
 import {TiberiumSource} from "../building/TiberiumSource";
 
-const START_AMOUNT = 1000;
+const START_AMOUNT = 2000;
 const HARVEST_QUANTITY = 100;
 
 export class TiberiumPlant extends Phaser.Sprite {
@@ -45,7 +45,7 @@ export class TiberiumPlant extends Phaser.Sprite {
         if (this.amount < HARVEST_QUANTITY) {
             result = this.amount;
         }
-        this.amount--;
+        this.amount -= result;
 
         if (this.amount <= 0) {
             this.destroy();
