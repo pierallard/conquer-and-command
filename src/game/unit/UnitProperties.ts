@@ -47,7 +47,7 @@ const DATA = {
         sight: 2,
         speed: 12,
         sprite_layer: 6,
-        sprites: ['Builder2', 'Builder2'],
+        sprites: ['Builder2p1', 'Builder2p2'],
     },
     HummVee: {
         allowed_by: ['WeaponsFactory'],
