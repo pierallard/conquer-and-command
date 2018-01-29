@@ -221,7 +221,7 @@ const DATA = {
         ],
         sight: 3,
         sprite_layer: 0,
-        sprites: ['Base', 'Base'],
+        sprites: ['Basep1', 'Basep2'],
     }
 };
 
