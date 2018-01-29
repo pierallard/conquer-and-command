@@ -193,7 +193,7 @@ const DATA = {
         ],
         sight: 4,
         sprite_layer: 0,
-        sprites: ['Factory3', 'Factory3'],
+        sprites: ['Factory3p1', 'Factory3p2'],
     },
     TiberiumSource: {
         cellPositions: [
