@@ -12,6 +12,7 @@ import {Fog} from "../Fog";
 import {Army} from "../Army";
 import {Appear} from "../sprite/Appear";
 import {GROUP} from "../game_state/Play";
+import {MiniDisappear} from "../sprite/MiniDisappear";
 
 export class WorldKnowledge {
     private game: Phaser.Game;
@@ -105,11 +106,13 @@ export class WorldKnowledge {
         }
     }
 
-    removeArmy(army: Army, delay: number = 0) {
-        if (delay === 0) {
+    removeArmy(army: Army, disappear: boolean = false) {
+        if (!disappear) {
             this.armyRepository.removeArmy(army);
         } else {
-            this.game.time.events.add(delay, () => {
+            const disappearSprite = new MiniDisappear(army.getCellPositions()[0], 1.4);
+            disappearSprite.create(this.game, this.groups[GROUP.UNIT]);
+            this.game.time.events.add(1000, () => {
                 this.armyRepository.removeArmy(army);
             });
         }

@@ -4,6 +4,13 @@ import {ConstructionYard} from "../building/ConstructionYard";
 
 export class MCV extends Unit {
     private expanded: boolean = false;
+    private events: Phaser.Timer;
+
+    create(game: Phaser.Game, groups: Phaser.Group[]) {
+        this.events = game.time.events;
+
+        super.create(game, groups);
+    }
 
     orderExpand() {
         this.state = new Stand(this);
@@ -25,13 +32,15 @@ export class MCV extends Unit {
 
     private expand() {
         this.expanded = true;
-        this.worldKnowledge.addArmy(
-            new ConstructionYard(
-                this.worldKnowledge,
-                new PIXI.Point(this.cellPosition.x - 1, this.cellPosition.y),
-                this.player
-            )
-        );
-        this.worldKnowledge.removeArmy(this, 1000);
+        this.events.add(1300, () => {
+            this.worldKnowledge.addArmy(
+                new ConstructionYard(
+                    this.worldKnowledge,
+                    new PIXI.Point(this.cellPosition.x - 1, this.cellPosition.y),
+                    this.player
+                )
+            );
+        });
+        this.worldKnowledge.removeArmy(this, true);
     }
 }
