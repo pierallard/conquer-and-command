@@ -74,7 +74,7 @@ const DATA = {
         sight: 2,
         speed: 12,
         sprite_layer: 6,
-        sprites: ['Transprt', 'Transprt'],
+        sprites: ['Transprtp1', 'Transprtp2'],
     },
     MediumTank: {
         allowed_by: ['WeaponsFactory'],
