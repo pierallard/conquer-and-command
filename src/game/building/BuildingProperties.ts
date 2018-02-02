@@ -82,7 +82,7 @@ const DATA = {
         ],
         sight: 10,
         sprite_layer: 0,
-        sprites: ['Silo', 'Silo'],
+        sprites: ['Silop1', 'Silop2'],
     },
     ConcreteBarrier: {
         cellPositions: [[0, 0]],
