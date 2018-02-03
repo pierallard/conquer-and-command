@@ -129,7 +129,7 @@ const DATA = {
         ],
         sight: 2,
         sprite_layer: 5,
-        sprites: ['Turret', 'Turret'],
+        sprites: ['Turretp1', 'Turretp2'],
     },
     Helipad: {
         cellPositions: [
