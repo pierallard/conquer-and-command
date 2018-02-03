@@ -9,6 +9,8 @@ import {Harvester} from "../unit/Harvester";
 
 const MAX_RADIUS = 6;
 const MIN_RADIUS = 2;
+const MIN_TIME = 2;
+const MAX_TIME = 6;
 
 export class TiberiumSource implements Building {
     private worldKnowledge: WorldKnowledge;
@@ -17,15 +19,19 @@ export class TiberiumSource implements Building {
     private game: Phaser.Game;
     private group: Phaser.Group;
     private plants: TiberiumPlant[];
+    private isFrozen: boolean;
+    private timerEvents: Phaser.Timer;
 
     constructor(worldKnowledge: WorldKnowledge, cellPosition: PIXI.Point) {
         this.worldKnowledge = worldKnowledge;
         this.cellPosition = cellPosition;
         this.plants = [];
+        this.isFrozen = false;
     }
 
     create(game: Phaser.Game, groups: Phaser.Group[]): void {
         this.game = game;
+        this.timerEvents = this.game.time.events;
         this.group = groups[GROUP.UNIT];
         this.sprite = game.add.sprite(
             Cell.cellToReal(this.cellPosition.x),
@@ -106,7 +112,15 @@ export class TiberiumSource implements Building {
     }
 
     update(): void {
-        // TODO Do Spread every x seconds
+        if (!this.isFrozen) {
+            this.spread();
+
+            const time = (MIN_TIME + Math.random() * (MAX_TIME - MIN_TIME)) * Phaser.Timer.SECOND;
+            this.isFrozen = true;
+            this.timerEvents.add(time, () => {
+                this.isFrozen = false;
+            }, this);
+        }
     }
 
     isSelected(): boolean {
