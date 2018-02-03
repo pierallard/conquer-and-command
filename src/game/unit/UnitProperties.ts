@@ -62,7 +62,7 @@ const DATA = {
         sight: 2,
         speed: 30,
         sprite_layer: 6,
-        sprites: ['Tank7', 'Tank7'],
+        sprites: ['Tank7p1', 'Tank7p2'],
     },
     MCV: {
         allowed_by: ['WeaponsFactory', 'AdvancedCommandCenter'],

@@ -236,6 +236,10 @@ export class GeneratedGround {
         }).join("\n");
     }
 
+    isTiberiumable(cell: PIXI.Point) {
+        return this.generatedTiles[cell.y][cell.x] === TERRAIN.GRASS;
+    }
+
     private initializeTiles() {
         this.initializeTerrain(200, TERRAIN.SNOW, TERRAIN.ICE, true);
         this.initializeTerrain(400, TERRAIN.SNOW, TERRAIN.CRATER, true);

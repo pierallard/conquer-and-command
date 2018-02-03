@@ -139,6 +139,10 @@ export class WorldKnowledge {
         return null;
     }
 
+    isTiberiumable(cell: PIXI.Point): boolean {
+        return this.ground.isTiberiumable(cell);
+    }
+
     getArmies(): Army[] {
         return this.armyRepository.getItems();
     }

@@ -7,7 +7,8 @@ import {TiberiumPlant} from "../sprite/TiberiumPlant";
 import {Distance} from "../computing/Distance";
 import {Harvester} from "../unit/Harvester";
 
-const RADIUS = 6;
+const MAX_RADIUS = 6;
+const MIN_RADIUS = 2;
 
 export class TiberiumSource implements Building {
     private worldKnowledge: WorldKnowledge;
@@ -46,10 +47,14 @@ export class TiberiumSource implements Building {
 
         while (!spreaded && attempts > 0) {
             const newTry = new PIXI.Point(
-                Math.ceil(RADIUS * 2 * Math.random() + this.cellPosition.x - RADIUS),
-                Math.ceil(RADIUS * 2 * Math.random() + this.cellPosition.y - RADIUS),
+                Math.ceil(MAX_RADIUS * 2 * Math.random() + this.cellPosition.x - MAX_RADIUS),
+                Math.ceil(MAX_RADIUS * 2 * Math.random() + this.cellPosition.y - MAX_RADIUS),
             );
-            if (Distance.to(this.cellPosition, newTry) <= RADIUS && null === this.worldKnowledge.getGroundAt(newTry)) {
+            if (Distance.to(this.cellPosition, newTry) <= MAX_RADIUS &&
+                Distance.to(this.cellPosition, newTry) >= MIN_RADIUS &&
+                null === this.worldKnowledge.getGroundAt(newTry) &&
+                this.worldKnowledge.isTiberiumable(newTry)
+            ) {
                 const newPlant = new TiberiumPlant(this, this.game, newTry.x, newTry.y);
                 this.worldKnowledge.addGroundElement(newPlant);
                 this.plants.push(newPlant);
