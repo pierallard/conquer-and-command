@@ -43,6 +43,8 @@ export default class Play extends Phaser.State {
         this.startTiberiums = [
             new PIXI.Point(Math.round(GROUND_WIDTH * 2 / 5), Math.round(GROUND_HEIGHT / 5)),
             new PIXI.Point(Math.round(GROUND_WIDTH * 3 / 5), Math.round(GROUND_HEIGHT * 4 / 5)),
+            new PIXI.Point(Math.round(GROUND_WIDTH * 3 / 5), Math.round(GROUND_HEIGHT / 5)),
+            new PIXI.Point(Math.round(GROUND_WIDTH * 2 / 5), Math.round(GROUND_HEIGHT * 4 / 5)),
         ];
 
         this.worldKnowledge = new WorldKnowledge();

@@ -1,7 +1,7 @@
 import {SCALE} from "../game_state/Play";
 import {AlternativePosition} from "../computing/AlternativePosition";
 
-export const GROUND_WIDTH = 40;
+export const GROUND_WIDTH = 60;
 export const GROUND_HEIGHT = 40;
 
 enum TYPE {

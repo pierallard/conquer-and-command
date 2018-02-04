@@ -9,8 +9,8 @@ import {Harvester} from "../unit/Harvester";
 
 const MAX_RADIUS = 6;
 const MIN_RADIUS = 2;
-const MIN_TIME = 20;
-const MAX_TIME = 60;
+const MIN_TIME = 10;
+const MAX_TIME = 22;
 
 export class TiberiumSource implements Building {
     private worldKnowledge: WorldKnowledge;
