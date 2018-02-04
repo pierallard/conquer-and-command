@@ -13,16 +13,19 @@ export abstract class AbstractShootingBuildingSprite extends BuildingSprite {
         ));
     }
 
+    protected getRotation(cellPosition: PIXI.Point): ROTATION {
+        return Rotation.getRotation(new Phaser.Point(
+            cellPosition.x - Cell.realToCell(this.x),
+            cellPosition.y - Cell.realToCell(this.y)
+        ));
+    }
+
     protected getShootSource(cellDest: PIXI.Point): PIXI.Point {
         return this.position;
     }
 
     private rotateTowards(cellPosition: PIXI.Point) {
-        const rotation = Rotation.getRotation(new Phaser.Point(
-            cellPosition.x - Cell.realToCell(this.x),
-            cellPosition.y - Cell.realToCell(this.y)
-        ));
-        this.loadRotation(rotation);
+        this.loadRotation(this.getRotation(cellPosition));
     }
 
     private loadRotation(rotation: ROTATION) {

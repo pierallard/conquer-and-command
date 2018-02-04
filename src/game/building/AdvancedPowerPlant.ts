@@ -6,10 +6,6 @@ import {AdvancedPowerPlantSprite} from "../sprite/AdvancedPowerPlantSprite";
 import {BuildingProperties} from "./BuildingProperties";
 
 export class AdvancedPowerPlant extends ConstructableBuilding {
-    constructor(worldKnowledge: WorldKnowledge, cell: PIXI.Point, player: Player) {
-        super(worldKnowledge, cell, player);
-    }
-
     create(game: Phaser.Game, groups: Phaser.Group[]) {
         this.sprite = new AdvancedPowerPlantSprite(
             game,

@@ -1,6 +1,7 @@
 import {Cell} from "../computing/Cell";
 import {AbstractShootingBuilding} from "./AbstractShootingBuilding";
 import {AdvancedGuardTowerSprite} from "../sprite/AdvancedGuardTowerSprite";
+import {BuildingProperties} from "./BuildingProperties";
 
 export class AdvancedGuardTower extends AbstractShootingBuilding {
     create(game: Phaser.Game, groups: Phaser.Group[]) {
@@ -9,7 +10,7 @@ export class AdvancedGuardTower extends AbstractShootingBuilding {
             groups,
             Cell.cellToReal(this.cellPosition.x),
             Cell.cellToReal(this.cellPosition.y),
-            'Artilery2'
+            BuildingProperties.getSpriteKey(this.constructor.name, this.player.getId())
         );
         super.create(game, groups);
     }

@@ -22,7 +22,7 @@ const DATA = {
         ],
         sight: 4,
         sprite_layer: 5,
-        sprites: ['Artilery2', 'Artilery2'],
+        sprites: ['Artilery2p1', 'Artilery2p2'],
     },
     AdvancedPowerPlant: {
         cellPositions: [
