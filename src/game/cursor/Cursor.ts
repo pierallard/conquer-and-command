@@ -1,39 +1,29 @@
-import {SCALE} from "./game_state/Play";
-import {WorldKnowledge} from "./map/WorldKnowledge";
-import {Unit} from "./unit/Unit";
-import {Cell} from "./computing/Cell";
-import {Player} from "./player/Player";
-import {GAME_WIDTH} from "../app";
-import {INTERFACE_WIDTH} from "./interface/UserInterface";
-import {MCV} from "./unit/MCV";
-import {Army} from "./Army";
-import {UnitProperties} from "./unit/UnitProperties";
-import {Orca} from "./unit/Orca";
-import {Helipad} from "./building/Helipad";
+import {SCALE} from "../game_state/Play";
+import {WorldKnowledge} from "../map/WorldKnowledge";
+import {Unit} from "../unit/Unit";
+import {Cell} from "../computing/Cell";
+import {Player} from "../player/Player";
+import {GAME_WIDTH} from "../../app";
+import {INTERFACE_WIDTH} from "../interface/UserInterface";
+import {MCV} from "../unit/MCV";
+import {Army} from "../Army";
+import {UnitProperties} from "../unit/UnitProperties";
+import {Orca} from "../unit/Orca";
+import {Helipad} from "../building/Helipad";
+import {ACTION, MouseCursor} from "./MouseCursor";
 
-enum ACTION {
-    DEFAULT,
-    MOVE,
-    ATTACK,
-    SPECIAL,
-}
-
-export class Cursor {
+export class PlayerCursor extends MouseCursor {
     private worldKnowledge: WorldKnowledge;
-    private cursors: Phaser.Sprite[];
-    private mousePointer: Phaser.Pointer;
-    private camera: Phaser.Camera;
     private player: Player;
 
     constructor(worldKnowledge: WorldKnowledge, player: Player) {
+        super();
         this.worldKnowledge = worldKnowledge;
         this.player = player;
-        this.cursors = [];
     }
 
     create(game: Phaser.Game) {
-        this.mousePointer = game.input.mousePointer;
-        this.camera = game.camera;
+        super.create(game);
 
         let green = new Phaser.Sprite(game, 0, 0, 'Outline', 6);
         green.scale.setTo(SCALE, SCALE);
@@ -47,12 +37,6 @@ export class Cursor {
         red.fixedToCamera = true;
         game.add.existing(red);
 
-        let mouse = new Phaser.Sprite(game, 0, 0, 'mouse', 6);
-        mouse.scale.setTo(SCALE, SCALE);
-        mouse.fixedToCamera = true;
-        mouse.anchor.setTo(0, 0);
-        game.add.existing(mouse);
-
         let special = new Phaser.Sprite(game, 0, 0, 'Selected', 9);
         special.scale.setTo(SCALE, SCALE);
         special.fixedToCamera = true;
@@ -60,7 +44,6 @@ export class Cursor {
         special.animations.add('fou', [9, 10, 11], 100).play(10, true, false);
         game.add.existing(special);
 
-        this.cursors[ACTION.DEFAULT] = mouse;
         this.cursors[ACTION.MOVE] = green;
         this.cursors[ACTION.ATTACK] = red;
         this.cursors[ACTION.SPECIAL] = special;
@@ -69,14 +52,7 @@ export class Cursor {
     }
 
     update() {
-        const position = new Phaser.Point(
-            SCALE * Math.ceil(this.mousePointer.position.x / SCALE),
-            SCALE * Math.ceil(this.mousePointer.position.y / SCALE)
-        );
-        this.cursors.forEach((cursor) => {
-            cursor.cameraOffset = position;
-        });
-
+        super.update();
         this.showCursor(this.getAction());
     }
 
